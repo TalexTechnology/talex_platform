@@ -6,7 +6,7 @@ import {actorFrom} from './auth.js';
 import {handleRpc} from './application/rpc.js';
 import {handleTable} from './application/tables.js';
 
-const server = http.createServer(async (request, response) => {
+export async function handleRequest(request, response) {
   try {
     if (request.method === 'OPTIONS') {
       json(response, 204, {});
@@ -15,13 +15,17 @@ const server = http.createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
     if (request.method === 'GET' && url.pathname === '/health') {
       await pingDatabase();
-      json(response, 200, {ok: true, database: 'mysql'});
+      json(response, 200, {ok: true, database: 'mongodb'});
       return;
     }
 
     const actor = await actorFrom(request);
     if (request.method === 'POST' && url.pathname.startsWith('/v1/rpc/')) {
-      json(response, 200, await handleRpc(url.pathname.slice('/v1/rpc/'.length), actor, await readBody(request)));
+      json(
+        response,
+        200,
+        await handleRpc(url.pathname.slice('/v1/rpc/'.length), actor, await readBody(request)),
+      );
       return;
     }
     if (url.pathname.startsWith('/v1/data/')) {
@@ -38,14 +42,17 @@ const server = http.createServer(async (request, response) => {
       message: error.message,
     });
   }
-});
+}
 
-server.listen(config.port, async () => {
-  console.log(`TaleX local API on :${config.port}`);
-  try {
-    await pingDatabase();
-    console.log(`MySQL ok ${config.mysql.user}@${config.mysql.host}:${config.mysql.port}/${config.mysql.database}`);
-  } catch (error) {
-    console.error('MySQL no responde:', error.code, error.message);
-  }
-});
+if (!process.env.VERCEL) {
+  const server = http.createServer(handleRequest);
+  server.listen(config.port, async () => {
+    console.log(`TaleX API on :${config.port}`);
+    try {
+      await pingDatabase();
+      console.log(`MongoDB ok database=${config.mongodbDatabase}`);
+    } catch (error) {
+      console.error('MongoDB no responde:', error.code, error.message);
+    }
+  });
+}
