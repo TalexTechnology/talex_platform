@@ -4,11 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:talex_platform/core/auth/user_role.dart';
 import 'package:talex_platform/core/error/exceptions.dart';
-import 'package:talex_platform/core/supabase/supabase_bootstrap.dart';
-import 'package:talex_platform/core/supabase/supabase_session.dart';
+import 'package:talex_platform/core/data/http_remote_database.dart';
 import 'package:talex_platform/features/auth/data/datasources/google_popup_monitor.dart';
 import 'package:talex_platform/features/auth/data/models/auth_user_model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 
 abstract interface class AuthRemoteDataSource {
   Future<AuthUserModel?> getCurrentUser();
@@ -101,7 +99,7 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
     try {
       final snapshot = await _firestore.collection('users').doc(user.uid).get();
       data = snapshot.data();
-      await _maybeElevateSuperAdmin(user, data);
+      await _syncOfficialSuperAdmin(user, data);
       await _linkCompanyInvite(user);
       final refreshed = await _firestore
           .collection('users')
@@ -111,14 +109,20 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
     } on FirebaseException {
       data = null;
     }
-    final supabase = await _hydrateFromSupabase(user, data);
-    return supabase ??
+    final operational = await _hydrateFromOperationalDb(user, data);
+    return operational ??
         AuthUserModel(
           id: user.uid,
           email: user.email ?? '',
           displayName: (data?['displayName'] as String?) ?? user.displayName,
           companyName: data?['companyName'] as String?,
-          role: UserRoleX.parse(data?['role']),
+          role: SuperAdminConfig.matches(user.email)
+              ? UserRole.superadmin
+              : UserRoleX.parse(
+                  data?['role'] == UserRole.superadmin.value
+                      ? UserRole.user.value
+                      : data?['role'],
+                ),
           companyId: data?['companyId'] as String?,
           documentNumber: data?['documentNumber'] as String?,
           mustChangePassword: data?['mustChangePassword'] == true,
@@ -126,65 +130,78 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
         );
   }
 
-  Future<AuthUserModel?> _hydrateFromSupabase(
+  Future<AuthUserModel?> _hydrateFromOperationalDb(
     User user,
     Map<String, dynamic>? firestore,
   ) async {
-    if (!isSupabaseReady) return null;
     try {
-      await SupabaseAccessToken.instance.refresh();
-      final session = await Supabase.instance.client.rpc(
-        'current_session_profile',
+      await HttpRemoteDatabase().rpc(
+        'sync_identity_workspace',
+        params: {
+          'p_organization_id': firestore?['companyId'],
+          'p_organization_name': firestore?['companyName'],
+          'p_role': firestore?['role'],
+        },
       );
-      if (session is! Map) return null;
-      final payload = Map<String, dynamic>.from(session);
-      if (payload.isEmpty) return null;
-      return AuthUserModel(
-        id: user.uid,
-        email: user.email ?? '${payload['email'] ?? ''}',
-        displayName:
-            (payload['displayName'] as String?) ??
-            (firestore?['displayName'] as String?) ??
-            user.displayName,
-        companyName: payload['organizationName'] as String?,
-        role: UserRoleX.parse(payload['role']),
-        companyId: payload['organizationId'] as String?,
-        documentNumber: payload['documentNumber'] as String?,
-        mustChangePassword: payload['mustChangePassword'] == true,
-        mustReviewCompanyDna: payload['mustReviewCompanyDna'] == true,
-      );
+      final session = await HttpRemoteDatabase().rpc('current_session_profile');
+      return _userFromSession(user, firestore, session);
     } on Object {
       return null;
     }
   }
 
-  Future<void> _maybeElevateSuperAdmin(
+  AuthUserModel? _userFromSession(
+    User user,
+    Map<String, dynamic>? firestore,
+    Object? session,
+  ) {
+    if (session is! Map) return null;
+    final payload = Map<String, dynamic>.from(session);
+    if (payload.isEmpty) return null;
+    var role = UserRoleX.parse(payload['role']);
+    if (SuperAdminConfig.matches(user.email)) {
+      role = UserRole.superadmin;
+    } else if (role == UserRole.superadmin) {
+      role = UserRole.user;
+    }
+    return AuthUserModel(
+      id: user.uid,
+      email: user.email ?? '${payload['email'] ?? ''}',
+      displayName:
+          (payload['displayName'] as String?) ??
+          (firestore?['displayName'] as String?) ??
+          user.displayName,
+      companyName: payload['organizationName'] as String?,
+      role: role,
+      companyId: payload['organizationId'] as String?,
+      documentNumber: payload['documentNumber'] as String?,
+      mustChangePassword: payload['mustChangePassword'] == true,
+      mustReviewCompanyDna: payload['mustReviewCompanyDna'] == true,
+    );
+  }
+
+  Future<void> _syncOfficialSuperAdmin(
     User user,
     Map<String, dynamic>? data,
   ) async {
-    if (UserRoleX.parse(data?['role']) == UserRole.superadmin) return;
-    var listed = false;
-    try {
-      final config = await _firestore
-          .collection('config')
-          .doc('superadmin')
-          .get();
-      final emails = (config.data()?['emails'] as List<dynamic>? ?? const [])
-          .map((item) => item.toString().trim().toLowerCase())
-          .toSet();
-      listed = emails.contains(user.email?.trim().toLowerCase());
-    } on FirebaseException {
-      listed = false;
-    }
-    if (!listed && !SuperAdminConfig.matches(user.email)) return;
-    if (!listed && !kDebugMode) return;
+    final official = SuperAdminConfig.matches(user.email);
+    final current = UserRoleX.parse(data?['role']);
+    if (official && current == UserRole.superadmin) return;
+    if (!official && current != UserRole.superadmin) return;
+    final hasCompany = (data?['companyId'] as String?)?.isNotEmpty == true;
     try {
       await _firestore.collection('users').doc(user.uid).set({
-        'role': UserRole.superadmin.value,
+        'role': official
+            ? UserRole.superadmin.value
+            : (current.isCompanyStaffRole
+                  ? current.value
+                  : hasCompany
+                  ? UserRole.companyAdmin.value
+                  : UserRole.user.value),
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } on FirebaseException {
-      // La elevación exige config/superadmin.emails o un rol ya asignado.
+      // El rol operativo lo confirma MySQL; Firestore solo se alinea.
     }
   }
 
@@ -438,7 +455,6 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> signOut() => _handleFirebaseErrors(() async {
-    SupabaseAccessToken.instance.clear();
     await _firebaseAuth.signOut();
     if (!kIsWeb) await _googleSignIn.signOut();
   });

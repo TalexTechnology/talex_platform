@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talex_platform/core/auth/user_role.dart';
+import 'package:talex_platform/core/data/http_remote_database.dart';
+import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/error/exceptions.dart';
 import 'package:talex_platform/core/supabase/supabase_gateway.dart';
 import 'package:talex_platform/features/talent/data/datasources/talent_data_source.dart';
@@ -18,15 +19,13 @@ final class SupabaseTalentDataSource implements TalentDataSource {
     this._auth,
     this._storage,
     this._functions, {
-    SupabaseClient? client,
-  }) : _client = client;
+    RemoteDatabase? database,
+  }) : _db = database ?? HttpRemoteDatabase();
 
   final FirebaseAuth _auth;
   final FirebaseStorage _storage;
   final FirebaseFunctions _functions;
-  final SupabaseClient? _client;
-
-  SupabaseClient get _db => _client ?? Supabase.instance.client;
+  final RemoteDatabase _db;
 
   String get _uid {
     final uid = _auth.currentUser?.uid;

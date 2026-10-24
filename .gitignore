@@ -53,6 +53,9 @@ functions/.env.*
 .env
 .env.*
 !.env.example
+!.env.docker.example
+docker/mysql/init/04_app_user.sql
+server/node_modules/
 supabase/.temp/
 supabase/.branches/
 supabase/tests/node_modules/

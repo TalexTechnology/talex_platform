@@ -3479,14 +3479,92 @@ abstract class AppLocalizations {
   /// No description provided for @adminQuestions.
   ///
   /// In es, this message translates to:
-  /// **'Preguntas'**
+  /// **'Encuesta de afinidad'**
   String get adminQuestions;
 
   /// No description provided for @adminQuestionsSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Banco de preguntas de la encuesta en sus tres frentes. Cada cambio se guarda en Firebase.'**
+  /// **'Preguntas que responde el candidato. Puedes verlas, editarlas y actualizarlas.'**
   String get adminQuestionsSubtitle;
+
+  /// No description provided for @adminCultureSurvey.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuesta de cultura'**
+  String get adminCultureSurvey;
+
+  /// No description provided for @adminCultureSurveySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario de valores y cultura de la empresa. Sube el archivo una vez; después solo se edita.'**
+  String get adminCultureSurveySubtitle;
+
+  /// No description provided for @adminCultureSurveyEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.'**
+  String get adminCultureSurveyEmpty;
+
+  /// No description provided for @adminQuestionsUploadFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir archivo'**
+  String get adminQuestionsUploadFile;
+
+  /// No description provided for @adminQuestionsFrontCultura.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura vivida'**
+  String get adminQuestionsFrontCultura;
+
+  /// No description provided for @adminQuestionsFrontLiderazgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Liderazgo'**
+  String get adminQuestionsFrontLiderazgo;
+
+  /// No description provided for @adminQuestionsFrontTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'Forma de trabajar'**
+  String get adminQuestionsFrontTrabajo;
+
+  /// No description provided for @adminQuestionsFrontPersonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Personas'**
+  String get adminQuestionsFrontPersonas;
+
+  /// No description provided for @adminQuestionsFrontApertura.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios abiertos'**
+  String get adminQuestionsFrontApertura;
+
+  /// No description provided for @adminQuestionsFormatScale.
+  ///
+  /// In es, this message translates to:
+  /// **'Escala'**
+  String get adminQuestionsFormatScale;
+
+  /// No description provided for @adminQuestionsFormatText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto abierto'**
+  String get adminQuestionsFormatText;
+
+  /// No description provided for @adminQuestionsFormatSingle.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción única'**
+  String get adminQuestionsFormatSingle;
+
+  /// No description provided for @adminQuestionsFormatMulti.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción múltiple'**
+  String get adminQuestionsFormatMulti;
 
   /// No description provided for @adminQuestionsNew.
   ///

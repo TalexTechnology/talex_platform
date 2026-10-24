@@ -4,6 +4,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
+import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
 import 'package:talex_platform/features/admin/domain/services/assessment_question_csv.dart';
 import 'package:talex_platform/features/admin/domain/services/assessment_question_defaults.dart';
@@ -13,18 +14,37 @@ import 'package:talex_platform/features/admin/presentation/widgets/survey_previe
 import 'package:talex_platform/l10n/l10n.dart';
 
 class AdminQuestionsView extends StatefulWidget {
-  const AdminQuestionsView({super.key});
+  const AdminQuestionsView({
+    super.key,
+    this.slug = affinitySurveySlug,
+    this.allowSeed = true,
+    this.hideUploadWhenFilled = false,
+  });
+
+  final String slug;
+  final bool allowSeed;
+  final bool hideUploadWhenFilled;
+
   @override
   State<AdminQuestionsView> createState() => _AdminQuestionsViewState();
 }
 
 class _AdminQuestionsViewState extends State<AdminQuestionsView> {
-  late final AssessmentQuestionDataSource _source = getIt();
+  late final AssessmentQuestionDataSource _source =
+      SupabaseAssessmentQuestionDataSource(
+        database: resolveRemoteDatabase(),
+        slug: widget.slug,
+      );
   late Stream<List<AssessmentQuestion>> _stream = _source.watch();
   AssessmentFront? _front;
   var _query = '';
   var _busy = false;
   String? _progress;
+
+  bool get _isCulture => widget.slug == cultureSurveySlug;
+
+  List<AssessmentFront> get _fronts =>
+      _isCulture ? AssessmentFront.cultureFronts : AssessmentFront.affinityFronts;
 
   // [progress] muestra un bloqueo con ese texto mientras dura la operación;
   // se usa en las cargas y borrados masivos.
@@ -63,6 +83,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
       context,
       existing: all,
       question: question,
+      fronts: _fronts,
     );
     if (result == null || result == question || !mounted) return;
     await _run(() => _source.save(result));
@@ -79,17 +100,18 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
     final notifications = getIt<NotificationService>();
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: const ['csv'],
+      allowedExtensions: const ['csv', 'json'],
       withData: true,
     );
     if (picked == null || !mounted) return;
     final List<AssessmentQuestion> questions;
     try {
-      final bytes = picked.files.single.bytes;
+      final file = picked.files.single;
+      final bytes = file.bytes;
       if (bytes == null) {
         throw const AssessmentCsvException(AssessmentCsvError.unreadable);
       }
-      questions = AssessmentQuestionCsv.parseBytes(bytes);
+      questions = AssessmentQuestionCsv.parseUpload(file.name, bytes);
     } on AssessmentCsvException catch (error) {
       notifications.error(assessmentCsvErrorMessage(l10n, error));
       return;
@@ -149,7 +171,9 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AdminEmptyState(
-                message: l10n.adminQuestionsEmpty,
+                message: _isCulture
+                    ? l10n.adminCultureSurveyEmpty
+                    : l10n.adminQuestionsEmpty,
                 icon: Icons.quiz_outlined,
               ),
               const SizedBox(height: 16),
@@ -165,25 +189,30 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                         backgroundColor: AppColors.primaryButton,
                       ),
                       icon: const Icon(Icons.upload_file_outlined),
-                      label: Text(l10n.adminQuestionsImport),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: _busy
-                          ? null
-                          : () => _run(
-                              _source.seedDefaults,
-                              progress: l10n.adminQuestionsUploading,
-                              success: l10n.adminQuestionsUploaded(
-                                AssessmentQuestionDefaults.all.length,
-                              ),
-                            ),
-                      icon: const Icon(Icons.cloud_upload_outlined),
                       label: Text(
-                        l10n.adminQuestionsSeed(
-                          AssessmentQuestionDefaults.all.length,
-                        ),
+                        _isCulture
+                            ? l10n.adminQuestionsUploadFile
+                            : l10n.adminQuestionsImport,
                       ),
                     ),
+                    if (widget.allowSeed)
+                      OutlinedButton.icon(
+                        onPressed: _busy
+                            ? null
+                            : () => _run(
+                                _source.seedDefaults,
+                                progress: l10n.adminQuestionsUploading,
+                                success: l10n.adminQuestionsUploaded(
+                                  AssessmentQuestionDefaults.all.length,
+                                ),
+                              ),
+                        icon: const Icon(Icons.cloud_upload_outlined),
+                        label: Text(
+                          l10n.adminQuestionsSeed(
+                            AssessmentQuestionDefaults.all.length,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -195,6 +224,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             children: [
               _Filters(
                 all: all,
+                fronts: _fronts,
                 front: _front,
                 onFront: (front) => setState(() => _front = front),
                 onQuery: (query) => setState(() => _query = query),
@@ -259,8 +289,12 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AdminPageHeader(
-                title: l10n.adminQuestions,
-                subtitle: l10n.adminQuestionsSubtitle,
+                title: _isCulture
+                    ? l10n.adminCultureSurvey
+                    : l10n.adminQuestions,
+                subtitle: _isCulture
+                    ? l10n.adminCultureSurveySubtitle
+                    : l10n.adminQuestionsSubtitle,
                 actions: [
                   if (all.isNotEmpty)
                     TextButton.icon(
@@ -271,13 +305,18 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                       icon: const Icon(Icons.delete_sweep_outlined),
                       label: Text(l10n.adminQuestionsDeleteAll),
                     ),
-                  OutlinedButton.icon(
-                    onPressed: snapshot.hasData && !_busy
-                        ? () => _importCsv(all)
-                        : null,
-                    icon: const Icon(Icons.upload_file_outlined),
-                    label: Text(l10n.adminQuestionsImport),
-                  ),
+                  if (!widget.hideUploadWhenFilled)
+                    OutlinedButton.icon(
+                      onPressed: snapshot.hasData && !_busy
+                          ? () => _importCsv(all)
+                          : null,
+                      icon: const Icon(Icons.upload_file_outlined),
+                      label: Text(
+                        _isCulture
+                            ? l10n.adminQuestionsUploadFile
+                            : l10n.adminQuestionsImport,
+                      ),
+                    ),
                   OutlinedButton.icon(
                     onPressed: all.isEmpty
                         ? null
@@ -286,7 +325,9 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                     label: Text(l10n.adminQuestionsPreview),
                   ),
                   FilledButton.icon(
-                    onPressed: snapshot.hasData && !_busy
+                    onPressed: snapshot.hasData &&
+                            !_busy &&
+                            (!widget.hideUploadWhenFilled || all.isNotEmpty)
                         ? () => _edit(all)
                         : null,
                     style: FilledButton.styleFrom(
@@ -365,11 +406,13 @@ class _ProgressOverlay extends StatelessWidget {
 class _Filters extends StatelessWidget {
   const _Filters({
     required this.all,
+    required this.fronts,
     required this.front,
     required this.onFront,
     required this.onQuery,
   });
   final List<AssessmentQuestion> all;
+  final List<AssessmentFront> fronts;
   final AssessmentFront? front;
   final ValueChanged<AssessmentFront?> onFront;
   final ValueChanged<String> onQuery;
@@ -399,10 +442,7 @@ class _Filters extends StatelessWidget {
           runSpacing: 8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            for (final value in <AssessmentFront?>[
-              null,
-              ...AssessmentFront.values,
-            ])
+            for (final value in <AssessmentFront?>[null, ...fronts])
               ChoiceChip(
                 label: Text(
                   '${value == null ? l10n.adminQuestionsAll : assessmentFrontLabel(l10n, value)} (${count(value)})',
@@ -457,6 +497,7 @@ class _QuestionTile extends StatelessWidget {
           children: [
             AdminStatusChip(question.code),
             Text(assessmentFrontLabel(l10n, question.front), style: meta),
+            Text(assessmentFormatLabel(l10n, question.format), style: meta),
             Text(
               question.isPair && question.dimensionB.isNotEmpty
                   ? '${question.dimensionA} / ${question.dimensionB}'

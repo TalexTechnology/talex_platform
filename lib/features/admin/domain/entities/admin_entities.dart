@@ -43,6 +43,7 @@ enum AdminSection {
   alerts,
   xebec,
   questions,
+  cultureSurvey,
   settings,
 }
 

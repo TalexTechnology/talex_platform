@@ -4,6 +4,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/features/admin/domain/entities/admin_entities.dart';
 import 'package:talex_platform/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_questions_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_dialogs.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/provision_company_dialog.dart';
@@ -19,8 +20,15 @@ class AdminSectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
-        if (state.section == AdminSection.questions) {
-          return const AdminQuestionsView();
+        if (state.section == AdminSection.questions ||
+            state.section == AdminSection.cultureSurvey) {
+          return AdminQuestionsView(
+            slug: state.section == AdminSection.cultureSurvey
+                ? cultureSurveySlug
+                : affinitySurveySlug,
+            allowSeed: state.section != AdminSection.cultureSurvey,
+            hideUploadWhenFilled: state.section == AdminSection.cultureSurvey,
+          );
         }
         if (state.status == AdminViewStatus.initial ||
             (state.status == AdminViewStatus.loading &&
@@ -69,6 +77,11 @@ class AdminSectionView extends StatelessWidget {
           AdminSection.alerts => AdminAlertsView(state: state),
           AdminSection.xebec => AdminXebecView(state: state),
           AdminSection.questions => const AdminQuestionsView(),
+          AdminSection.cultureSurvey => const AdminQuestionsView(
+            slug: cultureSurveySlug,
+            allowSeed: false,
+            hideUploadWhenFilled: true,
+          ),
           AdminSection.settings => AdminSettingsView(state: state),
         };
       },

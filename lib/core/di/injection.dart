@@ -5,10 +5,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talex_platform/core/data/http_remote_database.dart';
+import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
 import 'package:talex_platform/core/location/location_catalog.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
-import 'package:talex_platform/core/supabase/supabase_bootstrap.dart';
 import 'package:talex_platform/features/admin/data/datasources/admin_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/supabase_admin_data_source.dart';
@@ -39,6 +40,8 @@ import 'package:talex_platform/features/talent/domain/repositories/talent_reposi
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
 
 final getIt = GetIt.instance;
+
+RemoteDatabase resolveRemoteDatabase() => HttpRemoteDatabase();
 
 Future<void> configureDependencies() async {
   if (getIt.isRegistered<NotificationService>()) {
@@ -91,14 +94,12 @@ void configureAdminDependencies() {
   if (getIt.isRegistered<AdminBloc>()) return;
   getIt
     ..registerLazySingleton<AdminDataSource>(
-      () => isSupabaseReady
-          ? SupabaseAdminDataSource(getIt())
-          : FirebaseAdminDataSource(getIt(), getIt()),
+      () => SupabaseAdminDataSource(getIt(), database: resolveRemoteDatabase()),
     )
     ..registerLazySingleton<AssessmentQuestionDataSource>(
-      () => isSupabaseReady
-          ? SupabaseAssessmentQuestionDataSource()
-          : FirebaseAssessmentQuestionDataSource(getIt()),
+      () => SupabaseAssessmentQuestionDataSource(
+        database: resolveRemoteDatabase(),
+      ),
     )
     ..registerLazySingleton<AdminRepository>(() => AdminRepositoryImpl(getIt()))
     ..registerFactory(() => AdminBloc(repository: getIt()));
@@ -108,9 +109,12 @@ void configureTalentDependencies() {
   if (getIt.isRegistered<TalentBloc>()) return;
   getIt
     ..registerLazySingleton<TalentDataSource>(
-      () => isSupabaseReady
-          ? SupabaseTalentDataSource(getIt(), getIt(), getIt())
-          : FirebaseTalentDataSource(getIt(), getIt(), getIt(), getIt()),
+      () => SupabaseTalentDataSource(
+        getIt(),
+        getIt(),
+        getIt(),
+        database: resolveRemoteDatabase(),
+      ),
     )
     ..registerLazySingleton<TalentRepository>(
       () => TalentRepositoryImpl(getIt(), getIt()),

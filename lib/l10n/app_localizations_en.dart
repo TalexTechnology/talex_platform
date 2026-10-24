@@ -1813,11 +1813,52 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is no TaleX account with this email. If you were invited, use First access with the PIN.';
 
   @override
-  String get adminQuestions => 'Questions';
+  String get adminQuestions => 'Affinity survey';
 
   @override
   String get adminQuestionsSubtitle =>
-      'Survey question bank across its three fronts. Every change is saved to Firebase.';
+      'Questions the candidate answers. You can view, edit, and update them.';
+
+  @override
+  String get adminCultureSurvey => 'Culture survey';
+
+  @override
+  String get adminCultureSurveySubtitle =>
+      'Company values and culture form. Upload the file once; after that you only edit.';
+
+  @override
+  String get adminCultureSurveyEmpty =>
+      'There are no culture questions yet. Upload a CSV or JSON file to add them.';
+
+  @override
+  String get adminQuestionsUploadFile => 'Upload file';
+
+  @override
+  String get adminQuestionsFrontCultura => 'Lived culture';
+
+  @override
+  String get adminQuestionsFrontLiderazgo => 'Leadership';
+
+  @override
+  String get adminQuestionsFrontTrabajo => 'Way of working';
+
+  @override
+  String get adminQuestionsFrontPersonas => 'People';
+
+  @override
+  String get adminQuestionsFrontApertura => 'Open comments';
+
+  @override
+  String get adminQuestionsFormatScale => 'Scale';
+
+  @override
+  String get adminQuestionsFormatText => 'Open text';
+
+  @override
+  String get adminQuestionsFormatSingle => 'Single choice';
+
+  @override
+  String get adminQuestionsFormatMulti => 'Multiple choice';
 
   @override
   String get adminQuestionsNew => 'New question';

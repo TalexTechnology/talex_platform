@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:talex_platform/core/data/http_remote_database.dart';
+import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/supabase/supabase_gateway.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
@@ -11,13 +12,14 @@ const cultureSurveySlug = 'culture-perception';
 
 final class SupabaseAssessmentQuestionDataSource
     implements AssessmentQuestionDataSource {
-  SupabaseAssessmentQuestionDataSource({SupabaseClient? client})
-    : _client = client;
+  SupabaseAssessmentQuestionDataSource({
+    RemoteDatabase? database,
+    this.slug = affinitySurveySlug,
+  }) : _db = database ?? HttpRemoteDatabase();
 
-  final SupabaseClient? _client;
+  final RemoteDatabase _db;
+  final String slug;
   final _changes = StreamController<List<AssessmentQuestion>>.broadcast();
-
-  SupabaseClient get _db => _client ?? Supabase.instance.client;
 
   Future<T> _guard<T>(Future<T> Function() action) => guardSupabase(action);
 
@@ -36,7 +38,7 @@ final class SupabaseAssessmentQuestionDataSource
   Future<List<AssessmentQuestion>> _load() => _guard(() async {
     final payload = await _db.rpc(
       'list_survey_bank',
-      params: {'p_slug': affinitySurveySlug},
+      params: {'p_slug': slug},
     );
     return _parseBank(payload);
   });
@@ -57,7 +59,7 @@ final class SupabaseAssessmentQuestionDataSource
     await _db.rpc(
       'upsert_survey_question',
       params: {
-        'p_slug': affinitySurveySlug,
+        'p_slug': slug,
         'p_question': assessmentQuestionToMap(question),
       },
     );
@@ -69,7 +71,7 @@ final class SupabaseAssessmentQuestionDataSource
     await _db.rpc(
       'set_survey_question_active',
       params: {
-        'p_slug': affinitySurveySlug,
+        'p_slug': slug,
         'p_code': code,
         'p_active': active,
       },
@@ -83,7 +85,7 @@ final class SupabaseAssessmentQuestionDataSource
         await _db.rpc(
           'swap_survey_question_order',
           params: {
-            'p_slug': affinitySurveySlug,
+            'p_slug': slug,
             'p_code_a': first.code,
             'p_code_b': second.code,
           },
@@ -95,7 +97,7 @@ final class SupabaseAssessmentQuestionDataSource
   Future<void> delete(String code) => _guard(() async {
     await _db.rpc(
       'delete_survey_question',
-      params: {'p_slug': affinitySurveySlug, 'p_code': code},
+      params: {'p_slug': slug, 'p_code': code},
     );
     await _emit();
   });
@@ -105,7 +107,7 @@ final class SupabaseAssessmentQuestionDataSource
     await _db.rpc(
       'replace_survey_bank',
       params: {
-        'p_slug': affinitySurveySlug,
+        'p_slug': slug,
         'p_questions': [
           for (final question in questions) assessmentQuestionToMap(question),
         ],

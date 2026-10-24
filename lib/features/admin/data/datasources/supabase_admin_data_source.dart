@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:talex_platform/core/data/http_remote_database.dart';
+import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/error/exceptions.dart';
 import 'package:talex_platform/core/supabase/supabase_gateway.dart';
 import 'package:talex_platform/features/admin/data/datasources/admin_data_source.dart';
@@ -10,11 +11,11 @@ import 'package:talex_platform/features/admin/domain/entities/admin_entities.dar
 import 'package:talex_platform/features/admin/domain/services/admin_alert_engine.dart';
 
 final class SupabaseAdminDataSource implements AdminDataSource {
-  SupabaseAdminDataSource(this._auth, {SupabaseClient? client}) : _client = client;
+  SupabaseAdminDataSource(this._auth, {RemoteDatabase? database})
+    : _db = database ?? HttpRemoteDatabase();
 
   final FirebaseAuth _auth;
-  final SupabaseClient? _client;
-  SupabaseClient get _db => _client ?? Supabase.instance.client;
+  final RemoteDatabase _db;
 
   Future<T> _guard<T>(Future<T> Function() action) => guardSupabase(() async {
     final uid = _auth.currentUser?.uid;
@@ -96,13 +97,13 @@ final class SupabaseAdminDataSource implements AdminDataSource {
       _db.from('deals').select(),
       _db.from('sales').select(),
     ]);
-    final orgs = (results[0] as List).cast<Map<String, dynamic>>();
-    final vacancies = (results[1] as List).cast<Map<String, dynamic>>();
-    final applications = (results[2] as List).cast<Map<String, dynamic>>();
-    final reports = (results[3] as List).cast<Map<String, dynamic>>();
-    final events = (results[4] as List).cast<Map<String, dynamic>>();
-    final deals = (results[5] as List).cast<Map<String, dynamic>>();
-    final sales = (results[6] as List).cast<Map<String, dynamic>>();
+    final orgs = results[0].cast<Map<String, dynamic>>();
+    final vacancies = results[1].cast<Map<String, dynamic>>();
+    final applications = results[2].cast<Map<String, dynamic>>();
+    final reports = results[3].cast<Map<String, dynamic>>();
+    final events = results[4].cast<Map<String, dynamic>>();
+    final deals = results[5].cast<Map<String, dynamic>>();
+    final sales = results[6].cast<Map<String, dynamic>>();
 
     final orgById = {for (final org in orgs) '${org['id']}': org};
     final vacancyById = {for (final row in vacancies) '${row['id']}': row};

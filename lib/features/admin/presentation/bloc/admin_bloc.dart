@@ -93,6 +93,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       case AdminSection.xebec:
         if (state.metrics == null) add(const AdminDashboardRequested());
       case AdminSection.questions:
+      case AdminSection.cultureSurvey:
         break;
       case AdminSection.settings:
         add(const AdminUsersRequested());
