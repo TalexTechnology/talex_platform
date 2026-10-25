@@ -7,6 +7,7 @@ import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/content_width.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
@@ -100,7 +101,7 @@ class _RespondentSurveyViewState extends State<RespondentSurveyView> {
         }
         if (state.status == TalentViewStatus.loading ||
             state.respondentSession == null) {
-          return const Center(child: CircularProgressIndicator());
+          return const SkeletonCenteredCard();
         }
         final session = state.respondentSession!;
         if (session.candidate.evaluationCompleted) {

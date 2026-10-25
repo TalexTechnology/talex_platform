@@ -5,6 +5,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/invitations/domain/entities/invitation.dart';
 import 'package:talex_platform/features/invitations/presentation/bloc/invitation_bloc.dart';
 import 'package:talex_platform/l10n/l10n.dart';
@@ -85,7 +86,9 @@ class InvitationsView extends StatelessWidget {
                       ),
                       const SizedBox(height: 32),
                       if (state.status == InvitationViewStatus.loading)
-                        const Center(child: CircularProgressIndicator())
+                        const Skeleton(
+                          child: SkeletonList(count: 4, separate: true),
+                        )
                       else if (state.invitations.isEmpty)
                         _EmptyInvitations(onCreate: onCreate)
                       else

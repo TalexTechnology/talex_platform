@@ -140,9 +140,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   ) async {
     emit(
       state.copyWith(
-        status: state.companies.isEmpty
-            ? AdminViewStatus.loading
-            : AdminViewStatus.success,
+        status: AdminViewStatus.loading,
         query: event.query,
         companyStatus: event.status,
         archivedOnly: event.archivedOnly,

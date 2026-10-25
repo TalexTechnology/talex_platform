@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/data/datasources/culture_report_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_organization_report.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
@@ -34,9 +35,17 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
         final report = snapshot.data;
         final Widget body;
         if (loading) {
-          body = const Padding(
-            padding: EdgeInsets.all(56),
-            child: Center(child: CircularProgressIndicator()),
+          body = const Skeleton(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SkeletonStats(),
+                SizedBox(height: 20),
+                SkeletonBox(height: 48),
+                SizedBox(height: 16),
+                SkeletonList(count: 4, separate: true),
+              ],
+            ),
           );
         } else if (snapshot.hasError || report == null) {
           body = AdminErrorState(
@@ -187,10 +196,16 @@ class _OrganizationCard extends StatelessWidget {
       if (summary.lastLeadAt != null)
         '${l10n.adminMyCultureLastLead}: ${labels.date(summary.lastLeadAt!.toLocal())}',
     ];
+    // El Material transparente deja que el splash del ExpansionTile se pinte
+    // encima del fondo blanco del panel y no debajo.
     return AdminPanel(
-      child: Theme(
+      child: Material(
+        color: Colors.transparent,
+        child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          shape: const Border(),
+          collapsedShape: const Border(),
           tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
           childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -251,6 +266,7 @@ class _OrganizationCard extends StatelessWidget {
               _LeadRow(item: item),
             ],
           ],
+        ),
         ),
       ),
     );

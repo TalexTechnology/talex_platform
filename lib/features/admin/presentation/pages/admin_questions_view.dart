@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
@@ -464,42 +465,23 @@ class _Filters extends StatelessWidget {
 }
 
 // Placeholder con la forma de la lista mientras llega el banco de preguntas.
-class _QuestionsSkeleton extends StatefulWidget {
+class _QuestionsSkeleton extends StatelessWidget {
   const _QuestionsSkeleton();
 
   @override
-  State<_QuestionsSkeleton> createState() => _QuestionsSkeletonState();
-}
-
-class _QuestionsSkeletonState extends State<_QuestionsSkeleton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 900),
-    lowerBound: 0.45,
-  )..repeat(reverse: true);
-
-  @override
-  void dispose() {
-    _pulse.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _pulse,
+    return Skeleton(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const _SkeletonBox(height: 56),
+          const SkeletonBox(height: 56),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               for (final width in const [70.0, 110.0, 96.0, 120.0, 88.0])
-                _SkeletonBox(width: width, height: 34),
+                SkeletonBox(width: width, height: 34),
             ],
           ),
           const SizedBox(height: 16),
@@ -516,19 +498,19 @@ class _QuestionsSkeletonState extends State<_QuestionsSkeleton>
                       children: [
                         Row(
                           children: [
-                            _SkeletonBox(width: 64, height: 24),
+                            SkeletonBox(width: 64, height: 24),
                             SizedBox(width: 10),
-                            _SkeletonBox(width: 90, height: 14),
+                            SkeletonBox(width: 90, height: 14),
                             SizedBox(width: 10),
-                            _SkeletonBox(width: 120, height: 14),
+                            SkeletonBox(width: 120, height: 14),
                           ],
                         ),
                         SizedBox(height: 12),
-                        _SkeletonBox(height: 14),
+                        SkeletonBox(height: 14),
                         SizedBox(height: 8),
                         FractionallySizedBox(
                           widthFactor: 0.6,
-                          child: _SkeletonBox(height: 14),
+                          child: SkeletonBox(height: 14),
                         ),
                       ],
                     ),
@@ -541,23 +523,6 @@ class _QuestionsSkeletonState extends State<_QuestionsSkeleton>
       ),
     );
   }
-}
-
-class _SkeletonBox extends StatelessWidget {
-  const _SkeletonBox({this.width, required this.height});
-
-  final double? width;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    width: width ?? double.infinity,
-    height: height,
-    decoration: BoxDecoration(
-      color: const Color(0xFFE9EAEE),
-      borderRadius: BorderRadius.circular(6),
-    ),
-  );
 }
 
 class _QuestionTile extends StatelessWidget {
