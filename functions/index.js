@@ -1060,6 +1060,13 @@ exports.redeemRespondentInvite = onCall(
         authUser.uid,
       );
 
+    try {
+      const {linkRespondent} = require('./supabase_session');
+      await linkRespondent(authUser.uid, tokenHash);
+    } catch (error) {
+      console.error('redeemRespondentInvite supabase link', error);
+    }
+
     return {
       customToken,
     };
@@ -1299,4 +1306,8 @@ exports.analyzeCandidateAffinity = affinity.analyzeCandidateAffinity;
 
 const assistant = require('./assistant');
 exports.askAssistant = assistant.askAssistant;
+
+const supabaseSession = require('./supabase_session');
+exports.mintSupabaseSession = supabaseSession.mintSupabaseSession;
+exports.getSupabasePublicConfig = supabaseSession.getSupabasePublicConfig;
 

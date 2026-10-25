@@ -30,6 +30,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<AdminPeopleRequested>(_onPeople);
     on<AdminAffinityRequested>(_onAffinity);
     on<AdminDealsRequested>(_onDeals);
+    on<AdminCultureLeadsRequested>(_onCultureLeads);
+    on<AdminCultureLeadStatusUpdated>(_onCultureLeadStatusUpdated);
     on<AdminSalesRequested>(_onSales);
     on<AdminAnalyticsRequested>(_onAnalytics);
     on<AdminAlertsRequested>(_onAlerts);
@@ -84,6 +86,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         add(const AdminAffinityRequested());
       case AdminSection.commercial:
         add(const AdminDealsRequested());
+      case AdminSection.cultureLeads:
+        add(const AdminCultureLeadsRequested());
       case AdminSection.sales:
         add(const AdminSalesRequested());
       case AdminSection.analytics:
@@ -93,6 +97,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       case AdminSection.xebec:
         if (state.metrics == null) add(const AdminDashboardRequested());
       case AdminSection.questions:
+      case AdminSection.cultureSurvey:
         break;
       case AdminSection.settings:
         add(const AdminUsersRequested());
@@ -378,6 +383,49 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       ),
     );
   }
+
+  Future<void> _onCultureLeads(
+    AdminCultureLeadsRequested event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: state.cultureLeads.isEmpty
+            ? AdminViewStatus.loading
+            : AdminViewStatus.success,
+        query: event.query,
+        cultureLeadStatus: event.status,
+        failure: null,
+        operation: null,
+      ),
+    );
+    final result = await _repository.listCultureLeads(
+      query: event.query,
+      status: event.status,
+    );
+    result.fold(
+      (failure) => _emitFailure(failure, emit),
+      (items) => emit(
+        state.copyWith(
+          status: AdminViewStatus.success,
+          cultureLeads: items,
+          cultureLeadStatus: event.status,
+          failure: null,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onCultureLeadStatusUpdated(
+    AdminCultureLeadStatusUpdated event,
+    Emitter<AdminState> emit,
+  ) => _afterWrite(
+    emit,
+    () => _repository.updateCultureLeadStatus(
+      id: event.id,
+      status: event.status,
+    ),
+  );
 
   Future<void> _onSales(
     AdminSalesRequested event,

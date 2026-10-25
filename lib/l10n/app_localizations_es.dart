@@ -436,6 +436,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminSales => 'Ventas';
 
   @override
+  String get adminCultureLeads => 'Leads cultura';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'Todavía no hay leads de cultura.';
+
+  @override
+  String get cultureLeadEmployees => 'Empleados';
+
+  @override
+  String get cultureLeadTraits => 'Rasgos culturales';
+
+  @override
+  String get cultureLeadComment => 'Comentario';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'Nuevo';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contactado';
+
+  @override
+  String get cultureLeadStatusQualified => 'Calificado';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Descartado';
+
+  @override
   String get adminAnalytics => 'Analytics';
 
   @override
@@ -1546,6 +1580,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo completar la operación. Inténtalo nuevamente.';
 
   @override
+  String get errorApiUnavailable =>
+      'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.';
+
+  @override
   String get errorCompanyNotFound => 'No se encontró la empresa.';
 
   @override
@@ -1815,11 +1853,52 @@ class AppLocalizationsEs extends AppLocalizations {
       'No hay una cuenta TaleX con este correo. Si te invitaron, entra por Primer acceso con el PIN.';
 
   @override
-  String get adminQuestions => 'Preguntas';
+  String get adminQuestions => 'Encuesta de afinidad';
 
   @override
   String get adminQuestionsSubtitle =>
-      'Banco de preguntas de la encuesta en sus tres frentes. Cada cambio se guarda en Firebase.';
+      'Preguntas que responde el candidato. Puedes verlas, editarlas y actualizarlas.';
+
+  @override
+  String get adminCultureSurvey => 'Encuesta de cultura';
+
+  @override
+  String get adminCultureSurveySubtitle =>
+      'Formulario de valores y cultura de la empresa. Sube el archivo una vez; después solo se edita.';
+
+  @override
+  String get adminCultureSurveyEmpty =>
+      'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.';
+
+  @override
+  String get adminQuestionsUploadFile => 'Subir archivo';
+
+  @override
+  String get adminQuestionsFrontCultura => 'Cultura vivida';
+
+  @override
+  String get adminQuestionsFrontLiderazgo => 'Liderazgo';
+
+  @override
+  String get adminQuestionsFrontTrabajo => 'Forma de trabajar';
+
+  @override
+  String get adminQuestionsFrontPersonas => 'Personas';
+
+  @override
+  String get adminQuestionsFrontApertura => 'Comentarios abiertos';
+
+  @override
+  String get adminQuestionsFormatScale => 'Escala';
+
+  @override
+  String get adminQuestionsFormatText => 'Texto abierto';
+
+  @override
+  String get adminQuestionsFormatSingle => 'Opción única';
+
+  @override
+  String get adminQuestionsFormatMulti => 'Opción múltiple';
 
   @override
   String get adminQuestionsNew => 'Nueva pregunta';

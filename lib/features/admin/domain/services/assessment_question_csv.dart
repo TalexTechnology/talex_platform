@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
 import 'package:talex_platform/features/admin/domain/services/assessment_question_defaults.dart';
 
@@ -27,6 +28,34 @@ class AssessmentCsvException implements Exception {
 /// enunciado_A, enunciado_B, opcion_1..5, tiempo_limite_seg).
 abstract final class AssessmentQuestionCsv {
   static const requiredColumns = ['codigo', 'frente', 'enunciado_a'];
+
+  static List<AssessmentQuestion> parseUpload(String fileName, List<int> bytes) {
+    if (fileName.toLowerCase().endsWith('.json')) {
+      return parseJsonBytes(bytes);
+    }
+    return parseBytes(bytes);
+  }
+
+  static List<AssessmentQuestion> parseJsonBytes(List<int> bytes) {
+    late final dynamic decoded;
+    try {
+      decoded = jsonDecode(utf8.decode(bytes));
+    } on FormatException {
+      throw const AssessmentCsvException(AssessmentCsvError.unreadable);
+    }
+    final rows = decoded is Map ? decoded['questions'] : decoded;
+    if (rows is! List || rows.isEmpty) {
+      throw const AssessmentCsvException(AssessmentCsvError.empty);
+    }
+    return [
+      for (final row in rows)
+        if (row is Map)
+          assessmentQuestionFromMap(
+            '${row['code'] ?? ''}',
+            Map<String, dynamic>.from(row),
+          ),
+    ]..sort((a, b) => a.order.compareTo(b.order));
+  }
 
   static List<AssessmentQuestion> parseBytes(List<int> bytes) {
     String text;
@@ -91,14 +120,7 @@ abstract final class AssessmentQuestionCsv {
       }
       final front = _front(cell('frente'));
       final statementB = cell('enunciado_b');
-      final formatText = cell('formato').toLowerCase();
-      final format = formatText.isEmpty
-          ? (statementB.isEmpty
-                ? AssessmentQuestionFormat.experience
-                : AssessmentQuestionFormat.pair)
-          : (formatText.contains('par') || formatText.contains('pair')
-                ? AssessmentQuestionFormat.pair
-                : AssessmentQuestionFormat.experience);
+      final format = _format(cell('formato'), statementB);
       final isPair = format == AssessmentQuestionFormat.pair;
       final defaults = AssessmentQuestionDefaults.optionsFor(format);
       final instruction = cell('instruccion');
@@ -129,8 +151,54 @@ abstract final class AssessmentQuestionCsv {
     return questions;
   }
 
+  static AssessmentQuestionFormat _format(String value, String statementB) {
+    final text = value.toLowerCase();
+    if (text.contains('par') || text.contains('pair')) {
+      return AssessmentQuestionFormat.pair;
+    }
+    if (text.contains('exp')) {
+      return AssessmentQuestionFormat.experience;
+    }
+    if (text.contains('text') ||
+        text.contains('abiert') ||
+        text.contains('open')) {
+      return AssessmentQuestionFormat.text;
+    }
+    if (text.contains('multi')) {
+      return AssessmentQuestionFormat.multi;
+    }
+    if (text.contains('single') ||
+        text.contains('única') ||
+        text.contains('unica')) {
+      return AssessmentQuestionFormat.single;
+    }
+    if (text.contains('scale') || text.contains('escala')) {
+      return AssessmentQuestionFormat.scale;
+    }
+    return statementB.isEmpty
+        ? AssessmentQuestionFormat.experience
+        : AssessmentQuestionFormat.pair;
+  }
+
   static AssessmentFront _front(String value) {
     final text = value.toLowerCase();
+    if (text.contains('lider') || text.contains('lead')) {
+      return AssessmentFront.liderazgo;
+    }
+    if (text.contains('trabaj') || text.contains('work')) {
+      return AssessmentFront.trabajo;
+    }
+    if (text.contains('person') || text.contains('people')) {
+      return AssessmentFront.personas;
+    }
+    if (text.contains('apert') ||
+        text.contains('open') ||
+        text.contains('coment')) {
+      return AssessmentFront.apertura;
+    }
+    if (text.contains('cultur') || text.contains('vivid')) {
+      return AssessmentFront.cultura;
+    }
     if (text.startsWith('2') ||
         text.contains('neces') ||
         text.contains('need')) {

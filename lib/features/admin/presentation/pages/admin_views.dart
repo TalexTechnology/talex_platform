@@ -4,6 +4,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/features/admin/domain/entities/admin_entities.dart';
 import 'package:talex_platform/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_questions_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_dialogs.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/provision_company_dialog.dart';
@@ -19,15 +20,23 @@ class AdminSectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
-        if (state.section == AdminSection.questions) {
-          return const AdminQuestionsView();
+        if (state.section == AdminSection.questions ||
+            state.section == AdminSection.cultureSurvey) {
+          return AdminQuestionsView(
+            slug: state.section == AdminSection.cultureSurvey
+                ? cultureSurveySlug
+                : affinitySurveySlug,
+            allowSeed: state.section != AdminSection.cultureSurvey,
+            hideUploadWhenFilled: state.section == AdminSection.cultureSurvey,
+          );
         }
         if (state.status == AdminViewStatus.initial ||
             (state.status == AdminViewStatus.loading &&
                 state.companies.isEmpty &&
                 state.metrics == null &&
                 state.processes.isEmpty &&
-                state.people.isEmpty)) {
+                state.people.isEmpty &&
+                state.cultureLeads.isEmpty)) {
           return const Center(child: CircularProgressIndicator());
         }
         if (state.status == AdminViewStatus.failure) {
@@ -65,10 +74,16 @@ class AdminSectionView extends StatelessWidget {
           AdminSection.affinity => AdminAffinityView(state: state),
           AdminSection.commercial => AdminPipelineView(state: state),
           AdminSection.sales => AdminSalesView(state: state),
+          AdminSection.cultureLeads => AdminCultureLeadsView(state: state),
           AdminSection.analytics => AdminAnalyticsView(state: state),
           AdminSection.alerts => AdminAlertsView(state: state),
           AdminSection.xebec => AdminXebecView(state: state),
           AdminSection.questions => const AdminQuestionsView(),
+          AdminSection.cultureSurvey => const AdminQuestionsView(
+            slug: cultureSurveySlug,
+            allowSeed: false,
+            hideUploadWhenFilled: true,
+          ),
           AdminSection.settings => AdminSettingsView(state: state),
         };
       },
@@ -862,6 +877,227 @@ class AdminPipelineView extends StatelessWidget {
                 trailing:
                     '${labels.deal(item.stage)} · ${item.estimatedValue == null ? context.l10n.noData : labels.money(item.estimatedValue!)}',
               ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class AdminCultureLeadsView extends StatelessWidget {
+  const AdminCultureLeadsView({super.key, required this.state});
+  final AdminState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = AdminLabels(context);
+    final l10n = context.l10n;
+    return _Page(
+      child: Column(
+        children: [
+          AdminPageHeader(
+            title: l10n.adminCultureLeads,
+            subtitle: l10n.adminCultureLeadsSubtitle,
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            children: [
+              _FilterChip(
+                label: l10n.filterAll,
+                selected: state.cultureLeadStatus == null,
+                onTap: () => context.read<AdminBloc>().add(
+                  AdminCultureLeadsRequested(query: state.query),
+                ),
+              ),
+              ...CultureLeadStatus.values.map(
+                (status) => _FilterChip(
+                  label: labels.cultureLead(status),
+                  selected: state.cultureLeadStatus == status,
+                  onTap: () => context.read<AdminBloc>().add(
+                    AdminCultureLeadsRequested(
+                      query: state.query,
+                      status: status,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          if (state.status == AdminViewStatus.loading &&
+              state.cultureLeads.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 48),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (state.cultureLeads.isEmpty)
+            AdminEmptyState(message: l10n.adminCultureLeadsEmpty)
+          else
+            ...state.cultureLeads.map(
+              (lead) => _CultureLeadCard(
+                lead: lead,
+                labels: labels,
+                submitting: state.status == AdminViewStatus.submitting,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CultureLeadCard extends StatelessWidget {
+  const _CultureLeadCard({
+    required this.lead,
+    required this.labels,
+    required this.submitting,
+  });
+
+  final CultureLead lead;
+  final AdminLabels labels;
+  final bool submitting;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final comment = lead.cultureComment?.trim();
+    final utm = lead.utmLabel;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminPanel(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          lead.companyName,
+                          style: const TextStyle(
+                            color: AppColors.ink,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          [
+                            if (lead.employeeRange.isNotEmpty)
+                              '${l10n.cultureLeadEmployees}: ${lead.employeeRange}',
+                            if (lead.email.isNotEmpty) lead.email,
+                            labels.date(lead.createdAt),
+                          ].join(' · '),
+                          style: const TextStyle(
+                            color: AppColors.subtitle,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _CultureLeadStatusSelector(
+                    status: lead.status,
+                    enabled: !submitting,
+                    labels: labels,
+                    onChanged: (status) {
+                      if (status == lead.status) return;
+                      context.read<AdminBloc>().add(
+                        AdminCultureLeadStatusUpdated(
+                          id: lead.id,
+                          status: status,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              if (lead.perceivedCulture.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  l10n.cultureLeadTraits,
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final trait in lead.perceivedCulture)
+                      AdminStatusChip(trait),
+                  ],
+                ),
+              ],
+              if (comment != null && comment.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  '${l10n.cultureLeadComment}: $comment',
+                  style: const TextStyle(
+                    color: AppColors.subtitle,
+                    fontSize: 14.5,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (utm != null) ...[
+                const SizedBox(height: 10),
+                Text(
+                  '${l10n.cultureLeadUtm}: $utm',
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CultureLeadStatusSelector extends StatelessWidget {
+  const _CultureLeadStatusSelector({
+    required this.status,
+    required this.enabled,
+    required this.labels,
+    required this.onChanged,
+  });
+
+  final CultureLeadStatus status;
+  final bool enabled;
+  final AdminLabels labels;
+  final ValueChanged<CultureLeadStatus> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<CultureLeadStatus>(
+        value: status,
+        isDense: true,
+        borderRadius: AppRadii.border,
+        onChanged: enabled
+            ? (value) {
+                if (value != null) onChanged(value);
+              }
+            : null,
+        items: [
+          for (final item in CultureLeadStatus.values)
+            DropdownMenuItem(
+              value: item,
+              child: Text(labels.cultureLead(item)),
             ),
         ],
       ),

@@ -31,7 +31,7 @@ jobs:
         run: flutter test
 
       - name: Build web
-        run: flutter build web --release --base-href /
+        run: flutter build web --release --base-href / --dart-define=TALEX_API_URL=https://talex-backend.vercel.app
 
       - name: Upload to Colombia Hosting
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

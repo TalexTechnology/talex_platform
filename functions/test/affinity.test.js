@@ -73,6 +73,78 @@ test('normalizeResult rejects malformed output', () => {
   assert.throws(() => internals.normalizeResult({score: 50, resumen: '  '}), {code: 'invalid_response'});
 });
 
+test('questionsFromSupabaseRows maps the scoring catalog Gemini needs', () => {
+  const [pair, experience] = internals.questionsFromSupabaseRows([
+    {
+      code: 'V01',
+      sort_order: 1,
+      front: 'values',
+      format: 'pair',
+      dimension_a: 'Estabilidad',
+      dimension_b: 'Cambio',
+      statement_a: 'A',
+      statement_b: 'B',
+      is_active: true,
+    },
+    {
+      code: 'C01',
+      order: 2,
+      front: 'capabilities',
+      format: 'experience',
+      dimensionA: 'Comunicación',
+      statementA: 'He explicado ideas',
+      active: false,
+    },
+  ]);
+  assert.equal(pair.dimensionA, 'Estabilidad');
+  assert.equal(pair.dimensionB, 'Cambio');
+  assert.equal(pair.order, 1);
+  assert.equal(experience.active, false);
+  assert.equal(experience.statementA, 'He explicado ideas');
+});
+
+test('preferSurveyCulture uses company survey answers when people have responded', () => {
+  const survey = {
+    respondentCount: 3,
+    values_list: ['Respeto'],
+    culture_list: ['Clara'],
+  };
+  const fallback = {values_list: ['ADN viejo']};
+  assert.deepEqual(internals.preferSurveyCulture(survey, fallback), survey);
+  assert.deepEqual(internals.preferSurveyCulture({respondentCount: 0}, fallback), fallback);
+});
+
+test('answersFromRows and companyFromWorkspace read the Postgres workspace', () => {
+  assert.deepEqual(
+    internals.answersFromRows([
+      {question_code: 'V01', value_int: 5},
+      {question_code: 'C01', value_int: 9},
+      {code: 'N01', value: 2},
+    ]),
+    {V01: 5, N01: 2},
+  );
+  const company = internals.companyFromWorkspace(
+    {name: 'Acme', sector: 'Tech', size_label: '51-200', description: 'Equipo'},
+    {
+      values_list: ['Respeto'],
+      culture_list: ['Clara'],
+      standout_list: ['Iniciativa'],
+      sought_characteristics: 'Claridad',
+    },
+  );
+  assert.equal(company.nombre, 'Acme');
+  assert.deepEqual(company.valores, ['Respeto']);
+  assert.deepEqual(company.cultura, ['Clara']);
+  assert.equal(company.caracteristicasBuscadas, 'Claridad');
+  const vacancy = internals.vacancyContext({
+    name: 'Ops',
+    work_mode: 'hybrid',
+    role_profile: 'Operaciones',
+  });
+  assert.equal(vacancy.modalidad, 'hybrid');
+  assert.equal(vacancy.perfilDelRol, 'Operaciones');
+});
+
 test('companyHasDna requires values, culture or sought characteristics', () => {
   assert.equal(internals.companyHasDna(internals.companyContext({name: 'Acme'})), false);
   assert.equal(

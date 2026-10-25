@@ -27,15 +27,27 @@ abstract final class AssessmentQuestionDefaults {
     AssessmentFront.coreValues => valuesInstruction,
     AssessmentFront.needs => needsInstruction,
     AssessmentFront.capabilities => capabilitiesInstruction,
+    AssessmentFront.apertura => 'Escribe tu respuesta con tus palabras.',
+    _ => 'Elige la opción que mejor describe tu experiencia.',
   };
 
   static AssessmentQuestionFormat formatFor(AssessmentFront front) =>
-      front == AssessmentFront.capabilities
-      ? AssessmentQuestionFormat.experience
-      : AssessmentQuestionFormat.pair;
+      switch (front) {
+        AssessmentFront.capabilities => AssessmentQuestionFormat.experience,
+        AssessmentFront.apertura => AssessmentQuestionFormat.text,
+        AssessmentFront.cultura ||
+        AssessmentFront.liderazgo ||
+        AssessmentFront.trabajo ||
+        AssessmentFront.personas => AssessmentQuestionFormat.scale,
+        _ => AssessmentQuestionFormat.pair,
+      };
 
   static List<String> optionsFor(AssessmentQuestionFormat format) =>
-      format == AssessmentQuestionFormat.pair ? pairOptions : frequencyOptions;
+      switch (format) {
+        AssessmentQuestionFormat.pair => pairOptions,
+        AssessmentQuestionFormat.text => const [],
+        _ => frequencyOptions,
+      };
 
   static const all = <AssessmentQuestion>[
     AssessmentQuestion(

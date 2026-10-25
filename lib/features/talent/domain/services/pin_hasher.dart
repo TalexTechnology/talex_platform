@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 
+/// Hash used by the live Firebase invite flow.
+///
+/// FNV-1a 32-bit is not a password hash. New Postgres invites should store
+/// `pin_algorithm = bfcrypt` via `public.hash_invite_pin`. Do not change this
+/// method until an approved cutover invalidates or dual-verifies existing pins.
 abstract final class PinHasher {
   static String hash(String pin, String email) {
     final bytes = utf8.encode('${email.trim().toLowerCase()}|$pin');

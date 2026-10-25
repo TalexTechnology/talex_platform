@@ -41,6 +41,27 @@ void main() {
     }
   });
 
+  test('questions survive the Postgres bank payload Gemini reads', () {
+    final question = all.first;
+    expect(
+      assessmentQuestionFromMap(question.code, {
+        'code': question.code,
+        'order': question.order,
+        'front': question.front.key,
+        'format': question.format.name,
+        'dimensionA': question.dimensionA,
+        'dimensionB': question.dimensionB,
+        'instruction': question.instruction,
+        'statementA': question.statementA,
+        'statementB': question.statementB,
+        'options': question.options,
+        'timeLimitSeconds': question.timeLimitSeconds,
+        'active': question.active,
+      }),
+      question,
+    );
+  });
+
   test('new codes continue the numbering of their front', () {
     expect(suggestQuestionCode(AssessmentFront.coreValues, all), 'V29');
     expect(suggestQuestionCode(AssessmentFront.needs, all), 'N13');

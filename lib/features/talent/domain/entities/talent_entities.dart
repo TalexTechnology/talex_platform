@@ -60,7 +60,7 @@ class CompanyProfile extends Equatable {
   final String? values, culture, standoutPeople, soughtCharacteristics;
   final List<String> customValues, customCulture, customStandout, customAreas;
   bool get hasCompanyDna =>
-      _filled(values) && _filled(culture) && _filled(standoutPeople);
+      _filled(values) || _filled(culture) || _filled(standoutPeople);
   static bool _filled(String? value) => value != null && value.trim().isNotEmpty;
   @override
   List<Object?> get props => [

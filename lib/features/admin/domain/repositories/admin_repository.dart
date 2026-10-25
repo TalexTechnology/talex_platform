@@ -23,6 +23,14 @@ abstract interface class AdminRepository {
   });
   Future<Either<Failure, AffinitySummary>> getAffinitySummary({String? companyId});
   Future<Either<Failure, List<Deal>>> getDeals({String query, DealStage? stage});
+  Future<Either<Failure, List<CultureLead>>> listCultureLeads({
+    String query,
+    CultureLeadStatus? status,
+  });
+  Future<Either<Failure, Unit>> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  });
   Future<Either<Failure, (SalesSummary, List<Sale>)>> getSales({
     required DateTime from,
     required DateTime to,

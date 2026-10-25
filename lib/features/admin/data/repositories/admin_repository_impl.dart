@@ -74,6 +74,21 @@ final class AdminRepositoryImpl implements AdminRepository {
   }) => _guard(() => _source.getDeals(query: query, stage: stage));
 
   @override
+  Future<Either<Failure, List<CultureLead>>> listCultureLeads({
+    String query = '',
+    CultureLeadStatus? status,
+  }) => _guard(() => _source.listCultureLeads(query: query, status: status));
+
+  @override
+  Future<Either<Failure, Unit>> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  }) => _guard(() async {
+    await _source.updateCultureLeadStatus(id: id, status: status);
+    return unit;
+  });
+
+  @override
   Future<Either<Failure, (SalesSummary, List<Sale>)>> getSales({
     required DateTime from,
     required DateTime to,

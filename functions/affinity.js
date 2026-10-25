@@ -1,4 +1,3 @@
-const admin = require('firebase-admin');
 const {onCall, HttpsError} = require('firebase-functions/v2/https');
 const {onDocumentWritten} = require('firebase-functions/v2/firestore');
 const {defineSecret, defineString} = require('firebase-functions/params');
@@ -85,10 +84,34 @@ function vacancyContext(vacancy) {
     nombre: text(vacancy.name, 120),
     area: text(vacancy.area, 120),
     seniority: text(vacancy.seniority, 60),
-    modalidad: text(vacancy.workMode, 60),
+    modalidad: text(vacancy.workMode || vacancy.work_mode, 60),
     descripcion: text(vacancy.description),
-    perfilDelRol: text(vacancy.roleProfile),
+    perfilDelRol: text(vacancy.roleProfile || vacancy.role_profile),
   };
+}
+
+function companyFromWorkspace(organization, culture) {
+  return companyContext({
+    name: organization?.name,
+    sector: organization?.sector,
+    size: organization?.size_label || organization?.size,
+    description: organization?.description,
+    valuesList: culture?.values_list || culture?.valuesList || [],
+    cultureList: culture?.culture_list || culture?.cultureList || [],
+    standoutList: culture?.standout_list || culture?.standoutList || [],
+    soughtCharacteristics:
+      culture?.sought_characteristics || culture?.soughtCharacteristics,
+  });
+}
+
+function answersFromRows(rows) {
+  const answers = {};
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const code = String(row.question_code || row.code || '').trim();
+    const value = answerValue(row.value_int ?? row.value);
+    if (code && value != null) answers[code] = value;
+  }
+  return answers;
 }
 
 function companyHasDna(context) {
@@ -399,70 +422,230 @@ async function callGemini(prompt, apiKey, model) {
   throw lastError;
 }
 
-async function loadQuestions(db) {
-  const snapshot = await db.collection('assessment_questions').get();
-  return snapshot.docs.map((doc) => ({code: doc.id, ...doc.data()}));
+function supabaseConfig() {
+  const url = String(process.env.SUPABASE_URL || '').trim().replace(/\/$/, '');
+  const key = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+  return {url, key};
 }
 
-async function runAnalysis(candidateId, {force = false, trigger = 'completion'} = {}) {
-  const db = admin.firestore();
-  const candidateRef = db.collection('candidates').doc(candidateId);
-  const analysisRef = db.collection('affinity_analyses').doc(candidateId);
-
-  const [candidateSnap, evaluationSnap] = await Promise.all([
-    candidateRef.get(),
-    db.collection('evaluations').doc(candidateId).get(),
-  ]);
-  if (!candidateSnap.exists) throw new AnalysisError('candidate_missing');
-  const candidate = candidateSnap.data() || {};
-  const evaluation = evaluationSnap.data() || {};
-  const companyId = String(candidate.companyId || evaluation.companyId || '');
-
-  const claimed = await db.runTransaction(async (transaction) => {
-    const current = await transaction.get(analysisRef);
-    const data = current.data() || {};
-    const updatedAt = data.updatedAt && data.updatedAt.toMillis ? data.updatedAt.toMillis() : 0;
-    if (data.status === 'pending' && Date.now() - updatedAt < PENDING_STALE_MS) return false;
-    if (!force && data.status === 'completed') return false;
-    transaction.set(analysisRef, {
-      candidateId,
-      companyId,
-      status: 'pending',
-      trigger,
-      attempts: admin.firestore.FieldValue.increment(1),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      createdAt: data.createdAt || admin.firestore.FieldValue.serverTimestamp(),
-    }, {merge: true});
-    return true;
-  });
-  if (!claimed) return (await analysisRef.get()).data();
-
-  const finish = async (fields, affinity) => {
-    const batch = db.batch();
-    batch.set(analysisRef, {
-      ...fields,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    }, {merge: true});
-    batch.set(candidateRef, {
-      companyAffinity: affinity,
-      affinityStatus: fields.status,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    }, {merge: true});
-    await batch.commit();
-    return (await analysisRef.get()).data();
+function supabaseHeaders(key, extra = {}) {
+  return {
+    apikey: key,
+    Authorization: `Bearer ${key}`,
+    'Content-Type': 'application/json',
+    ...extra,
   };
+}
+
+async function supabaseRest(path, {method = 'GET', body, prefer} = {}) {
+  const {url, key} = supabaseConfig();
+  if (!url || !key) throw new AnalysisError('supabase_unavailable');
+  const headers = supabaseHeaders(key, prefer ? {Prefer: prefer} : {});
+  const response = await fetch(`${url}/rest/v1/${path}`, {
+    method,
+    headers,
+    body: body == null ? undefined : JSON.stringify(body),
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    const detail = payload && payload.message ? payload.message : response.status;
+    throw new AnalysisError('supabase_unavailable', detail);
+  }
+  return payload;
+}
+
+function questionsFromSupabaseRows(rows) {
+  return (Array.isArray(rows) ? rows : []).map((row) => ({
+    code: row.code,
+    order: row.sort_order ?? row.order ?? 0,
+    front: row.front || row.section_code || 'values',
+    format: row.format || 'pair',
+    dimensionA: row.dimension_a || row.dimensionA || '',
+    dimensionB: row.dimension_b || row.dimensionB || '',
+    statementA: row.statement_a || row.statementA || '',
+    statementB: row.statement_b || row.statementB || '',
+    instruction: row.instruction || '',
+    active: row.is_active !== false && row.active !== false,
+  }));
+}
+
+async function loadQuestions() {
+  const rows = await supabaseRest(
+    'survey_scoring_questions?purpose=eq.affinity&version_status=eq.published&select=code,format,instruction,statement_a,statement_b,dimension_a,dimension_b,sort_order,is_active,front,slug&order=sort_order.asc',
+  );
+  const questions = questionsFromSupabaseRows(rows);
+  if (!questions.length) throw new AnalysisError('questions_unavailable');
+  return questions;
+}
+
+async function loadApplication(candidateId) {
+  const encoded = encodeURIComponent(candidateId);
+  const rows = await supabaseRest(
+    `applications?or=(id.eq.${encoded},firebase_candidate_id.eq.${encoded})&select=id,organization_id,vacancy_id,vacancy_name,person_id,evaluation_completed,firebase_candidate_id,organizations(id,name,sector,size_label,description,firebase_id)`,
+  );
+  const application = Array.isArray(rows) ? rows[0] : null;
+  if (!application?.id) throw new AnalysisError('candidate_missing');
+  return application;
+}
+
+function preferSurveyCulture(survey, fallback) {
+  const count = Number(survey?.respondentCount || survey?.respondent_count || 0);
+  if (count > 0) return survey;
+  return fallback || null;
+}
+
+async function loadAnalysisWorkspace(application) {
+  const [surveyCulture, cultureRows, vacancyRows, sessionRows, questions] = await Promise.all([
+    supabaseRest('rpc/organization_survey_culture', {
+      method: 'POST',
+      body: {p_organization_id: application.organization_id},
+    }).catch(() => null),
+    supabaseRest(
+      `organization_culture_versions?organization_id=eq.${application.organization_id}&is_current=eq.true&select=values_list,culture_list,standout_list,sought_characteristics&limit=1`,
+    ),
+    application.vacancy_id
+      ? supabaseRest(
+        `vacancies?id=eq.${application.vacancy_id}&select=name,area,seniority,work_mode,description,role_profile&limit=1`,
+      )
+      : [],
+    supabaseRest(
+      `survey_sessions?application_id=eq.${application.id}&purpose=eq.affinity&select=id&order=started_at.desc&limit=1`,
+    ),
+    loadQuestions(),
+  ]);
+  const session = Array.isArray(sessionRows) ? sessionRows[0] : null;
+  const answerRows = session?.id
+    ? await supabaseRest(
+      `survey_answers?session_id=eq.${session.id}&select=question_code,value_int`,
+    )
+    : [];
+  return {
+    company: companyFromWorkspace(
+      application.organizations,
+      preferSurveyCulture(
+        surveyCulture,
+        Array.isArray(cultureRows) ? cultureRows[0] : null,
+      ),
+    ),
+    vacancy: vacancyContext(Array.isArray(vacancyRows) ? vacancyRows[0] : null),
+    answers: answersFromRows(answerRows),
+    questions,
+  };
+}
+
+function reportPayload(application, evaluationId, fields) {
+  const status = fields.status === 'insufficient_data' ? 'insufficient_data' : fields.status;
+  return {
+    evaluation_id: evaluationId,
+    application_id: application.id,
+    organization_id: application.organization_id,
+    status: status || 'failed',
+    level: fields.level || 'unknown',
+    score: fields.score ?? null,
+    confidence: fields.confidence || 'unknown',
+    summary: fields.summary || null,
+    alignments: fields.alignments || [],
+    differences: fields.differences || [],
+    conversation_topics: fields.conversationTopics || fields.conversation_topics || [],
+    guidance: fields.guidance || null,
+    data_gaps: fields.dataGaps || fields.data_gaps || [],
+    model: fields.model || null,
+    prompt_version: fields.promptVersion || fields.prompt_version || null,
+    error_code: fields.error || fields.error_code || null,
+    analyzed_at: new Date().toISOString(),
+  };
+}
+
+async function persistReport(application, fields) {
+  const evaluations = await supabaseRest(
+    `affinity_evaluations?application_id=eq.${application.id}&select=id`,
+  );
+  const evaluation = Array.isArray(evaluations) ? evaluations[0] : null;
+  if (!evaluation?.id) throw new AnalysisError('evaluation_incomplete');
+  const rows = await supabaseRest('evaluation_reports?on_conflict=evaluation_id', {
+    method: 'POST',
+    prefer: 'resolution=merge-duplicates,return=representation',
+    body: reportPayload(application, evaluation.id, fields),
+  });
+  if (fields.status && fields.status !== 'pending') {
+    await supabaseRest(`applications?id=eq.${application.id}`, {
+      method: 'PATCH',
+      body: {company_affinity: fields.level || 'unknown'},
+    });
+  }
+  return Array.isArray(rows) ? rows[0] : rows;
+}
+
+function isFreshPending(report) {
+  if (!report || report.status !== 'pending') return false;
+  const updated = Date.parse(report.updated_at || report.analyzed_at || '') || 0;
+  return Date.now() - updated < PENDING_STALE_MS;
+}
+
+async function claimAnalysis(application, {force = false} = {}) {
+  const evaluations = await supabaseRest(
+    `affinity_evaluations?application_id=eq.${application.id}&select=id`,
+  );
+  const evaluation = Array.isArray(evaluations) ? evaluations[0] : null;
+  if (!evaluation?.id) throw new AnalysisError('evaluation_incomplete');
+
+  const currentRows = await supabaseRest(
+    `evaluation_reports?evaluation_id=eq.${evaluation.id}&select=id,status,updated_at,analyzed_at`,
+  );
+  const current = Array.isArray(currentRows) ? currentRows[0] : null;
+  if (!force && current?.status === 'completed') return {claimed: false, report: current};
+  if (!force && isFreshPending(current)) return {claimed: false, report: current};
+
+  const pending = await persistReport(application, {
+    status: 'pending',
+    level: 'unknown',
+    promptVersion: PROMPT_VERSION,
+  });
+  return {claimed: true, report: pending, evaluationId: evaluation.id};
+}
+
+async function canAnalyzeApplication(firebaseUid, application) {
+  const profiles = await supabaseRest(
+    `profiles?firebase_uid=eq.${encodeURIComponent(firebaseUid)}&select=id,is_superadmin`,
+  );
+  const profile = Array.isArray(profiles) ? profiles[0] : null;
+  if (!profile?.id) return false;
+  if (profile.is_superadmin) return true;
+
+  const memberships = await supabaseRest(
+    `memberships?profile_id=eq.${profile.id}&organization_id=eq.${application.organization_id}&is_active=eq.true&select=role,legacy_role`,
+  );
+  const membership = Array.isArray(memberships) ? memberships[0] : null;
+  if (
+    membership &&
+    (STAFF_ROLES.includes(membership.role) || STAFF_ROLES.includes(membership.legacy_role))
+  ) {
+    return true;
+  }
+
+  const persons = await supabaseRest(
+    `persons?linked_profile_id=eq.${profile.id}&select=id`,
+  );
+  return (Array.isArray(persons) ? persons : []).some((person) => person.id === application.person_id);
+}
+
+async function runAnalysis(candidateId, {force = false} = {}) {
+  const application = await loadApplication(candidateId);
+  if (application.evaluation_completed !== true) {
+    throw new AnalysisError('evaluation_incomplete');
+  }
+
+  const claim = await claimAnalysis(application, {force});
+  if (!claim.claimed) return claim.report;
+
+  const finish = (fields, affinity) => persistReport(application, {
+    ...fields,
+    level: fields.level || affinity,
+  });
 
   try {
-    if (evaluation.completed !== true) throw new AnalysisError('evaluation_incomplete');
-
-    const [companySnap, vacancySnap, questions] = await Promise.all([
-      companyId ? db.collection('companies').doc(companyId).get() : null,
-      candidate.vacancyId ? db.collection('vacancies').doc(String(candidate.vacancyId)).get() : null,
-      loadQuestions(db),
-    ]);
-    const company = companyContext((companySnap && companySnap.data()) || {});
-    const vacancy = vacancyContext(vacancySnap && vacancySnap.exists ? vacancySnap.data() : null);
-    const {responses, profile, total} = buildResponses(evaluation.answers || {}, questions);
+    const {company, vacancy, answers, questions} = await loadAnalysisWorkspace(application);
+    const {responses, profile, total} = buildResponses(answers, questions);
 
     const gaps = [];
     if (!total || responses.length / total < MIN_ANSWERED_RATIO) gaps.push('answers_incomplete');
@@ -488,11 +671,8 @@ async function runAnalysis(candidateId, {force = false, trigger = 'completion'} 
     return finish({
       status: 'completed',
       ...result,
-      error: admin.firestore.FieldValue.delete(),
       model,
       promptVersion: PROMPT_VERSION,
-      answeredCount: responses.length,
-      analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, result.level);
   } catch (error) {
     const code = error instanceof AnalysisError ? error.code : 'unexpected';
@@ -517,7 +697,7 @@ exports.analyzeAffinityOnCompletion = onDocumentWritten(
     const before = event.data.before.exists ? event.data.before.data() : {};
     const after = event.data.after.exists ? event.data.after.data() : null;
     if (!after || after.completed !== true || before.completed === true) return;
-    await runAnalysis(event.params.candidateId, {trigger: 'completion'});
+    await runAnalysis(event.params.candidateId);
   },
 );
 
@@ -537,19 +717,19 @@ exports.analyzeCandidateAffinity = onCall(
     const candidateId = String(request.data?.candidateId || '').trim();
     if (!candidateId) throw new HttpsError('invalid-argument', 'errorUnexpected');
 
-    const db = admin.firestore();
-    const [caller, candidate] = await Promise.all([
-      db.collection('users').doc(request.auth.uid).get(),
-      db.collection('candidates').doc(candidateId).get(),
-    ]);
-    if (!candidate.exists) throw new HttpsError('not-found', 'errorUnexpected');
-    const role = caller.data()?.role;
-    const allowed = role === 'superadmin' ||
-      (STAFF_ROLES.includes(role) && caller.data()?.companyId === candidate.data()?.companyId);
-    if (!allowed) throw new HttpsError('permission-denied', 'errorPermissionDenied');
-
-    const analysis = await runAnalysis(candidateId, {force: true, trigger: 'manual'});
-    return {status: analysis?.status || 'failed'};
+    try {
+      const application = await loadApplication(candidateId);
+      const allowed = await canAnalyzeApplication(request.auth.uid, application);
+      if (!allowed) throw new HttpsError('permission-denied', 'errorPermissionDenied');
+      const analysis = await runAnalysis(candidateId, {force: true});
+      return {status: analysis?.status || 'failed'};
+    } catch (error) {
+      if (error instanceof HttpsError) throw error;
+      if (error instanceof AnalysisError && error.code === 'candidate_missing') {
+        throw new HttpsError('not-found', 'errorUnexpected');
+      }
+      throw new HttpsError('internal', 'errorUnexpected');
+    }
   },
 );
 
@@ -559,5 +739,10 @@ exports.internals = {
   normalizeResult,
   levelFromScore,
   companyContext,
+  companyFromWorkspace,
   companyHasDna,
+  answersFromRows,
+  questionsFromSupabaseRows,
+  preferSurveyCulture,
+  vacancyContext,
 };

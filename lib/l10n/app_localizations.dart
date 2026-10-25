@@ -902,6 +902,72 @@ abstract class AppLocalizations {
   /// **'Ventas'**
   String get adminSales;
 
+  /// No description provided for @adminCultureLeads.
+  ///
+  /// In es, this message translates to:
+  /// **'Leads cultura'**
+  String get adminCultureLeads;
+
+  /// No description provided for @adminCultureLeadsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.'**
+  String get adminCultureLeadsSubtitle;
+
+  /// No description provided for @adminCultureLeadsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay leads de cultura.'**
+  String get adminCultureLeadsEmpty;
+
+  /// No description provided for @cultureLeadEmployees.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleados'**
+  String get cultureLeadEmployees;
+
+  /// No description provided for @cultureLeadTraits.
+  ///
+  /// In es, this message translates to:
+  /// **'Rasgos culturales'**
+  String get cultureLeadTraits;
+
+  /// No description provided for @cultureLeadComment.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario'**
+  String get cultureLeadComment;
+
+  /// No description provided for @cultureLeadUtm.
+  ///
+  /// In es, this message translates to:
+  /// **'UTM'**
+  String get cultureLeadUtm;
+
+  /// No description provided for @cultureLeadStatusNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo'**
+  String get cultureLeadStatusNew;
+
+  /// No description provided for @cultureLeadStatusContacted.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactado'**
+  String get cultureLeadStatusContacted;
+
+  /// No description provided for @cultureLeadStatusQualified.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificado'**
+  String get cultureLeadStatusQualified;
+
+  /// No description provided for @cultureLeadStatusDiscarded.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartado'**
+  String get cultureLeadStatusDiscarded;
+
   /// No description provided for @adminAnalytics.
   ///
   /// In es, this message translates to:
@@ -3002,6 +3068,12 @@ abstract class AppLocalizations {
   /// **'No se pudo completar la operación. Inténtalo nuevamente.'**
   String get errorUnexpected;
 
+  /// No description provided for @errorApiUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.'**
+  String get errorApiUnavailable;
+
   /// No description provided for @errorCompanyNotFound.
   ///
   /// In es, this message translates to:
@@ -3479,14 +3551,92 @@ abstract class AppLocalizations {
   /// No description provided for @adminQuestions.
   ///
   /// In es, this message translates to:
-  /// **'Preguntas'**
+  /// **'Encuesta de afinidad'**
   String get adminQuestions;
 
   /// No description provided for @adminQuestionsSubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Banco de preguntas de la encuesta en sus tres frentes. Cada cambio se guarda en Firebase.'**
+  /// **'Preguntas que responde el candidato. Puedes verlas, editarlas y actualizarlas.'**
   String get adminQuestionsSubtitle;
+
+  /// No description provided for @adminCultureSurvey.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuesta de cultura'**
+  String get adminCultureSurvey;
+
+  /// No description provided for @adminCultureSurveySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario de valores y cultura de la empresa. Sube el archivo una vez; después solo se edita.'**
+  String get adminCultureSurveySubtitle;
+
+  /// No description provided for @adminCultureSurveyEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.'**
+  String get adminCultureSurveyEmpty;
+
+  /// No description provided for @adminQuestionsUploadFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir archivo'**
+  String get adminQuestionsUploadFile;
+
+  /// No description provided for @adminQuestionsFrontCultura.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura vivida'**
+  String get adminQuestionsFrontCultura;
+
+  /// No description provided for @adminQuestionsFrontLiderazgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Liderazgo'**
+  String get adminQuestionsFrontLiderazgo;
+
+  /// No description provided for @adminQuestionsFrontTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'Forma de trabajar'**
+  String get adminQuestionsFrontTrabajo;
+
+  /// No description provided for @adminQuestionsFrontPersonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Personas'**
+  String get adminQuestionsFrontPersonas;
+
+  /// No description provided for @adminQuestionsFrontApertura.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios abiertos'**
+  String get adminQuestionsFrontApertura;
+
+  /// No description provided for @adminQuestionsFormatScale.
+  ///
+  /// In es, this message translates to:
+  /// **'Escala'**
+  String get adminQuestionsFormatScale;
+
+  /// No description provided for @adminQuestionsFormatText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto abierto'**
+  String get adminQuestionsFormatText;
+
+  /// No description provided for @adminQuestionsFormatSingle.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción única'**
+  String get adminQuestionsFormatSingle;
+
+  /// No description provided for @adminQuestionsFormatMulti.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción múltiple'**
+  String get adminQuestionsFormatMulti;
 
   /// No description provided for @adminQuestionsNew.
   ///

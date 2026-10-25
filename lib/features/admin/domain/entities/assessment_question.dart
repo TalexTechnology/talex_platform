@@ -3,13 +3,37 @@ import 'package:equatable/equatable.dart';
 enum AssessmentFront {
   coreValues('values'),
   needs('needs'),
-  capabilities('capabilities');
+  capabilities('capabilities'),
+  cultura('cultura'),
+  liderazgo('liderazgo'),
+  trabajo('trabajo'),
+  personas('personas'),
+  apertura('apertura');
 
   const AssessmentFront(this.key);
   final String key;
+
+  bool get isAffinity =>
+      this == coreValues || this == needs || this == capabilities;
+
+  bool get isCulture => !isAffinity;
+
+  static const affinityFronts = [
+    coreValues,
+    needs,
+    capabilities,
+  ];
+
+  static const cultureFronts = [
+    cultura,
+    liderazgo,
+    trabajo,
+    personas,
+    apertura,
+  ];
 }
 
-enum AssessmentQuestionFormat { pair, experience }
+enum AssessmentQuestionFormat { pair, experience, scale, text, single, multi }
 
 class AssessmentQuestion extends Equatable {
   const AssessmentQuestion({

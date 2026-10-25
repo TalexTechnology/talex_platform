@@ -13,6 +13,11 @@ String assessmentFrontLabel(AppLocalizations l10n, AssessmentFront front) =>
       AssessmentFront.coreValues => l10n.adminQuestionsFrontValues,
       AssessmentFront.needs => l10n.adminQuestionsFrontNeeds,
       AssessmentFront.capabilities => l10n.adminQuestionsFrontCapabilities,
+      AssessmentFront.cultura => l10n.adminQuestionsFrontCultura,
+      AssessmentFront.liderazgo => l10n.adminQuestionsFrontLiderazgo,
+      AssessmentFront.trabajo => l10n.adminQuestionsFrontTrabajo,
+      AssessmentFront.personas => l10n.adminQuestionsFrontPersonas,
+      AssessmentFront.apertura => l10n.adminQuestionsFrontApertura,
     };
 
 String assessmentFormatLabel(
@@ -21,12 +26,21 @@ String assessmentFormatLabel(
 ) => switch (format) {
   AssessmentQuestionFormat.pair => l10n.adminQuestionsFormatPair,
   AssessmentQuestionFormat.experience => l10n.adminQuestionsFormatExperience,
+  AssessmentQuestionFormat.scale => l10n.adminQuestionsFormatScale,
+  AssessmentQuestionFormat.text => l10n.adminQuestionsFormatText,
+  AssessmentQuestionFormat.single => l10n.adminQuestionsFormatSingle,
+  AssessmentQuestionFormat.multi => l10n.adminQuestionsFormatMulti,
 };
 
 String _codePrefix(AssessmentFront front) => switch (front) {
   AssessmentFront.coreValues => 'V',
   AssessmentFront.needs => 'N',
   AssessmentFront.capabilities => 'C',
+  AssessmentFront.cultura => 'CUL',
+  AssessmentFront.liderazgo => 'LID',
+  AssessmentFront.trabajo => 'TRA',
+  AssessmentFront.personas => 'PER',
+  AssessmentFront.apertura => 'APE',
 };
 
 String suggestQuestionCode(
@@ -48,9 +62,14 @@ Future<AssessmentQuestion?> showAssessmentQuestionEditor(
   BuildContext context, {
   required List<AssessmentQuestion> existing,
   AssessmentQuestion? question,
+  List<AssessmentFront> fronts = AssessmentFront.affinityFronts,
 }) => showDialog<AssessmentQuestion>(
   context: context,
-  builder: (_) => _QuestionEditorDialog(existing: existing, question: question),
+  builder: (_) => _QuestionEditorDialog(
+    existing: existing,
+    question: question,
+    fronts: fronts,
+  ),
 );
 
 Future<bool> confirmAssessmentQuestionDelete(
@@ -161,8 +180,13 @@ String assessmentCsvErrorMessage(
 };
 
 class _QuestionEditorDialog extends StatefulWidget {
-  const _QuestionEditorDialog({required this.existing, this.question});
+  const _QuestionEditorDialog({
+    required this.existing,
+    required this.fronts,
+    this.question,
+  });
   final List<AssessmentQuestion> existing;
+  final List<AssessmentFront> fronts;
   final AssessmentQuestion? question;
   @override
   State<_QuestionEditorDialog> createState() => _QuestionEditorDialogState();
@@ -184,12 +208,13 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
 
   bool get _isNew => widget.question == null;
   bool get _isPair => _format == AssessmentQuestionFormat.pair;
+  bool get _hasOptions => _format != AssessmentQuestionFormat.text;
 
   @override
   void initState() {
     super.initState();
     final question = widget.question;
-    _front = question?.front ?? AssessmentFront.coreValues;
+    _front = question?.front ?? widget.fronts.first;
     _format = question?.format ?? AssessmentQuestionDefaults.formatFor(_front);
     _active = question?.active ?? true;
     final options =
@@ -254,12 +279,13 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
     final previous = AssessmentQuestionDefaults.optionsFor(_format);
     final untouched = [
       for (var index = 0; index < 5; index++)
-        _options[index].text.trim() == previous[index],
+        _options[index].text.trim() ==
+            (index < previous.length ? previous[index] : ''),
     ].every((same) => same);
     if (untouched) {
       final next = AssessmentQuestionDefaults.optionsFor(format);
       for (var index = 0; index < 5; index++) {
-        _options[index].text = next[index];
+        _options[index].text = index < next.length ? next[index] : '';
       }
     }
     if (_isNew) {
@@ -295,7 +321,9 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
         instruction: _instruction.text.trim(),
         statementA: _statementA.text.trim(),
         statementB: _isPair ? _statementB.text.trim() : '',
-        options: [for (final option in _options) option.text.trim()],
+        options: _hasOptions
+            ? [for (final option in _options) option.text.trim()]
+            : const [],
         timeLimitSeconds: int.tryParse(_timeLimit.text.trim()),
         active: _active,
       ),
@@ -374,7 +402,7 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
                       isExpanded: true,
                       decoration: _decoration(l10n.adminQuestionsFront),
                       items: [
-                        for (final front in AssessmentFront.values)
+                        for (final front in widget.fronts)
                           DropdownMenuItem(
                             value: front,
                             child: Text(assessmentFrontLabel(l10n, front)),
@@ -451,8 +479,12 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
                   _text(_dimensionA, l10n.adminQuestionsDimension),
                   _text(_statementA, l10n.adminQuestionsStatement, maxLines: 3),
                 ],
-                for (var index = 0; index < _options.length; index++)
-                  _text(_options[index], l10n.adminQuestionsOption(index + 1)),
+                if (_hasOptions)
+                  for (var index = 0; index < _options.length; index++)
+                    _text(
+                      _options[index],
+                      l10n.adminQuestionsOption(index + 1),
+                    ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: TextFormField(

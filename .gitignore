@@ -49,3 +49,16 @@ functions/.env
 functions/.env.*
 !functions/.env.example
 
+# Supabase / local secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+docker/mysql/init/04_app_user.sql
+server/node_modules/
+supabase/.temp/
+supabase/.branches/
+supabase/tests/node_modules/
+supabase/tests/.import-rejects.jsonl
+supabase/tests/.import-report.json
+

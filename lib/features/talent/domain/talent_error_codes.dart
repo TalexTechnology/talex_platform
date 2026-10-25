@@ -3,6 +3,7 @@ abstract final class TalentErrorCodes {
   static const needAuthEmail = 'errorNeedAuthEmail';
   static const permissionDenied = 'errorPermissionDenied';
   static const unexpected = 'errorUnexpected';
+  static const apiUnavailable = 'errorApiUnavailable';
   static const companyNotFound = 'errorCompanyNotFound';
   static const respondentExists = 'errorRespondentExists';
   static const inviteMissing = 'errorInviteMissing';

@@ -43,12 +43,15 @@ extension UserRoleX on UserRole {
 }
 
 abstract final class SuperAdminConfig {
-  static const email = String.fromEnvironment('SUPERADMIN_EMAIL');
+  static const officialEmail = 'talex.admin@talex.com.co';
+  static const email = String.fromEnvironment(
+    'SUPERADMIN_EMAIL',
+    defaultValue: officialEmail,
+  );
   static const password = String.fromEnvironment('SUPERADMIN_PASSWORD');
   static bool get hasEmail => email.trim().isNotEmpty;
   static bool matches(String? candidate) {
-    final expected = email.trim().toLowerCase();
     final actual = candidate?.trim().toLowerCase() ?? '';
-    return expected.isNotEmpty && actual == expected;
+    return actual == officialEmail;
   }
 }

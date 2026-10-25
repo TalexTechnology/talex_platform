@@ -435,6 +435,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSales => 'Sales';
 
   @override
+  String get adminCultureLeads => 'Culture leads';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospects from the /micultura landing diagnosis. No company or membership is created.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'There are no culture leads yet.';
+
+  @override
+  String get cultureLeadEmployees => 'Employees';
+
+  @override
+  String get cultureLeadTraits => 'Cultural traits';
+
+  @override
+  String get cultureLeadComment => 'Comment';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'New';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contacted';
+
+  @override
+  String get cultureLeadStatusQualified => 'Qualified';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Discarded';
+
+  @override
   String get adminAnalytics => 'Analytics';
 
   @override
@@ -1544,6 +1578,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The operation could not be completed. Please try again.';
 
   @override
+  String get errorApiUnavailable =>
+      'TaleX is unavailable. You cannot sign in until the API responds.';
+
+  @override
   String get errorCompanyNotFound => 'The company was not found.';
 
   @override
@@ -1813,11 +1851,52 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is no TaleX account with this email. If you were invited, use First access with the PIN.';
 
   @override
-  String get adminQuestions => 'Questions';
+  String get adminQuestions => 'Affinity survey';
 
   @override
   String get adminQuestionsSubtitle =>
-      'Survey question bank across its three fronts. Every change is saved to Firebase.';
+      'Questions the candidate answers. You can view, edit, and update them.';
+
+  @override
+  String get adminCultureSurvey => 'Culture survey';
+
+  @override
+  String get adminCultureSurveySubtitle =>
+      'Company values and culture form. Upload the file once; after that you only edit.';
+
+  @override
+  String get adminCultureSurveyEmpty =>
+      'There are no culture questions yet. Upload a CSV or JSON file to add them.';
+
+  @override
+  String get adminQuestionsUploadFile => 'Upload file';
+
+  @override
+  String get adminQuestionsFrontCultura => 'Lived culture';
+
+  @override
+  String get adminQuestionsFrontLiderazgo => 'Leadership';
+
+  @override
+  String get adminQuestionsFrontTrabajo => 'Way of working';
+
+  @override
+  String get adminQuestionsFrontPersonas => 'People';
+
+  @override
+  String get adminQuestionsFrontApertura => 'Open comments';
+
+  @override
+  String get adminQuestionsFormatScale => 'Scale';
+
+  @override
+  String get adminQuestionsFormatText => 'Open text';
+
+  @override
+  String get adminQuestionsFormatSingle => 'Single choice';
+
+  @override
+  String get adminQuestionsFormatMulti => 'Multiple choice';
 
   @override
   String get adminQuestionsNew => 'New question';

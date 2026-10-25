@@ -121,6 +121,25 @@ class AdminDealsRequested extends AdminEvent {
   List<Object?> get props => [query, stage];
 }
 
+class AdminCultureLeadsRequested extends AdminEvent {
+  const AdminCultureLeadsRequested({this.query = '', this.status});
+  final String query;
+  final CultureLeadStatus? status;
+  @override
+  List<Object?> get props => [query, status];
+}
+
+class AdminCultureLeadStatusUpdated extends AdminEvent {
+  const AdminCultureLeadStatusUpdated({
+    required this.id,
+    required this.status,
+  });
+  final String id;
+  final CultureLeadStatus status;
+  @override
+  List<Object?> get props => [id, status];
+}
+
 class AdminSalesRequested extends AdminEvent {
   const AdminSalesRequested({this.period});
   final AnalyticsPeriod? period;

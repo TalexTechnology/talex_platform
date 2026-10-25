@@ -46,7 +46,7 @@ void main() {
     expect(names, containsAll(['Antioquia', 'Cundinamarca', 'Valle del Cauca']));
   });
 
-    test('company DNA is complete only when values, culture and standout are set', () {
+    test('company culture is present when the survey left values or culture', () {
     const empty = CompanyProfile(id: 'c1', name: 'Acme');
     expect(empty.hasCompanyDna, isFalse);
     const filled = CompanyProfile(
@@ -57,6 +57,10 @@ void main() {
       standoutPeople: 'Autonomía',
     );
     expect(filled.hasCompanyDna, isTrue);
+    expect(
+      const CompanyProfile(id: 'c1', name: 'Acme', values: 'Respeto').hasCompanyDna,
+      isTrue,
+    );
   });
 
   test('DNA catalog includes shared presets for values, culture and standout', () {

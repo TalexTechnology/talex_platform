@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 enum CompanyStatus { active, onboarding, inactive, atRisk, suspended }
@@ -11,6 +13,22 @@ enum EvaluationStatus { invited, started, inProgress, completed, abandoned }
 enum AffinityBand { high, medium, low, unknown }
 
 enum DealStage { prospect, contacted, meeting, proposal, negotiation, client }
+
+enum CultureLeadStatus {
+  newLead('new'),
+  contacted('contacted'),
+  qualified('qualified'),
+  discarded('discarded');
+
+  const CultureLeadStatus(this.apiValue);
+  final String apiValue;
+
+  static CultureLeadStatus fromApi(String? value) => CultureLeadStatus.values
+      .firstWhere(
+        (item) => item.apiValue == value,
+        orElse: () => CultureLeadStatus.newLead,
+      );
+}
 
 enum ActivityKind {
   companyCreated,
@@ -39,10 +57,12 @@ enum AdminSection {
   affinity,
   commercial,
   sales,
+  cultureLeads,
   analytics,
   alerts,
   xebec,
   questions,
+  cultureSurvey,
   settings,
 }
 
@@ -238,6 +258,198 @@ class Deal extends Equatable {
   final String? ownerName, nextAction;
   @override
   List<Object?> get props => [id, companyId, stage, estimatedValue];
+}
+
+class CultureLead extends Equatable {
+  const CultureLead({
+    required this.id,
+    required this.companyName,
+    required this.employeeRange,
+    required this.perceivedCulture,
+    required this.email,
+    required this.consentTerms,
+    required this.consentData,
+    required this.source,
+    required this.status,
+    required this.createdAt,
+    this.cultureComment,
+    this.consentPayload,
+    this.utmSource,
+    this.utmMedium,
+    this.utmCampaign,
+    this.referrer,
+    this.sourceUrl,
+    this.userAgent,
+    this.updatedAt,
+  });
+
+  final String id;
+  final String companyName;
+  final String employeeRange;
+  final List<String> perceivedCulture;
+  final String? cultureComment;
+  final String email;
+  final bool consentTerms;
+  final bool consentData;
+  final Map<String, dynamic>? consentPayload;
+  final String? utmSource;
+  final String? utmMedium;
+  final String? utmCampaign;
+  final String? referrer;
+  final String? sourceUrl;
+  final String? userAgent;
+  final String source;
+  final CultureLeadStatus status;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+
+  String get cultureTraitsLabel => perceivedCulture.join(', ');
+
+  String? get utmLabel {
+    final parts = [
+      if (utmSource != null && utmSource!.trim().isNotEmpty) utmSource!.trim(),
+      if (utmMedium != null && utmMedium!.trim().isNotEmpty) utmMedium!.trim(),
+    ];
+    return parts.isEmpty ? null : parts.join(' / ');
+  }
+
+  CultureLead copyWith({
+    CultureLeadStatus? status,
+    DateTime? updatedAt,
+  }) => CultureLead(
+    id: id,
+    companyName: companyName,
+    employeeRange: employeeRange,
+    perceivedCulture: perceivedCulture,
+    cultureComment: cultureComment,
+    email: email,
+    consentTerms: consentTerms,
+    consentData: consentData,
+    consentPayload: consentPayload,
+    utmSource: utmSource,
+    utmMedium: utmMedium,
+    utmCampaign: utmCampaign,
+    referrer: referrer,
+    sourceUrl: sourceUrl,
+    userAgent: userAgent,
+    source: source,
+    status: status ?? this.status,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+
+  factory CultureLead.fromMap(Map<String, dynamic> map) {
+    return CultureLead(
+      id: '${map['id'] ?? ''}',
+      companyName: _string(map['company_name']) ?? 'Empresa',
+      employeeRange: _string(map['employee_range']) ?? '',
+      perceivedCulture: _stringList(map['perceived_culture']),
+      cultureComment: _string(map['culture_comment']),
+      email: _string(map['email']) ?? '',
+      consentTerms: _bool(map['consent_terms']),
+      consentData: _bool(map['consent_data']),
+      consentPayload: _objectMap(map['consent_payload']),
+      utmSource: _string(map['utm_source']),
+      utmMedium: _string(map['utm_medium']),
+      utmCampaign: _string(map['utm_campaign']),
+      referrer: _string(map['referrer']),
+      sourceUrl: _string(map['source_url']),
+      userAgent: _string(map['user_agent']),
+      source: _string(map['source']) ?? 'mi-cultura',
+      status: CultureLeadStatus.fromApi(_string(map['status'])),
+      createdAt: _date(map['created_at']) ?? DateTime.fromMillisecondsSinceEpoch(0),
+      updatedAt: _date(map['updated_at']),
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'company_name': companyName,
+    'employee_range': employeeRange,
+    'perceived_culture': perceivedCulture,
+    'culture_comment': cultureComment,
+    'email': email,
+    'consent_terms': consentTerms,
+    'consent_data': consentData,
+    'consent_payload': consentPayload,
+    'utm_source': utmSource,
+    'utm_medium': utmMedium,
+    'utm_campaign': utmCampaign,
+    'referrer': referrer,
+    'source_url': sourceUrl,
+    'user_agent': userAgent,
+    'source': source,
+    'status': status.apiValue,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt?.toIso8601String(),
+  };
+
+  static String? _string(Object? value) {
+    if (value == null) return null;
+    final text = value.toString().trim();
+    return text.isEmpty ? null : text;
+  }
+
+  static bool _bool(Object? value) =>
+      value == true || value == 1 || value == 'true' || value == '1';
+
+  static DateTime? _date(Object? value) {
+    if (value is DateTime) return value;
+    if (value is String && value.isNotEmpty) return DateTime.tryParse(value);
+    return null;
+  }
+
+  static List<String> _stringList(Object? value) {
+    if (value is List) {
+      return [
+        for (final item in value)
+          if ('$item'.trim().isNotEmpty) '$item'.trim(),
+      ];
+    }
+    if (value is String && value.trim().isNotEmpty) {
+      final text = value.trim();
+      if (text.startsWith('[')) {
+        try {
+          final decoded = jsonDecode(text);
+          if (decoded is List) return _stringList(decoded);
+        } on Object {
+          // Fall through to comma-separated parsing.
+        }
+      }
+      return [
+        for (final item in text.split(','))
+          if (item.trim().isNotEmpty) item.trim(),
+      ];
+    }
+    return const [];
+  }
+
+  static Map<String, dynamic>? _objectMap(Object? value) {
+    if (value is Map) return Map<String, dynamic>.from(value);
+    if (value is String && value.trim().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(value);
+        if (decoded is Map) return Map<String, dynamic>.from(decoded);
+      } on Object {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    companyName,
+    employeeRange,
+    perceivedCulture,
+    cultureComment,
+    email,
+    status,
+    createdAt,
+    utmSource,
+    utmMedium,
+  ];
 }
 
 class Sale extends Equatable {

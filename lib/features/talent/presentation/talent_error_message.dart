@@ -3,6 +3,7 @@ import 'package:talex_platform/l10n/app_localizations.dart';
 
 String talentErrorMessage(AppLocalizations l10n, String code) => switch (code) {
   TalentErrorCodes.needSignIn => l10n.errorNeedSignIn,
+  TalentErrorCodes.apiUnavailable => l10n.errorApiUnavailable,
   TalentErrorCodes.needAuthEmail => l10n.errorNeedAuthEmail,
   TalentErrorCodes.permissionDenied => l10n.errorPermissionDenied,
   TalentErrorCodes.companyNotFound => l10n.errorCompanyNotFound,
