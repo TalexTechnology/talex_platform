@@ -282,14 +282,22 @@ class _QuestionBody extends StatelessWidget {
           for (final (index, label) in options.indexed)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: RadioListTile<int>(
-                value: index + 1,
-                groupValue: selected,
-                onChanged: (value) {
-                  if (value != null) onSelect(value);
-                },
-                title: Text(label),
-                tileColor: const Color(0xFFFBFAF6),
+              child: InkWell(
+                onTap: () => onSelect(index + 1),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFBFAF6),
+                    border: Border.all(
+                      color: selected == index + 1
+                          ? const Color(0xFF102033)
+                          : const Color(0xFFE4DDD0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(label),
+                  ),
+                ),
               ),
             ),
       ],
