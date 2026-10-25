@@ -1,6 +1,12 @@
 abstract final class CultureSurveyLink {
   static const path = '/cultura';
 
+  /// Enlace de vista previa de la encuesta tal como la ve el equipo de
+  /// [organizationId]. `culture_survey_boot.js` lo atiende con `?demo=1`:
+  /// se puede completar entera pero no envía respuestas.
+  static String demoUrl(String organizationId, {required Uri base}) =>
+      '${base.origin}$path/${Uri.encodeComponent(organizationId)}?demo=1';
+
   static String? organizationIdFromUri(Uri uri) {
     return _fromFragment(uri.fragment) ?? _fromPath(uri);
   }

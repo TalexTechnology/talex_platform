@@ -3758,6 +3758,30 @@ abstract class AppLocalizations {
   /// **'Preguntas'**
   String get cultureQuestionsOpen;
 
+  /// No description provided for @cultureSurveyPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa de la encuesta'**
+  String get cultureSurveyPreview;
+
+  /// No description provided for @cultureSurveyDemo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver demo de la encuesta'**
+  String get cultureSurveyDemo;
+
+  /// No description provided for @cultureSurveyDemoCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar enlace demo'**
+  String get cultureSurveyDemoCopy;
+
+  /// No description provided for @cultureSurveyDemoCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace demo copiado. Al abrirlo no se envían respuestas.'**
+  String get cultureSurveyDemoCopied;
+
   /// No description provided for @cultureQuestionsTitle.
   ///
   /// In es, this message translates to:
@@ -4100,6 +4124,36 @@ abstract class AppLocalizations {
   /// **'Vista previa'**
   String get adminQuestionsPreview;
 
+  /// No description provided for @affinityDemoCompany.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresa de ejemplo'**
+  String get affinityDemoCompany;
+
+  /// No description provided for @affinityDemoCompanyDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Así se ve la descripción de la empresa que envía la evaluación.'**
+  String get affinityDemoCompanyDescription;
+
+  /// No description provided for @affinityDemoVacancy.
+  ///
+  /// In es, this message translates to:
+  /// **'Vacante de ejemplo'**
+  String get affinityDemoVacancy;
+
+  /// No description provided for @affinityDemoCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ana Demo'**
+  String get affinityDemoCandidate;
+
+  /// No description provided for @adminQuestionsDemo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver demo'**
+  String get adminQuestionsDemo;
+
   /// No description provided for @adminQuestionsPreviewTitle.
   ///
   /// In es, this message translates to:
@@ -4385,7 +4439,7 @@ abstract class AppLocalizations {
   /// No description provided for @assessmentPairScaleHint.
   ///
   /// In es, this message translates to:
-  /// **'Toque el recuadro que quede más cerca de la frase con la que se identifica.'**
+  /// **'Toque la frase con la que más se identifica, o elija un punto de la escala.'**
   String get assessmentPairScaleHint;
 
   /// No description provided for @assessmentStatementA.

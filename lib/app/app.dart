@@ -17,7 +17,9 @@ import 'package:talex_platform/features/dashboard/presentation/pages/dashboard_p
 import 'package:talex_platform/features/invitations/presentation/bloc/invitation_bloc.dart';
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
 import 'package:talex_platform/features/talent/presentation/pages/company_shell.dart';
+import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
 import 'package:talex_platform/features/talent/domain/services/assessment_invite_link.dart';
+import 'package:talex_platform/features/talent/presentation/pages/affinity_demo_page.dart';
 import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
 import 'package:talex_platform/features/culture/presentation/pages/company_culture_survey_page.dart';
 import 'package:talex_platform/features/talent/presentation/pages/respondent_shell.dart';
@@ -135,7 +137,9 @@ class _TalexAppState extends State<TalexApp> {
 
           return null;
         },
-        home: _cultureOrganizationId() != null
+        home: AffinityDemoLink.matches(Uri.base)
+            ? const AffinityDemoPage()
+            : _cultureOrganizationId() != null
             ? CompanyCultureSurveyPage(organizationId: _cultureOrganizationId()!)
             : BlocListener<AuthBloc, AuthState>(
           listenWhen: (previous, current) =>

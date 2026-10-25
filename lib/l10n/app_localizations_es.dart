@@ -1974,6 +1974,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cultureQuestionsOpen => 'Preguntas';
 
   @override
+  String get cultureSurveyPreview => 'Vista previa de la encuesta';
+
+  @override
+  String get cultureSurveyDemo => 'Ver demo de la encuesta';
+
+  @override
+  String get cultureSurveyDemoCopy => 'Copiar enlace demo';
+
+  @override
+  String get cultureSurveyDemoCopied =>
+      'Enlace demo copiado. Al abrirlo no se envían respuestas.';
+
+  @override
   String get cultureQuestionsTitle => 'Preguntas de Mi cultura';
 
   @override
@@ -2160,6 +2173,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminQuestionsPreview => 'Vista previa';
 
   @override
+  String get affinityDemoCompany => 'Empresa de ejemplo';
+
+  @override
+  String get affinityDemoCompanyDescription =>
+      'Así se ve la descripción de la empresa que envía la evaluación.';
+
+  @override
+  String get affinityDemoVacancy => 'Vacante de ejemplo';
+
+  @override
+  String get affinityDemoCandidate => 'Ana Demo';
+
+  @override
+  String get adminQuestionsDemo => 'Ver demo';
+
+  @override
   String get adminQuestionsPreviewTitle => 'Vista previa de la encuesta';
 
   @override
@@ -2322,7 +2351,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get assessmentPairScaleHint =>
-      'Toque el recuadro que quede más cerca de la frase con la que se identifica.';
+      'Toque la frase con la que más se identifica, o elija un punto de la escala.';
 
   @override
   String get assessmentStatementA => 'Frase A';

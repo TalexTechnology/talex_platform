@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/utils/open_url.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
@@ -12,6 +13,7 @@ import 'package:talex_platform/features/admin/domain/services/assessment_questio
 import 'package:talex_platform/features/admin/presentation/widgets/admin_question_dialogs.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/survey_preview_dialog.dart';
+import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
 class AdminQuestionsView extends StatefulWidget {
@@ -316,13 +318,23 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                             : l10n.adminQuestionsImport,
                       ),
                     ),
-                  OutlinedButton.icon(
-                    onPressed: all.isEmpty
-                        ? null
-                        : () => showSurveyPreview(context, all),
-                    icon: const Icon(Icons.visibility_outlined),
-                    label: Text(l10n.adminQuestionsPreview),
-                  ),
+                  // Afinidad: demo en otra pestaña con la pantalla real del
+                  // candidato. Cultura: vista previa del banco.
+                  if (_isCulture)
+                    OutlinedButton.icon(
+                      onPressed: all.isEmpty
+                          ? null
+                          : () => showSurveyPreview(context, all),
+                      icon: const Icon(Icons.visibility_outlined),
+                      label: Text(l10n.adminQuestionsPreview),
+                    )
+                  else
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          openExternalUrl(AffinityDemoLink.url(base: Uri.base)),
+                      icon: const Icon(Icons.play_circle_outline),
+                      label: Text(l10n.adminQuestionsDemo),
+                    ),
                   FilledButton.icon(
                     onPressed:
                         snapshot.hasData &&

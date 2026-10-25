@@ -1970,6 +1970,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cultureQuestionsOpen => 'Questions';
 
   @override
+  String get cultureSurveyPreview => 'Survey preview';
+
+  @override
+  String get cultureSurveyDemo => 'View survey demo';
+
+  @override
+  String get cultureSurveyDemoCopy => 'Copy demo link';
+
+  @override
+  String get cultureSurveyDemoCopied =>
+      'Demo link copied. Opening it does not submit answers.';
+
+  @override
   String get cultureQuestionsTitle => 'My culture questions';
 
   @override
@@ -2155,6 +2168,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminQuestionsPreview => 'Preview';
 
   @override
+  String get affinityDemoCompany => 'Sample company';
+
+  @override
+  String get affinityDemoCompanyDescription =>
+      'This is how the description of the company sending the assessment looks.';
+
+  @override
+  String get affinityDemoVacancy => 'Sample vacancy';
+
+  @override
+  String get affinityDemoCandidate => 'Ana Demo';
+
+  @override
+  String get adminQuestionsDemo => 'View demo';
+
+  @override
   String get adminQuestionsPreviewTitle => 'Survey preview';
 
   @override
@@ -2315,7 +2344,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assessmentPairScaleHint =>
-      'Tap the box closest to the statement you identify with.';
+      'Tap the statement you identify with most, or pick a point on the scale.';
 
   @override
   String get assessmentStatementA => 'Statement A';
