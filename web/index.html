@@ -31,6 +31,14 @@
 
   <title>TaleX</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    (function () {
+      var path = location.pathname || '';
+      if (/^\/cultura\/[^/]+/.test(path)) {
+        location.replace('https://api.talex.com.co' + path + location.search + location.hash);
+      }
+    })();
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

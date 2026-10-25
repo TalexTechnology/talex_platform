@@ -5,6 +5,7 @@ import 'package:talex_platform/app/app.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
 import 'package:talex_platform/features/talent/domain/services/assessment_invite_link.dart';
 import 'package:talex_platform/firebase_options.dart';
 
@@ -15,6 +16,7 @@ Future<void> main() async {
   final localeCubit = getIt<LocaleCubit>();
   await localeCubit.load();
   final inviteToken = AssessmentInviteLink.tokenFromUri(Uri.base);
+  final cultureOrganizationId = CultureSurveyLink.organizationIdFromUri(Uri.base);
   runApp(
     MultiBlocProvider(
       providers: [
@@ -22,6 +24,9 @@ Future<void> main() async {
         BlocProvider(
           create: (_) {
             final bloc = getIt<AuthBloc>();
+            if (cultureOrganizationId != null) {
+              return bloc;
+            }
             if (inviteToken != null) {
               bloc.add(AuthRespondentInviteRequested(inviteToken));
             } else {

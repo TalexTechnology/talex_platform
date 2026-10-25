@@ -17,6 +17,8 @@ import 'package:talex_platform/features/invitations/presentation/bloc/invitation
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
 import 'package:talex_platform/features/talent/presentation/pages/company_shell.dart';
 import 'package:talex_platform/features/talent/domain/services/assessment_invite_link.dart';
+import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
+import 'package:talex_platform/features/culture/presentation/pages/company_culture_survey_page.dart';
 import 'package:talex_platform/features/talent/presentation/pages/respondent_shell.dart';
 import 'package:talex_platform/l10n/app_localizations.dart';
 
@@ -62,6 +64,13 @@ class _TalexAppState extends State<TalexApp> {
         AssessmentInviteLink.tokenFromFragment(web.window.location.hash);
   }
 
+  String? _cultureOrganizationId() {
+    final fromWindow = Uri.tryParse(web.window.location.href);
+    return CultureSurveyLink.organizationIdFromUri(fromWindow ?? Uri.base) ??
+        CultureSurveyLink.organizationIdFromUri(Uri.base) ??
+        CultureSurveyLink.organizationIdFromFragment(web.window.location.hash);
+  }
+
   void _clearRespondentInviteUrl() {
     web.window.history.replaceState(
       null,
@@ -102,7 +111,9 @@ class _TalexAppState extends State<TalexApp> {
 
           return null;
         },
-        home: BlocListener<AuthBloc, AuthState>(
+        home: _cultureOrganizationId() != null
+            ? CompanyCultureSurveyPage(organizationId: _cultureOrganizationId()!)
+            : BlocListener<AuthBloc, AuthState>(
           listenWhen: (previous, current) =>
               previous.status != current.status,
           listener: (context, state) {
