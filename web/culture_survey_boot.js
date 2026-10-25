@@ -9,65 +9,73 @@
   var orgId = match[1];
   var isReport = Boolean(match[2]);
   var API = 'https://api.talex.com.co';
+  var LOGO = '/talex_logo_horizontal_fondo_oscuro.png';
 
-  document.title = 'Encuesta de cultura · TaleX';
+  document.title = 'Diagnóstico cultural · TaleX';
   document.documentElement.lang = 'es';
   document.head.insertAdjacentHTML(
     'beforeend',
-    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
-      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
-      '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
       '<style>' +
       ':root{color-scheme:light}*{box-sizing:border-box}' +
-      'body{margin:0;min-height:100vh;background:#f3efe6;color:#17202a;font-family:"Source Sans 3",Arial,sans-serif}' +
-      'header{padding:28px 8vw 0;display:flex;justify-content:space-between;align-items:baseline;gap:16px}' +
-      '.brand{letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:#7a715f}' +
-      '.progress{font-size:13px;color:#6b7280}' +
-      'main{width:min(760px,92vw);margin:0 auto;padding:36px 0 80px}' +
-      'h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(36px,5vw,52px);font-weight:500;margin:0 0 12px}' +
-      '.lead{font-size:18px;line-height:1.6;color:#3d4550;max-width:38em}' +
-      '.card{margin-top:28px;background:#fff;border:1px solid #e4ddd0;padding:28px 28px 24px}' +
-      '.section{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a6a32;margin:0 0 6px}' +
-      '.name{font-size:13px;color:#7a715f;margin:0 0 10px}' +
-      '.statement{font-size:24px;line-height:1.35;margin:0 0 14px;font-family:"Cormorant Garamond",Georgia,serif}' +
-      '.hint{font-size:14px;color:#6b7280;margin:0 0 18px}' +
+      'body{margin:0;min-height:100vh;background:#ffffff;color:#0b1528;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%}' +
+      '.top{background:#0b1528;border-bottom:3px solid #a4e765}' +
+      '.top-inner{width:min(720px,92vw);margin:0 auto;padding:16px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}' +
+      '.top img{display:block;height:40px;width:auto}' +
+      '.progress{font-size:13px;font-weight:700;color:#a4e765;letter-spacing:.04em}' +
+      'main{width:min(720px,92vw);margin:0 auto;padding:36px 0 80px}' +
+      '.eyebrow{margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#254a78}' +
+      'h1{margin:0 0 16px;font-size:clamp(28px,5vw,36px);line-height:1.2;letter-spacing:-.6px;font-weight:700;color:#0b1528}' +
+      '.lead{margin:0 0 16px;font-size:16px;line-height:1.7;color:#4b5563}' +
+      '.card{margin-top:8px;background:#f3f6fa;border:1px solid #dce4ee;border-left:4px solid #254a78;border-radius:12px;padding:24px}' +
+      '.section{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#254a78}' +
+      '.name{margin:0 0 10px;font-size:13px;color:#596779}' +
+      '.statement{margin:0 0 12px;font-size:22px;line-height:1.4;font-weight:700;color:#0b1528}' +
+      '.hint{margin:0 0 18px;font-size:14px;line-height:1.6;color:#596779}' +
       '.options{display:grid;gap:8px}' +
-      '.opt{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px 14px;border:1px solid #e4ddd0;background:#fbfaf6}' +
+      '.opt{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:12px 14px;border:1px solid #dce4ee;background:#ffffff;border-radius:8px}' +
       '.opt.single{grid-template-columns:auto 1fr;cursor:pointer}' +
-      '.opt.single:hover,.opt.active{border-color:#102033;background:#fff}' +
-      '.chip{border:1px solid #d7d0c3;background:#fff;color:#102033;font:600 11px/1 "Source Sans 3",Arial,sans-serif;letter-spacing:.04em;padding:8px 10px;cursor:pointer}' +
-      '.chip.on{background:#102033;color:#f7f2e8;border-color:#102033}' +
-      '.chip.no.on{background:#8a6a32;border-color:#8a6a32}' +
-      'textarea,input[type=number]{width:100%;border:1px solid #d7d0c3;padding:12px 14px;font:16px/1.5 "Source Sans 3",Arial,sans-serif;background:#fbfaf6}' +
+      '.opt.single:hover,.opt.active{border-color:#0b1528}' +
+      '.chip{border:1px solid #dce4ee;background:#ffffff;color:#0b1528;font:700 12px/1 Arial,Helvetica,sans-serif;letter-spacing:.02em;padding:9px 12px;border-radius:8px;cursor:pointer}' +
+      '.chip.on{background:#0b1528;color:#ffffff;border-color:#0b1528}' +
+      '.chip.no.on{background:#254a78;border-color:#254a78}' +
+      'textarea,input[type=number]{width:100%;border:1px solid #dce4ee;border-radius:8px;padding:12px 14px;font:16px/1.5 Arial,Helvetica,sans-serif;background:#ffffff;color:#0b1528}' +
       'textarea{min-height:110px}' +
       '.forecast{margin-top:18px}' +
-      '.forecast label{display:block;font-size:14px;color:#3d4550;margin-bottom:8px}' +
-      '.value-row{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid #efe8dc}' +
+      '.forecast label{display:block;font-size:14px;color:#4b5563;margin-bottom:8px}' +
+      '.value-row{display:grid;gap:8px;padding:12px 0;border-bottom:1px solid #e7ebef}' +
+      '.value-row:last-child{border-bottom:0}' +
       '.scale{display:flex;flex-wrap:wrap;gap:8px}' +
       '.actions{display:flex;justify-content:space-between;gap:12px;margin-top:22px}' +
-      'button{border:0;cursor:pointer;font:600 14px/1 "Source Sans 3",Arial,sans-serif;letter-spacing:.04em;padding:13px 20px}' +
-      '.next{background:#102033;color:#f7f2e8}' +
-      '.back{background:transparent;color:#102033;padding-left:0}' +
-      '.error{color:#8a2b2b;margin-top:12px}' +
-      '.count{font-size:13px;color:#6b7280;margin:0 0 12px}' +
+      'button{border:0;cursor:pointer;font:700 14px/1 Arial,Helvetica,sans-serif;letter-spacing:.02em;padding:13px 20px;border-radius:8px}' +
+      '.next{background:#0b1528;color:#ffffff}' +
+      '.back{background:transparent;color:#254a78;padding-left:0}' +
+      '.error{color:#b42318;margin-top:12px;font-size:14px}' +
+      '.count{font-size:13px;color:#596779;margin:0 0 12px}' +
+      '.note{margin:20px 0 0;font-size:13px;line-height:1.6;color:#596779}' +
       '@media (max-width:640px){.opt{grid-template-columns:1fr}.chip{width:100%}}' +
       '</style>',
   );
 
-  document.body.innerHTML =
-    '<header><div class="brand">TaleX · Encuesta de cultura</div><div class="progress" id="progress"></div></header>' +
-    '<main id="app">Cargando…</main>';
-
-  var app = document.getElementById('app');
-  var progress = document.getElementById('progress');
+  var app;
+  var progress;
   var survey = null;
-  var index = 0;
+  var index = -1;
   var answers = {};
 
   function escapeHtml(value) {
     return String(value || '').replace(/[&<>"']/g, function (ch) {
       return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch];
     });
+  }
+
+  function shell(body) {
+    return (
+      '<div class="top"><div class="top-inner">' +
+        '<a href="https://talex.com.co"><img src="' + LOGO + '" alt="TaleX" width="120" height="40"></a>' +
+        '<div class="progress" id="progress"></div>' +
+      '</div></div><main id="app">' + body + '</main>'
+    );
   }
 
   function current() {
@@ -78,8 +86,31 @@
     return answers[id] || (answers[id] = {});
   }
 
-  function card(title, body) {
-    return '<div class="card"><p class="section">TaleX</p><h1>' + escapeHtml(title) + '</h1><p class="lead">' + escapeHtml(body) + '</p></div>';
+  function card(title, body, action) {
+    return (
+      '<p class="eyebrow">Tu cultura · La voz de tu equipo</p>' +
+      '<h1>' + escapeHtml(title) + '</h1>' +
+      '<p class="lead">' + escapeHtml(body) + '</p>' +
+      (action || '')
+    );
+  }
+
+  function startScreen() {
+    progress.textContent = '';
+    app.innerHTML = card(
+      'Descubre la cultura que vive tu equipo.',
+      (survey.intro || 'Responde con calma. No hay respuestas correctas.') +
+        (survey.organizationName ? ' Estás respondiendo para ' + survey.organizationName + '.' : ''),
+      '<div class="card">' +
+        '<h2 class="statement" style="font-size:18px">Tu respuesta es individual y anónima.</h2>' +
+        '<p class="lead" style="margin:0 0 20px">No necesitas crear una cuenta. Las respuestas se agrupan para la empresa.</p>' +
+        '<button class="next" type="button" id="start">Empezar diagnóstico</button>' +
+      '</div>',
+    );
+    document.getElementById('start').onclick = function () {
+      index = 0;
+      render();
+    };
   }
 
   async function load() {
@@ -88,13 +119,18 @@
         var reportRes = await fetch(API + '/api/cultura/' + encodeURIComponent(orgId) + '/informe');
         var report = await reportRes.json();
         if (!reportRes.ok) throw new Error(report.message || 'El informe aún no está listo.');
-        app.innerHTML = card(report.title || 'Informe cultural', report.message || 'El informe se publicará cuando haya suficientes respuestas.');
+        app.innerHTML = card(
+          report.organizationName || 'Informe cultural',
+          report.status === 'collecting'
+            ? 'Cuando el equipo alcance el mínimo de participación, aquí estará la lectura cultural.'
+            : 'Ya hay suficientes respuestas para armar el informe.',
+        );
         return;
       }
       var response = await fetch(API + '/api/cultura/' + encodeURIComponent(orgId));
       survey = await response.json();
       if (!response.ok) throw new Error(survey.message || 'No encontramos este diagnóstico.');
-      render();
+      startScreen();
     } catch (error) {
       app.innerHTML = card('No pudimos abrir el diagnóstico', error.message);
     }
@@ -205,27 +241,30 @@
 
   function valid(q, a) {
     if (q.format === 'most_least') {
-      if (!a.most || !a.least || a.most === a.least) return 'Marque una opción más probable y otra menos probable.';
+      if (!a.most || !a.least || a.most === a.least) return 'Marca una opción más probable y otra menos probable.';
       if (q.askForecast && (!Number.isInteger(a.forecast) || a.forecast < 0 || a.forecast > 100)) {
-        return 'Indique un porcentaje entre 0 y 100.';
+        return 'Indica un porcentaje entre 0 y 100.';
       }
       return '';
     }
     if (q.format === 'value_coherence') {
       var ratings = a.ratings || {};
-      return (q.items || []).every(function (item) { return ratings[item.id]; }) ? '' : 'Califique cada valor.';
+      return (q.items || []).every(function (item) { return ratings[item.id]; }) ? '' : 'Califica cada valor.';
     }
     if (q.format === 'pick_yes_no') {
       return (a.yes || []).length === q.yesCount && (a.no || []).length === q.noCount
-        ? '' : 'Marque 4 que sí y 3 que no espere.';
+        ? '' : 'Marca 4 que sí y 3 que no esperes.';
     }
-    if (q.format === 'text') return a.value_text ? '' : 'Complete la frase.';
-    return a.value ? '' : 'Elija una opción.';
+    if (q.format === 'text') return a.value_text ? '' : 'Completa la frase.';
+    return a.value ? '' : 'Elige una opción.';
   }
 
   function thanks() {
     progress.textContent = '';
-    app.innerHTML = card('Gracias por su tiempo', 'Sus respuestas ya quedan en el diagnóstico de esta empresa. Puede cerrar esta página.');
+    app.innerHTML = card(
+      'Gracias por tu tiempo.',
+      'Tus respuestas ya quedan en el diagnóstico de esta empresa. Puedes cerrar esta página.',
+    );
   }
 
   function render() {
@@ -233,11 +272,12 @@
       app.innerHTML = card('El diagnóstico aún no está publicado', 'El equipo TaleX está cargando las preguntas.');
       return;
     }
+    if (index < 0) return startScreen();
     if (index >= survey.questions.length) return thanks();
     var q = current();
     progress.textContent = index + 1 + ' / ' + survey.questions.length;
     app.innerHTML =
-      '<p class="lead" style="margin:0 0 8px">' + escapeHtml(index === 0 ? survey.intro : '') + '</p>' +
+      '<p class="eyebrow">Diagnóstico cultural</p>' +
       '<div class="card">' +
       '<p class="section">' + escapeHtml(q.sectionTitle || '') + '</p>' +
       '<p class="name">' + escapeHtml(q.name || '') + '</p>' +
@@ -248,7 +288,8 @@
       '<div class="actions">' +
         '<button class="back" type="button" id="back"' + (index === 0 ? ' disabled' : '') + '>Anterior</button>' +
         '<button class="next" type="button" id="next">' + (index === survey.questions.length - 1 ? 'Enviar respuestas' : 'Continuar') + '</button>' +
-      '</div></div>';
+      '</div></div>' +
+      '<p class="note">Tus respuestas se agrupan para la empresa. No se muestran de forma individual.</p>';
     document.getElementById('back').onclick = function () {
       if (index > 0) {
         index -= 1;
@@ -271,6 +312,7 @@
     if (index < survey.questions.length - 1) {
       index += 1;
       render();
+      window.scrollTo(0, 0);
       return;
     }
     document.getElementById('next').disabled = true;
@@ -290,5 +332,13 @@
     }
   }
 
-  load();
+  function mount() {
+    document.body.innerHTML = shell('Cargando el diagnóstico…');
+    app = document.getElementById('app');
+    progress = document.getElementById('progress');
+    load();
+  }
+
+  if (document.body) mount();
+  else document.addEventListener('DOMContentLoaded', mount);
 })(window);
