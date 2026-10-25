@@ -1,12 +1,12 @@
-name: Deploy develop → platform.talex.com.co
+name: Deploy main → platform.talex.com.co
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
-  group: deploy-develop
+  group: deploy-main
   cancel-in-progress: true
 
 jobs:
