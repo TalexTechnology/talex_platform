@@ -1869,6 +1869,83 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are no culture questions yet. Upload a CSV or JSON file to add them.';
 
   @override
+  String get adminSurveys => 'Surveys';
+
+  @override
+  String get adminSurveysCultureVs => 'Candidate vs company culture';
+
+  @override
+  String get adminSurveysMyCulture => 'My culture';
+
+  @override
+  String get adminMyCultureSubtitle =>
+      'Companies that came through the /micultura landing, with what they answered about their culture.';
+
+  @override
+  String get adminMyCultureRefresh => 'Refresh';
+
+  @override
+  String get adminMyCultureError => 'We couldn\'t load the My culture data.';
+
+  @override
+  String get adminMyCultureEmpty => 'There are no My culture responses yet.';
+
+  @override
+  String get adminMyCultureNoResults => 'No company matches the search.';
+
+  @override
+  String get adminMyCultureSearch => 'Search by company, contact or email...';
+
+  @override
+  String get adminMyCultureOrganizations => 'Companies';
+
+  @override
+  String get adminMyCultureLeads => 'Leads';
+
+  @override
+  String get adminMyCultureResponded => 'Responded';
+
+  @override
+  String get adminMyCultureUnassigned => 'No company assigned';
+
+  @override
+  String get adminMyCultureLastLead => 'Last lead';
+
+  @override
+  String get adminMyCultureComments => 'Comments';
+
+  @override
+  String get adminMyCultureRespondedBadge => 'Responded';
+
+  @override
+  String get adminMyCulturePending => 'Pending';
+
+  @override
+  String get adminMyCultureEmailSent => 'Email sent';
+
+  @override
+  String get adminMyCultureEmailSkipped => 'Email skipped';
+
+  @override
+  String get adminMyCultureEmailFailed => 'Email failed';
+
+  @override
+  String adminMyCultureLeadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count leads',
+      one: '1 lead',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminMyCultureRespondedCount(int responded, int total) {
+    return '$responded of $total responded';
+  }
+
+  @override
   String get adminQuestionsUploadFile => 'Upload file';
 
   @override

@@ -1871,6 +1871,85 @@ class AppLocalizationsEs extends AppLocalizations {
       'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.';
 
   @override
+  String get adminSurveys => 'Encuestas';
+
+  @override
+  String get adminSurveysCultureVs => 'Cultura candidato vs empresa';
+
+  @override
+  String get adminSurveysMyCulture => 'Mi cultura';
+
+  @override
+  String get adminMyCultureSubtitle =>
+      'Empresas que llegaron por la landing /micultura, con lo que respondieron sobre su cultura.';
+
+  @override
+  String get adminMyCultureRefresh => 'Actualizar';
+
+  @override
+  String get adminMyCultureError =>
+      'No pudimos cargar los datos de Mi cultura.';
+
+  @override
+  String get adminMyCultureEmpty => 'Todavía no hay respuestas de Mi cultura.';
+
+  @override
+  String get adminMyCultureNoResults =>
+      'Ninguna empresa coincide con la búsqueda.';
+
+  @override
+  String get adminMyCultureSearch => 'Buscar por empresa, contacto o correo...';
+
+  @override
+  String get adminMyCultureOrganizations => 'Empresas';
+
+  @override
+  String get adminMyCultureLeads => 'Leads';
+
+  @override
+  String get adminMyCultureResponded => 'Respondieron';
+
+  @override
+  String get adminMyCultureUnassigned => 'Sin empresa asignada';
+
+  @override
+  String get adminMyCultureLastLead => 'Último lead';
+
+  @override
+  String get adminMyCultureComments => 'Comentarios';
+
+  @override
+  String get adminMyCultureRespondedBadge => 'Respondió';
+
+  @override
+  String get adminMyCulturePending => 'Pendiente';
+
+  @override
+  String get adminMyCultureEmailSent => 'Correo enviado';
+
+  @override
+  String get adminMyCultureEmailSkipped => 'Correo omitido';
+
+  @override
+  String get adminMyCultureEmailFailed => 'Correo fallido';
+
+  @override
+  String adminMyCultureLeadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count leads',
+      one: '1 lead',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminMyCultureRespondedCount(int responded, int total) {
+    return '$responded de $total respondieron';
+  }
+
+  @override
   String get adminQuestionsUploadFile => 'Subir archivo';
 
   @override

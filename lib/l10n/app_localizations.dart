@@ -3578,6 +3578,138 @@ abstract class AppLocalizations {
   /// **'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.'**
   String get adminCultureSurveyEmpty;
 
+  /// No description provided for @adminSurveys.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuestas'**
+  String get adminSurveys;
+
+  /// No description provided for @adminSurveysCultureVs.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura candidato vs empresa'**
+  String get adminSurveysCultureVs;
+
+  /// No description provided for @adminSurveysMyCulture.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi cultura'**
+  String get adminSurveysMyCulture;
+
+  /// No description provided for @adminMyCultureSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresas que llegaron por la landing /micultura, con lo que respondieron sobre su cultura.'**
+  String get adminMyCultureSubtitle;
+
+  /// No description provided for @adminMyCultureRefresh.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get adminMyCultureRefresh;
+
+  /// No description provided for @adminMyCultureError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar los datos de Mi cultura.'**
+  String get adminMyCultureError;
+
+  /// No description provided for @adminMyCultureEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay respuestas de Mi cultura.'**
+  String get adminMyCultureEmpty;
+
+  /// No description provided for @adminMyCultureNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna empresa coincide con la búsqueda.'**
+  String get adminMyCultureNoResults;
+
+  /// No description provided for @adminMyCultureSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por empresa, contacto o correo...'**
+  String get adminMyCultureSearch;
+
+  /// No description provided for @adminMyCultureOrganizations.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresas'**
+  String get adminMyCultureOrganizations;
+
+  /// No description provided for @adminMyCultureLeads.
+  ///
+  /// In es, this message translates to:
+  /// **'Leads'**
+  String get adminMyCultureLeads;
+
+  /// No description provided for @adminMyCultureResponded.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondieron'**
+  String get adminMyCultureResponded;
+
+  /// No description provided for @adminMyCultureUnassigned.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin empresa asignada'**
+  String get adminMyCultureUnassigned;
+
+  /// No description provided for @adminMyCultureLastLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Último lead'**
+  String get adminMyCultureLastLead;
+
+  /// No description provided for @adminMyCultureComments.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios'**
+  String get adminMyCultureComments;
+
+  /// No description provided for @adminMyCultureRespondedBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondió'**
+  String get adminMyCultureRespondedBadge;
+
+  /// No description provided for @adminMyCulturePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get adminMyCulturePending;
+
+  /// No description provided for @adminMyCultureEmailSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo enviado'**
+  String get adminMyCultureEmailSent;
+
+  /// No description provided for @adminMyCultureEmailSkipped.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo omitido'**
+  String get adminMyCultureEmailSkipped;
+
+  /// No description provided for @adminMyCultureEmailFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo fallido'**
+  String get adminMyCultureEmailFailed;
+
+  /// No description provided for @adminMyCultureLeadCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 lead} other{{count} leads}}'**
+  String adminMyCultureLeadCount(int count);
+
+  /// No description provided for @adminMyCultureRespondedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{responded} de {total} respondieron'**
+  String adminMyCultureRespondedCount(int responded, int total);
+
   /// No description provided for @adminQuestionsUploadFile.
   ///
   /// In es, this message translates to:

@@ -43,8 +43,9 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
 
   bool get _isCulture => widget.slug == cultureSurveySlug;
 
-  List<AssessmentFront> get _fronts =>
-      _isCulture ? AssessmentFront.cultureFronts : AssessmentFront.affinityFronts;
+  List<AssessmentFront> get _fronts => _isCulture
+      ? AssessmentFront.cultureFronts
+      : AssessmentFront.affinityFronts;
 
   // [progress] muestra un bloqueo con ese texto mientras dura la operación;
   // se usa en las cargas y borrados masivos.
@@ -162,10 +163,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             onRetry: () => setState(() => _stream = _source.watch()),
           );
         } else if (!snapshot.hasData) {
-          body = const Padding(
-            padding: EdgeInsets.all(56),
-            child: Center(child: CircularProgressIndicator()),
-          );
+          body = const _QuestionsSkeleton();
         } else if (all.isEmpty) {
           body = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -325,7 +323,8 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                     label: Text(l10n.adminQuestionsPreview),
                   ),
                   FilledButton.icon(
-                    onPressed: snapshot.hasData &&
+                    onPressed:
+                        snapshot.hasData &&
                             !_busy &&
                             (!widget.hideUploadWhenFilled || all.isNotEmpty)
                         ? () => _edit(all)
@@ -462,6 +461,103 @@ class _Filters extends StatelessWidget {
       ],
     );
   }
+}
+
+// Placeholder con la forma de la lista mientras llega el banco de preguntas.
+class _QuestionsSkeleton extends StatefulWidget {
+  const _QuestionsSkeleton();
+
+  @override
+  State<_QuestionsSkeleton> createState() => _QuestionsSkeletonState();
+}
+
+class _QuestionsSkeletonState extends State<_QuestionsSkeleton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+    lowerBound: 0.45,
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _pulse,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _SkeletonBox(height: 56),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final width in const [70.0, 110.0, 96.0, 120.0, 88.0])
+                _SkeletonBox(width: width, height: 34),
+            ],
+          ),
+          const SizedBox(height: 16),
+          AdminPanel(
+            child: Column(
+              children: [
+                for (var index = 0; index < 6; index++) ...[
+                  if (index > 0)
+                    const Divider(height: 1, color: AppColors.divider),
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            _SkeletonBox(width: 64, height: 24),
+                            SizedBox(width: 10),
+                            _SkeletonBox(width: 90, height: 14),
+                            SizedBox(width: 10),
+                            _SkeletonBox(width: 120, height: 14),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        _SkeletonBox(height: 14),
+                        SizedBox(height: 8),
+                        FractionallySizedBox(
+                          widthFactor: 0.6,
+                          child: _SkeletonBox(height: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkeletonBox extends StatelessWidget {
+  const _SkeletonBox({this.width, required this.height});
+
+  final double? width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: width ?? double.infinity,
+    height: height,
+    decoration: BoxDecoration(
+      color: const Color(0xFFE9EAEE),
+      borderRadius: BorderRadius.circular(6),
+    ),
+  );
 }
 
 class _QuestionTile extends StatelessWidget {
