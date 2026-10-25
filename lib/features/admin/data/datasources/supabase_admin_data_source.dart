@@ -442,6 +442,47 @@ final class SupabaseAdminDataSource implements AdminDataSource {
       });
 
   @override
+  Future<List<CultureLead>> listCultureLeads({
+    String query = '',
+    CultureLeadStatus? status,
+  }) => _guard(() async {
+    final rows = await _db
+        .from('culture_leads')
+        .select()
+        .order('created_at', ascending: false)
+        .limit(200);
+    var items = [
+      for (final row in rows.cast<Map<String, dynamic>>())
+        CultureLead.fromMap(row),
+    ];
+    if (status != null) {
+      items = items.where((item) => item.status == status).toList();
+    }
+    final needle = query.trim().toLowerCase();
+    if (needle.isNotEmpty) {
+      items = items
+          .where(
+            (item) =>
+                item.companyName.toLowerCase().contains(needle) ||
+                item.email.toLowerCase().contains(needle),
+          )
+          .toList();
+    }
+    return items;
+  });
+
+  @override
+  Future<void> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  }) => _guard(() async {
+    await _db
+        .from('culture_leads')
+        .update({'status': status.apiValue})
+        .eq('id', id);
+  });
+
+  @override
   Future<(SalesSummary, List<Sale>)> getSales({
     required DateTime from,
     required DateTime to,

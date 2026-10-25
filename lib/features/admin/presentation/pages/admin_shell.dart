@@ -31,6 +31,7 @@ class _AdminShellState extends State<AdminShell> {
     AdminSection.affinity,
     AdminSection.commercial,
     AdminSection.sales,
+    AdminSection.cultureLeads,
     AdminSection.analytics,
     AdminSection.alerts,
     // AdminSection.xebec,
@@ -49,6 +50,7 @@ class _AdminShellState extends State<AdminShell> {
       DashboardNavItem(l10n.adminAffinity, Icons.hub_outlined),
       DashboardNavItem(l10n.adminCommercial, Icons.handshake_outlined),
       DashboardNavItem(l10n.adminSales, Icons.payments_outlined),
+      DashboardNavItem(l10n.adminCultureLeads, Icons.diversity_2_outlined),
       DashboardNavItem(l10n.adminAnalytics, Icons.insights_outlined),
       DashboardNavItem(l10n.adminAlerts, Icons.notifications_active_outlined),
       // DashboardNavItem(l10n.adminXebec, Icons.bolt_outlined),
@@ -76,6 +78,8 @@ class _AdminShellState extends State<AdminShell> {
         bloc.add(AdminPeopleRequested(query: query));
       case AdminSection.commercial:
         bloc.add(AdminDealsRequested(query: query));
+      case AdminSection.cultureLeads:
+        bloc.add(AdminCultureLeadsRequested(query: query));
       default:
         break;
     }

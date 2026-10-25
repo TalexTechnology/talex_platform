@@ -435,6 +435,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSales => 'Sales';
 
   @override
+  String get adminCultureLeads => 'Culture leads';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospects from the /micultura landing diagnosis. No company or membership is created.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'There are no culture leads yet.';
+
+  @override
+  String get cultureLeadEmployees => 'Employees';
+
+  @override
+  String get cultureLeadTraits => 'Cultural traits';
+
+  @override
+  String get cultureLeadComment => 'Comment';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'New';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contacted';
+
+  @override
+  String get cultureLeadStatusQualified => 'Qualified';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Discarded';
+
+  @override
   String get adminAnalytics => 'Analytics';
 
   @override

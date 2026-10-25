@@ -902,6 +902,72 @@ abstract class AppLocalizations {
   /// **'Ventas'**
   String get adminSales;
 
+  /// No description provided for @adminCultureLeads.
+  ///
+  /// In es, this message translates to:
+  /// **'Leads cultura'**
+  String get adminCultureLeads;
+
+  /// No description provided for @adminCultureLeadsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.'**
+  String get adminCultureLeadsSubtitle;
+
+  /// No description provided for @adminCultureLeadsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay leads de cultura.'**
+  String get adminCultureLeadsEmpty;
+
+  /// No description provided for @cultureLeadEmployees.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleados'**
+  String get cultureLeadEmployees;
+
+  /// No description provided for @cultureLeadTraits.
+  ///
+  /// In es, this message translates to:
+  /// **'Rasgos culturales'**
+  String get cultureLeadTraits;
+
+  /// No description provided for @cultureLeadComment.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario'**
+  String get cultureLeadComment;
+
+  /// No description provided for @cultureLeadUtm.
+  ///
+  /// In es, this message translates to:
+  /// **'UTM'**
+  String get cultureLeadUtm;
+
+  /// No description provided for @cultureLeadStatusNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo'**
+  String get cultureLeadStatusNew;
+
+  /// No description provided for @cultureLeadStatusContacted.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactado'**
+  String get cultureLeadStatusContacted;
+
+  /// No description provided for @cultureLeadStatusQualified.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificado'**
+  String get cultureLeadStatusQualified;
+
+  /// No description provided for @cultureLeadStatusDiscarded.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartado'**
+  String get cultureLeadStatusDiscarded;
+
   /// No description provided for @adminAnalytics.
   ///
   /// In es, this message translates to:

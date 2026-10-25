@@ -5,6 +5,7 @@ import {ApiError, json, readBody} from './http.js';
 import {actorFrom} from './auth.js';
 import {handleRpc} from './application/rpc.js';
 import {handleTable} from './application/tables.js';
+import {createCultureLead} from './application/culture-leads.js';
 
 export async function handleRequest(request, response) {
   try {
@@ -16,6 +17,11 @@ export async function handleRequest(request, response) {
     if (request.method === 'GET' && url.pathname === '/health') {
       await pingDatabase();
       json(response, 200, {ok: true, database: 'mongodb'});
+      return;
+    }
+    if (url.pathname === '/api/mi-cultura') {
+      if (request.method !== 'POST') throw new ApiError(405, 'method_not_allowed');
+      json(response, 200, await createCultureLead(await readBody(request)));
       return;
     }
 
@@ -37,10 +43,14 @@ export async function handleRequest(request, response) {
     throw new ApiError(404, 'not_found');
   } catch (error) {
     console.error(request.method, request.url, error.code || error.name, error.message);
-    json(response, error.status || 500, {
+    const payload = {
       code: error.code || 'unexpected',
       message: error.message,
-    });
+    };
+    if (String(request.url || '').includes('/api/mi-cultura')) {
+      payload.success = false;
+    }
+    json(response, error.status || 500, payload);
   }
 }
 

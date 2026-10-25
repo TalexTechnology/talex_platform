@@ -436,6 +436,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminSales => 'Ventas';
 
   @override
+  String get adminCultureLeads => 'Leads cultura';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'Todavía no hay leads de cultura.';
+
+  @override
+  String get cultureLeadEmployees => 'Empleados';
+
+  @override
+  String get cultureLeadTraits => 'Rasgos culturales';
+
+  @override
+  String get cultureLeadComment => 'Comentario';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'Nuevo';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contactado';
+
+  @override
+  String get cultureLeadStatusQualified => 'Calificado';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Descartado';
+
+  @override
   String get adminAnalytics => 'Analytics';
 
   @override

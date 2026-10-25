@@ -11,6 +11,8 @@ export const BOOLEAN_COLUMNS = new Set([
   'result_requested',
   'recurring',
   'creates_membership',
+  'consent_terms',
+  'consent_data',
 ]);
 
 const JSON_COLUMNS = new Set([

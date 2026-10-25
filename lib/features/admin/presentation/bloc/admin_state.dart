@@ -33,6 +33,8 @@ class AdminState extends Equatable {
     this.affinity,
     this.deals = const [],
     this.dealStage,
+    this.cultureLeads = const [],
+    this.cultureLeadStatus,
     this.sales = const [],
     this.salesSummary,
     this.analytics,
@@ -65,6 +67,8 @@ class AdminState extends Equatable {
   final AffinitySummary? affinity;
   final List<Deal> deals;
   final DealStage? dealStage;
+  final List<CultureLead> cultureLeads;
+  final CultureLeadStatus? cultureLeadStatus;
   final List<Sale> sales;
   final SalesSummary? salesSummary;
   final AnalyticsSnapshot? analytics;
@@ -99,6 +103,8 @@ class AdminState extends Equatable {
     affinity,
     deals,
     dealStage,
+    cultureLeads,
+    cultureLeadStatus,
     sales,
     salesSummary,
     analytics,

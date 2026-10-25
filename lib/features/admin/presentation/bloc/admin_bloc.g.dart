@@ -59,6 +59,10 @@ abstract class _$AdminStateCWProxy {
 
   AdminState dealStage(DealStage? dealStage);
 
+  AdminState cultureLeads(List<CultureLead> cultureLeads);
+
+  AdminState cultureLeadStatus(CultureLeadStatus? cultureLeadStatus);
+
   AdminState sales(List<Sale> sales);
 
   AdminState salesSummary(SalesSummary? salesSummary);
@@ -103,6 +107,8 @@ abstract class _$AdminStateCWProxy {
     AffinitySummary? affinity,
     List<Deal> deals,
     DealStage? dealStage,
+    List<CultureLead> cultureLeads,
+    CultureLeadStatus? cultureLeadStatus,
     List<Sale> sales,
     SalesSummary? salesSummary,
     AnalyticsSnapshot? analytics,
@@ -205,6 +211,14 @@ class _$AdminStateCWProxyImpl implements _$AdminStateCWProxy {
   AdminState dealStage(DealStage? dealStage) => call(dealStage: dealStage);
 
   @override
+  AdminState cultureLeads(List<CultureLead> cultureLeads) =>
+      call(cultureLeads: cultureLeads);
+
+  @override
+  AdminState cultureLeadStatus(CultureLeadStatus? cultureLeadStatus) =>
+      call(cultureLeadStatus: cultureLeadStatus);
+
+  @override
   AdminState sales(List<Sale> sales) => call(sales: sales);
 
   @override
@@ -257,6 +271,8 @@ class _$AdminStateCWProxyImpl implements _$AdminStateCWProxy {
     Object? affinity = const $CopyWithPlaceholder(),
     Object? deals = const $CopyWithPlaceholder(),
     Object? dealStage = const $CopyWithPlaceholder(),
+    Object? cultureLeads = const $CopyWithPlaceholder(),
+    Object? cultureLeadStatus = const $CopyWithPlaceholder(),
     Object? sales = const $CopyWithPlaceholder(),
     Object? salesSummary = const $CopyWithPlaceholder(),
     Object? analytics = const $CopyWithPlaceholder(),
@@ -371,6 +387,15 @@ class _$AdminStateCWProxyImpl implements _$AdminStateCWProxy {
           ? _value.dealStage
           // ignore: cast_nullable_to_non_nullable
           : dealStage as DealStage?,
+      cultureLeads:
+          cultureLeads == const $CopyWithPlaceholder() || cultureLeads == null
+          ? _value.cultureLeads
+          // ignore: cast_nullable_to_non_nullable
+          : cultureLeads as List<CultureLead>,
+      cultureLeadStatus: cultureLeadStatus == const $CopyWithPlaceholder()
+          ? _value.cultureLeadStatus
+          // ignore: cast_nullable_to_non_nullable
+          : cultureLeadStatus as CultureLeadStatus?,
       sales: sales == const $CopyWithPlaceholder() || sales == null
           ? _value.sales
           // ignore: cast_nullable_to_non_nullable
@@ -424,6 +449,7 @@ extension $AdminStateCopyWith on AdminState {
     bool evaluationStatus = false,
     bool affinity = false,
     bool dealStage = false,
+    bool cultureLeadStatus = false,
     bool salesSummary = false,
     bool analytics = false,
   }) {
@@ -454,6 +480,10 @@ extension $AdminStateCopyWith on AdminState {
       affinity: affinity == true ? null : this.affinity,
       deals: deals,
       dealStage: dealStage == true ? null : this.dealStage,
+      cultureLeads: cultureLeads,
+      cultureLeadStatus: cultureLeadStatus == true
+          ? null
+          : this.cultureLeadStatus,
       sales: sales,
       salesSummary: salesSummary == true ? null : this.salesSummary,
       analytics: analytics == true ? null : this.analytics,
