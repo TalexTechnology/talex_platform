@@ -74,7 +74,8 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
     if (_index < _questions.length - 1) {
       setState(() {
         _index += 1;
-        _text.text = '${_answers['${_questions[_index]['id']}']?['value_text'] ?? ''}';
+        _text.text =
+            '${_answers['${_questions[_index]['id']}']?['value_text'] ?? ''}';
       });
       return;
     }
@@ -127,9 +128,8 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
                 )
               else if (_done)
                 const _Message(
-                  title: 'Gracias por su tiempo',
-                  body:
-                      'Sus respuestas ya quedan en el diagnóstico de la organización. Puede cerrar esta página.',
+                  title: 'Gracias por tu tiempo.',
+                  body: 'Ya puedes cerrar esta página.',
                 )
               else if (_questions.isEmpty)
                 const _Message(
@@ -161,7 +161,8 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
                     padding: const EdgeInsets.all(28),
                     child: _QuestionBody(
                       question: _current!,
-                      selected: _answers['${_current!['id']}']?['value_int'] as int?,
+                      selected:
+                          _answers['${_current!['id']}']?['value_int'] as int?,
                       controller: _text,
                       ink: ink,
                       gold: gold,

@@ -4,6 +4,7 @@ import 'package:talex_platform/core/auth/user_role.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/widgets/affinity_badge.dart';
 import 'package:talex_platform/core/widgets/content_width.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/features/dashboard/presentation/widgets/dashboard_widgets.dart';
 import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
@@ -50,7 +51,7 @@ class TalentDashboardView extends StatelessWidget {
     final l10n = context.l10n;
     final snap = state.snapshot;
     if (state.status == TalentViewStatus.loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonPage();
     }
     final insights = CompanyInsights(snap);
     void openCandidates() => context.read<TalentBloc>().add(

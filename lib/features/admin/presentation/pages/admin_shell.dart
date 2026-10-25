@@ -35,7 +35,6 @@ class _AdminShellState extends State<AdminShell> {
     AdminSection.analytics,
     AdminSection.alerts,
     // AdminSection.xebec,
-    AdminSection.questions,
     AdminSection.cultureSurvey,
     AdminSection.settings,
   ];
@@ -54,8 +53,7 @@ class _AdminShellState extends State<AdminShell> {
       DashboardNavItem(l10n.adminAnalytics, Icons.insights_outlined),
       DashboardNavItem(l10n.adminAlerts, Icons.notifications_active_outlined),
       // DashboardNavItem(l10n.adminXebec, Icons.bolt_outlined),
-      DashboardNavItem(l10n.adminQuestions, Icons.quiz_outlined),
-      DashboardNavItem(l10n.adminCultureSurvey, Icons.diversity_3_outlined),
+      DashboardNavItem(l10n.adminSurveys, Icons.diversity_3_outlined),
       DashboardNavItem(l10n.adminSettings, Icons.settings_outlined),
     ];
   }

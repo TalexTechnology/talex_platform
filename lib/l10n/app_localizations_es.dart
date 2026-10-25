@@ -548,6 +548,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get retry => 'Reintentar';
 
   @override
+  String get splashVerifyingSession => 'Verificando tu sesión';
+
+  @override
+  String get splashSigningIn => 'Iniciando sesión';
+
+  @override
+  String get splashLoadingSettings => 'Cargando tus configuraciones';
+
+  @override
+  String get splashPreparingWorkspace => 'Preparando tu espacio de trabajo';
+
+  @override
+  String get splashSigningOut => 'Cerrando sesión de forma segura';
+
+  @override
+  String get splashValidatingInvite => 'Validando tu invitación';
+
+  @override
+  String get splashPreparingAssessment => 'Preparando tu evaluación';
+
+  @override
   String get newCompany => 'Nueva empresa';
 
   @override
@@ -1871,6 +1892,248 @@ class AppLocalizationsEs extends AppLocalizations {
       'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.';
 
   @override
+  String get adminSurveys => 'Encuestas';
+
+  @override
+  String get adminSurveysCultureVs => 'Cultura candidato vs empresa';
+
+  @override
+  String get adminSurveysMyCulture => 'Mi cultura';
+
+  @override
+  String get adminMyCultureSubtitle =>
+      'Empresas que llegaron por la landing /micultura, con lo que respondieron sobre su cultura.';
+
+  @override
+  String get adminMyCultureRefresh => 'Actualizar';
+
+  @override
+  String get adminMyCultureError =>
+      'No pudimos cargar los datos de Mi cultura.';
+
+  @override
+  String get adminMyCultureEmpty => 'Todavía no hay respuestas de Mi cultura.';
+
+  @override
+  String get adminMyCultureNoResults =>
+      'Ninguna empresa coincide con la búsqueda.';
+
+  @override
+  String get adminMyCultureSearch => 'Buscar por empresa, contacto o correo...';
+
+  @override
+  String get adminMyCultureOrganizations => 'Empresas';
+
+  @override
+  String get adminMyCultureLeads => 'Leads';
+
+  @override
+  String get adminMyCultureResponded => 'Respondieron';
+
+  @override
+  String get adminMyCultureUnassigned => 'Sin empresa asignada';
+
+  @override
+  String get adminMyCultureLastLead => 'Último lead';
+
+  @override
+  String get adminMyCultureComments => 'Comentarios';
+
+  @override
+  String get adminMyCultureRespondedBadge => 'Respondió';
+
+  @override
+  String get adminMyCulturePending => 'Pendiente';
+
+  @override
+  String get adminMyCultureEmailSent => 'Correo enviado';
+
+  @override
+  String get adminMyCultureEmailSkipped => 'Correo omitido';
+
+  @override
+  String get adminMyCultureEmailFailed => 'Correo fallido';
+
+  @override
+  String adminMyCultureLeadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count leads',
+      one: '1 lead',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminMyCultureRespondedCount(int responded, int total) {
+    return '$responded de $total respondieron';
+  }
+
+  @override
+  String get cultureQuestionsOpen => 'Preguntas';
+
+  @override
+  String get cultureSurveyPreview => 'Vista previa de la encuesta';
+
+  @override
+  String get cultureSurveyDemo => 'Ver demo de la encuesta';
+
+  @override
+  String get cultureSurveyDemoCopy => 'Copiar enlace demo';
+
+  @override
+  String get cultureSurveyDemoCopied =>
+      'Enlace demo copiado. Al abrirlo no se envían respuestas.';
+
+  @override
+  String get cultureQuestionsTitle => 'Preguntas de Mi cultura';
+
+  @override
+  String get cultureQuestionsSubtitle =>
+      'Banco de preguntas de la encuesta que responden los colaboradores de cada empresa.';
+
+  @override
+  String get cultureQuestionsBack => 'Volver a Mi cultura';
+
+  @override
+  String get cultureQuestionsNew => 'Nueva pregunta';
+
+  @override
+  String get cultureQuestionsEditSurvey => 'Título e intro';
+
+  @override
+  String get cultureQuestionsShowInactive => 'Mostrar desactivadas';
+
+  @override
+  String get cultureQuestionsSearch =>
+      'Buscar por código, nombre, enunciado o sección...';
+
+  @override
+  String get cultureQuestionsEmpty => 'Todavía no hay preguntas de cultura.';
+
+  @override
+  String get cultureQuestionsNoResults =>
+      'Ninguna pregunta coincide con la búsqueda.';
+
+  @override
+  String get cultureQuestionsInactive => 'Desactivada';
+
+  @override
+  String get cultureQuestionsRequiredBadge => 'Obligatoria';
+
+  @override
+  String get cultureQuestionsSurveyTitle => 'Título de la encuesta';
+
+  @override
+  String get cultureQuestionsSurveyIntro => 'Introducción';
+
+  @override
+  String get cultureQuestionsSurveyNoTitle => 'Sin título configurado';
+
+  @override
+  String get cultureQuestionsCode => 'Código';
+
+  @override
+  String get cultureQuestionsName => 'Nombre';
+
+  @override
+  String get cultureQuestionsStatement => 'Enunciado';
+
+  @override
+  String get cultureQuestionsInstruction => 'Instrucción';
+
+  @override
+  String get cultureQuestionsFormat => 'Formato';
+
+  @override
+  String get cultureQuestionsOptionsSource => 'Origen de opciones';
+
+  @override
+  String get cultureQuestionsSection => 'Sección (clave)';
+
+  @override
+  String get cultureQuestionsSectionTitle => 'Título de la sección';
+
+  @override
+  String get cultureQuestionsTechnique => 'Técnica';
+
+  @override
+  String get cultureQuestionsRequiredField => 'Obligatoria';
+
+  @override
+  String get cultureQuestionsActive => 'Activa';
+
+  @override
+  String get cultureQuestionsOptions => 'Opciones';
+
+  @override
+  String get cultureQuestionsOptionId => 'ID';
+
+  @override
+  String get cultureQuestionsOptionLabel => 'Texto';
+
+  @override
+  String get cultureQuestionsOptionDimension => 'Dimensión';
+
+  @override
+  String get cultureQuestionsAddOption => 'Agregar opción';
+
+  @override
+  String get cultureQuestionsRemoveOption => 'Quitar opción';
+
+  @override
+  String get cultureQuestionsOptionIdTaken => 'ID repetido';
+
+  @override
+  String get cultureQuestionsUsed => 'Usados en el banco:';
+
+  @override
+  String cultureQuestionsDeleteBody(String code) {
+    return '¿Eliminar la pregunta $code? Si solo quieres ocultarla, desactívala.';
+  }
+
+  @override
+  String get cultureQuestionsErrorLoad =>
+      'No pudimos cargar las preguntas de cultura.';
+
+  @override
+  String get cultureQuestionsErrorGeneric => 'No pudimos guardar el cambio.';
+
+  @override
+  String get cultureQuestionsErrorSignIn =>
+      'Tu sesión venció. Vuelve a iniciar sesión.';
+
+  @override
+  String get cultureQuestionsErrorPermission =>
+      'Solo el superadmin puede cambiar las preguntas.';
+
+  @override
+  String get cultureQuestionsErrorNotFound =>
+      'Esa pregunta ya no existe. Recarga la lista.';
+
+  @override
+  String get cultureQuestionsErrorDuplicate =>
+      'Ya existe una pregunta con ese código.';
+
+  @override
+  String cultureQuestionsErrorInvalid(String detail) {
+    return 'Revisa la pregunta: $detail';
+  }
+
+  @override
+  String get cultureQuestionsErrorInvalidGeneric =>
+      'Falta un dato o hay uno inválido en la pregunta.';
+
+  @override
+  String get cultureQuestionsErrorCodesMismatch =>
+      'El banco cambió mientras reordenabas. Recarga la lista e inténtalo de nuevo.';
+
+  @override
+  String get cultureQuestionsErrorNotDeployed =>
+      'El servidor todavía no tiene las preguntas de cultura publicadas. Cuando el backend las suba, aparecerán aquí.';
+
+  @override
   String get adminQuestionsUploadFile => 'Subir archivo';
 
   @override
@@ -1908,6 +2171,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminQuestionsPreview => 'Vista previa';
+
+  @override
+  String get affinityDemoCompany => 'Empresa de ejemplo';
+
+  @override
+  String get affinityDemoCompanyDescription =>
+      'Así se ve la descripción de la empresa que envía la evaluación.';
+
+  @override
+  String get affinityDemoVacancy => 'Vacante de ejemplo';
+
+  @override
+  String get affinityDemoCandidate => 'Ana Demo';
+
+  @override
+  String get adminQuestionsDemo => 'Ver demo';
 
   @override
   String get adminQuestionsPreviewTitle => 'Vista previa de la encuesta';
@@ -2072,7 +2351,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get assessmentPairScaleHint =>
-      'Toque el recuadro que quede más cerca de la frase con la que se identifica.';
+      'Toque la frase con la que más se identifica, o elija un punto de la escala.';
 
   @override
   String get assessmentStatementA => 'Frase A';
