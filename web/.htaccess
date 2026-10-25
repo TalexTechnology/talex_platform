@@ -18,7 +18,7 @@ DirectoryIndex index.html
 </IfModule>
 
 <IfModule mod_headers.c>
-  <FilesMatch "^(index\.html|flutter_bootstrap\.js|flutter_service_worker\.js|flutter\.js|main\.dart\.js|main\.dart\.wasm|main\.dart\.mjs|version\.json|manifest\.json)$">
+  <FilesMatch "^(index\.html|culture_survey_boot\.js|flutter_bootstrap\.js|flutter_service_worker\.js|flutter\.js|main\.dart\.js|main\.dart\.wasm|main\.dart\.mjs|version\.json|manifest\.json)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
   <FilesMatch "\.(png|jpg|jpeg|svg|webp|ttf|otf|woff2?)$">
