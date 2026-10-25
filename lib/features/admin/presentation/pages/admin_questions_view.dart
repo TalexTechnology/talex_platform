@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/utils/open_url.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/data/datasources/assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
@@ -11,6 +13,7 @@ import 'package:talex_platform/features/admin/domain/services/assessment_questio
 import 'package:talex_platform/features/admin/presentation/widgets/admin_question_dialogs.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/survey_preview_dialog.dart';
+import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
 class AdminQuestionsView extends StatefulWidget {
@@ -43,8 +46,9 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
 
   bool get _isCulture => widget.slug == cultureSurveySlug;
 
-  List<AssessmentFront> get _fronts =>
-      _isCulture ? AssessmentFront.cultureFronts : AssessmentFront.affinityFronts;
+  List<AssessmentFront> get _fronts => _isCulture
+      ? AssessmentFront.cultureFronts
+      : AssessmentFront.affinityFronts;
 
   // [progress] muestra un bloqueo con ese texto mientras dura la operación;
   // se usa en las cargas y borrados masivos.
@@ -162,10 +166,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             onRetry: () => setState(() => _stream = _source.watch()),
           );
         } else if (!snapshot.hasData) {
-          body = const Padding(
-            padding: EdgeInsets.all(56),
-            child: Center(child: CircularProgressIndicator()),
-          );
+          body = const _QuestionsSkeleton();
         } else if (all.isEmpty) {
           body = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -317,15 +318,26 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                             : l10n.adminQuestionsImport,
                       ),
                     ),
-                  OutlinedButton.icon(
-                    onPressed: all.isEmpty
-                        ? null
-                        : () => showSurveyPreview(context, all),
-                    icon: const Icon(Icons.visibility_outlined),
-                    label: Text(l10n.adminQuestionsPreview),
-                  ),
+                  // Afinidad: demo en otra pestaña con la pantalla real del
+                  // candidato. Cultura: vista previa del banco.
+                  if (_isCulture)
+                    OutlinedButton.icon(
+                      onPressed: all.isEmpty
+                          ? null
+                          : () => showSurveyPreview(context, all),
+                      icon: const Icon(Icons.visibility_outlined),
+                      label: Text(l10n.adminQuestionsPreview),
+                    )
+                  else
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          openExternalUrl(AffinityDemoLink.url(base: Uri.base)),
+                      icon: const Icon(Icons.play_circle_outline),
+                      label: Text(l10n.adminQuestionsDemo),
+                    ),
                   FilledButton.icon(
-                    onPressed: snapshot.hasData &&
+                    onPressed:
+                        snapshot.hasData &&
                             !_busy &&
                             (!widget.hideUploadWhenFilled || all.isNotEmpty)
                         ? () => _edit(all)
@@ -460,6 +472,67 @@ class _Filters extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+// Placeholder con la forma de la lista mientras llega el banco de preguntas.
+class _QuestionsSkeleton extends StatelessWidget {
+  const _QuestionsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Skeleton(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SkeletonBox(height: 56),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final width in const [70.0, 110.0, 96.0, 120.0, 88.0])
+                SkeletonBox(width: width, height: 34),
+            ],
+          ),
+          const SizedBox(height: 16),
+          AdminPanel(
+            child: Column(
+              children: [
+                for (var index = 0; index < 6; index++) ...[
+                  if (index > 0)
+                    const Divider(height: 1, color: AppColors.divider),
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SkeletonBox(width: 64, height: 24),
+                            SizedBox(width: 10),
+                            SkeletonBox(width: 90, height: 14),
+                            SizedBox(width: 10),
+                            SkeletonBox(width: 120, height: 14),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        SkeletonBox(height: 14),
+                        SizedBox(height: 8),
+                        FractionallySizedBox(
+                          widthFactor: 0.6,
+                          child: SkeletonBox(height: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

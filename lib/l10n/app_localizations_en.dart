@@ -547,6 +547,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get splashVerifyingSession => 'Verifying your session';
+
+  @override
+  String get splashSigningIn => 'Signing you in';
+
+  @override
+  String get splashLoadingSettings => 'Loading your settings';
+
+  @override
+  String get splashPreparingWorkspace => 'Preparing your workspace';
+
+  @override
+  String get splashSigningOut => 'Signing you out securely';
+
+  @override
+  String get splashValidatingInvite => 'Validating your invitation';
+
+  @override
+  String get splashPreparingAssessment => 'Preparing your assessment';
+
+  @override
   String get newCompany => 'New company';
 
   @override
@@ -1869,6 +1890,245 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are no culture questions yet. Upload a CSV or JSON file to add them.';
 
   @override
+  String get adminSurveys => 'Surveys';
+
+  @override
+  String get adminSurveysCultureVs => 'Candidate vs company culture';
+
+  @override
+  String get adminSurveysMyCulture => 'My culture';
+
+  @override
+  String get adminMyCultureSubtitle =>
+      'Companies that came through the /micultura landing, with what they answered about their culture.';
+
+  @override
+  String get adminMyCultureRefresh => 'Refresh';
+
+  @override
+  String get adminMyCultureError => 'We couldn\'t load the My culture data.';
+
+  @override
+  String get adminMyCultureEmpty => 'There are no My culture responses yet.';
+
+  @override
+  String get adminMyCultureNoResults => 'No company matches the search.';
+
+  @override
+  String get adminMyCultureSearch => 'Search by company, contact or email...';
+
+  @override
+  String get adminMyCultureOrganizations => 'Companies';
+
+  @override
+  String get adminMyCultureLeads => 'Leads';
+
+  @override
+  String get adminMyCultureResponded => 'Responded';
+
+  @override
+  String get adminMyCultureUnassigned => 'No company assigned';
+
+  @override
+  String get adminMyCultureLastLead => 'Last lead';
+
+  @override
+  String get adminMyCultureComments => 'Comments';
+
+  @override
+  String get adminMyCultureRespondedBadge => 'Responded';
+
+  @override
+  String get adminMyCulturePending => 'Pending';
+
+  @override
+  String get adminMyCultureEmailSent => 'Email sent';
+
+  @override
+  String get adminMyCultureEmailSkipped => 'Email skipped';
+
+  @override
+  String get adminMyCultureEmailFailed => 'Email failed';
+
+  @override
+  String adminMyCultureLeadCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count leads',
+      one: '1 lead',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String adminMyCultureRespondedCount(int responded, int total) {
+    return '$responded of $total responded';
+  }
+
+  @override
+  String get cultureQuestionsOpen => 'Questions';
+
+  @override
+  String get cultureSurveyPreview => 'Survey preview';
+
+  @override
+  String get cultureSurveyDemo => 'View survey demo';
+
+  @override
+  String get cultureSurveyDemoCopy => 'Copy demo link';
+
+  @override
+  String get cultureSurveyDemoCopied =>
+      'Demo link copied. Opening it does not submit answers.';
+
+  @override
+  String get cultureQuestionsTitle => 'My culture questions';
+
+  @override
+  String get cultureQuestionsSubtitle =>
+      'Question bank for the survey each company\'s employees answer.';
+
+  @override
+  String get cultureQuestionsBack => 'Back to My culture';
+
+  @override
+  String get cultureQuestionsNew => 'New question';
+
+  @override
+  String get cultureQuestionsEditSurvey => 'Title and intro';
+
+  @override
+  String get cultureQuestionsShowInactive => 'Show inactive';
+
+  @override
+  String get cultureQuestionsSearch =>
+      'Search by code, name, statement or section...';
+
+  @override
+  String get cultureQuestionsEmpty => 'There are no culture questions yet.';
+
+  @override
+  String get cultureQuestionsNoResults => 'No question matches the search.';
+
+  @override
+  String get cultureQuestionsInactive => 'Inactive';
+
+  @override
+  String get cultureQuestionsRequiredBadge => 'Required';
+
+  @override
+  String get cultureQuestionsSurveyTitle => 'Survey title';
+
+  @override
+  String get cultureQuestionsSurveyIntro => 'Introduction';
+
+  @override
+  String get cultureQuestionsSurveyNoTitle => 'No title set';
+
+  @override
+  String get cultureQuestionsCode => 'Code';
+
+  @override
+  String get cultureQuestionsName => 'Name';
+
+  @override
+  String get cultureQuestionsStatement => 'Statement';
+
+  @override
+  String get cultureQuestionsInstruction => 'Instruction';
+
+  @override
+  String get cultureQuestionsFormat => 'Format';
+
+  @override
+  String get cultureQuestionsOptionsSource => 'Options source';
+
+  @override
+  String get cultureQuestionsSection => 'Section (key)';
+
+  @override
+  String get cultureQuestionsSectionTitle => 'Section title';
+
+  @override
+  String get cultureQuestionsTechnique => 'Technique';
+
+  @override
+  String get cultureQuestionsRequiredField => 'Required';
+
+  @override
+  String get cultureQuestionsActive => 'Active';
+
+  @override
+  String get cultureQuestionsOptions => 'Options';
+
+  @override
+  String get cultureQuestionsOptionId => 'ID';
+
+  @override
+  String get cultureQuestionsOptionLabel => 'Text';
+
+  @override
+  String get cultureQuestionsOptionDimension => 'Dimension';
+
+  @override
+  String get cultureQuestionsAddOption => 'Add option';
+
+  @override
+  String get cultureQuestionsRemoveOption => 'Remove option';
+
+  @override
+  String get cultureQuestionsOptionIdTaken => 'Duplicate ID';
+
+  @override
+  String get cultureQuestionsUsed => 'Used in the bank:';
+
+  @override
+  String cultureQuestionsDeleteBody(String code) {
+    return 'Delete question $code? If you only want to hide it, deactivate it.';
+  }
+
+  @override
+  String get cultureQuestionsErrorLoad =>
+      'We couldn\'t load the culture questions.';
+
+  @override
+  String get cultureQuestionsErrorGeneric => 'We couldn\'t save the change.';
+
+  @override
+  String get cultureQuestionsErrorSignIn =>
+      'Your session expired. Sign in again.';
+
+  @override
+  String get cultureQuestionsErrorPermission =>
+      'Only the superadmin can change the questions.';
+
+  @override
+  String get cultureQuestionsErrorNotFound =>
+      'That question no longer exists. Reload the list.';
+
+  @override
+  String get cultureQuestionsErrorDuplicate =>
+      'A question with that code already exists.';
+
+  @override
+  String cultureQuestionsErrorInvalid(String detail) {
+    return 'Check the question: $detail';
+  }
+
+  @override
+  String get cultureQuestionsErrorInvalidGeneric =>
+      'A field in the question is missing or invalid.';
+
+  @override
+  String get cultureQuestionsErrorCodesMismatch =>
+      'The bank changed while you were reordering. Reload the list and try again.';
+
+  @override
+  String get cultureQuestionsErrorNotDeployed =>
+      'The server does not have the culture questions published yet. They will show up here once the backend deploys them.';
+
+  @override
   String get adminQuestionsUploadFile => 'Upload file';
 
   @override
@@ -1906,6 +2166,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminQuestionsPreview => 'Preview';
+
+  @override
+  String get affinityDemoCompany => 'Sample company';
+
+  @override
+  String get affinityDemoCompanyDescription =>
+      'This is how the description of the company sending the assessment looks.';
+
+  @override
+  String get affinityDemoVacancy => 'Sample vacancy';
+
+  @override
+  String get affinityDemoCandidate => 'Ana Demo';
+
+  @override
+  String get adminQuestionsDemo => 'View demo';
 
   @override
   String get adminQuestionsPreviewTitle => 'Survey preview';
@@ -2068,7 +2344,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assessmentPairScaleHint =>
-      'Tap the box closest to the statement you identify with.';
+      'Tap the statement you identify with most, or pick a point on the scale.';
 
   @override
   String get assessmentStatementA => 'Statement A';

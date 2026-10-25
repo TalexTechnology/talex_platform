@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web/web.dart' as web;
 
 import 'package:talex_platform/core/theme/talex_theme.dart';
+import 'package:talex_platform/core/widgets/talex_splash.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
@@ -16,7 +17,11 @@ import 'package:talex_platform/features/dashboard/presentation/pages/dashboard_p
 import 'package:talex_platform/features/invitations/presentation/bloc/invitation_bloc.dart';
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
 import 'package:talex_platform/features/talent/presentation/pages/company_shell.dart';
+import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
 import 'package:talex_platform/features/talent/domain/services/assessment_invite_link.dart';
+import 'package:talex_platform/features/talent/presentation/pages/affinity_demo_page.dart';
+import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
+import 'package:talex_platform/features/culture/presentation/pages/company_culture_survey_page.dart';
 import 'package:talex_platform/features/talent/presentation/pages/respondent_shell.dart';
 import 'package:talex_platform/l10n/app_localizations.dart';
 
@@ -29,6 +34,9 @@ class TalexApp extends StatefulWidget {
 
 class _TalexAppState extends State<TalexApp> {
   bool _respondentInviteProcessed = false;
+  // Último estado de sesión resuelto; dice si la carga actual es un
+  // arranque, un inicio o un cierre de sesión.
+  AuthStatus? _lastSettled;
 
   @override
   void initState() {
@@ -62,6 +70,13 @@ class _TalexAppState extends State<TalexApp> {
         AssessmentInviteLink.tokenFromFragment(web.window.location.hash);
   }
 
+  String? _cultureOrganizationId() {
+    final fromWindow = Uri.tryParse(web.window.location.href);
+    return CultureSurveyLink.organizationIdFromUri(fromWindow ?? Uri.base) ??
+        CultureSurveyLink.organizationIdFromUri(Uri.base) ??
+        CultureSurveyLink.organizationIdFromFragment(web.window.location.hash);
+  }
+
   void _clearRespondentInviteUrl() {
     web.window.history.replaceState(
       null,
@@ -69,6 +84,26 @@ class _TalexAppState extends State<TalexApp> {
       web.window.location.pathname +
           web.window.location.search,
     );
+  }
+
+  // Mensajes de la pantalla de carga según lo que esté pasando.
+  List<String> _loadingMessages(AppLocalizations l10n) {
+    if (_respondentInviteProcessed) {
+      return [l10n.splashValidatingInvite, l10n.splashPreparingAssessment];
+    }
+    return switch (_lastSettled) {
+      null => [
+        l10n.splashVerifyingSession,
+        l10n.splashLoadingSettings,
+        l10n.splashPreparingWorkspace,
+      ],
+      AuthStatus.authenticated => [l10n.splashSigningOut],
+      _ => [
+        l10n.splashSigningIn,
+        l10n.splashLoadingSettings,
+        l10n.splashPreparingWorkspace,
+      ],
+    };
   }
 
   @override
@@ -102,13 +137,21 @@ class _TalexAppState extends State<TalexApp> {
 
           return null;
         },
-        home: BlocListener<AuthBloc, AuthState>(
+        home: AffinityDemoLink.matches(Uri.base)
+            ? const AffinityDemoPage()
+            : _cultureOrganizationId() != null
+            ? CompanyCultureSurveyPage(organizationId: _cultureOrganizationId()!)
+            : BlocListener<AuthBloc, AuthState>(
           listenWhen: (previous, current) =>
               previous.status != current.status,
           listener: (context, state) {
             if (state.status == AuthStatus.authenticated &&
                 _respondentInviteProcessed) {
               _clearRespondentInviteUrl();
+            }
+            if (state.status != AuthStatus.initial &&
+                state.status != AuthStatus.loading) {
+              _lastSettled = state.status;
             }
           },
           child: BlocBuilder<AuthBloc, AuthState>(
@@ -117,11 +160,8 @@ class _TalexAppState extends State<TalexApp> {
                 state: state,
               ),
 
-              AuthStatus.initial ||
-              AuthStatus.loading => const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
+              AuthStatus.initial || AuthStatus.loading => TalexSplash(
+                messages: _loadingMessages(AppLocalizations.of(context)),
               ),
 
               AuthStatus.needsInvitePin => const RegisterPage(),

@@ -1124,6 +1124,48 @@ abstract class AppLocalizations {
   /// **'Reintentar'**
   String get retry;
 
+  /// No description provided for @splashVerifyingSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificando tu sesión'**
+  String get splashVerifyingSession;
+
+  /// No description provided for @splashSigningIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciando sesión'**
+  String get splashSigningIn;
+
+  /// No description provided for @splashLoadingSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando tus configuraciones'**
+  String get splashLoadingSettings;
+
+  /// No description provided for @splashPreparingWorkspace.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando tu espacio de trabajo'**
+  String get splashPreparingWorkspace;
+
+  /// No description provided for @splashSigningOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrando sesión de forma segura'**
+  String get splashSigningOut;
+
+  /// No description provided for @splashValidatingInvite.
+  ///
+  /// In es, this message translates to:
+  /// **'Validando tu invitación'**
+  String get splashValidatingInvite;
+
+  /// No description provided for @splashPreparingAssessment.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando tu evaluación'**
+  String get splashPreparingAssessment;
+
   /// No description provided for @newCompany.
   ///
   /// In es, this message translates to:
@@ -3578,6 +3620,432 @@ abstract class AppLocalizations {
   /// **'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.'**
   String get adminCultureSurveyEmpty;
 
+  /// No description provided for @adminSurveys.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuestas'**
+  String get adminSurveys;
+
+  /// No description provided for @adminSurveysCultureVs.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura candidato vs empresa'**
+  String get adminSurveysCultureVs;
+
+  /// No description provided for @adminSurveysMyCulture.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi cultura'**
+  String get adminSurveysMyCulture;
+
+  /// No description provided for @adminMyCultureSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresas que llegaron por la landing /micultura, con lo que respondieron sobre su cultura.'**
+  String get adminMyCultureSubtitle;
+
+  /// No description provided for @adminMyCultureRefresh.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get adminMyCultureRefresh;
+
+  /// No description provided for @adminMyCultureError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar los datos de Mi cultura.'**
+  String get adminMyCultureError;
+
+  /// No description provided for @adminMyCultureEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay respuestas de Mi cultura.'**
+  String get adminMyCultureEmpty;
+
+  /// No description provided for @adminMyCultureNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna empresa coincide con la búsqueda.'**
+  String get adminMyCultureNoResults;
+
+  /// No description provided for @adminMyCultureSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por empresa, contacto o correo...'**
+  String get adminMyCultureSearch;
+
+  /// No description provided for @adminMyCultureOrganizations.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresas'**
+  String get adminMyCultureOrganizations;
+
+  /// No description provided for @adminMyCultureLeads.
+  ///
+  /// In es, this message translates to:
+  /// **'Leads'**
+  String get adminMyCultureLeads;
+
+  /// No description provided for @adminMyCultureResponded.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondieron'**
+  String get adminMyCultureResponded;
+
+  /// No description provided for @adminMyCultureUnassigned.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin empresa asignada'**
+  String get adminMyCultureUnassigned;
+
+  /// No description provided for @adminMyCultureLastLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Último lead'**
+  String get adminMyCultureLastLead;
+
+  /// No description provided for @adminMyCultureComments.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios'**
+  String get adminMyCultureComments;
+
+  /// No description provided for @adminMyCultureRespondedBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondió'**
+  String get adminMyCultureRespondedBadge;
+
+  /// No description provided for @adminMyCulturePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get adminMyCulturePending;
+
+  /// No description provided for @adminMyCultureEmailSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo enviado'**
+  String get adminMyCultureEmailSent;
+
+  /// No description provided for @adminMyCultureEmailSkipped.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo omitido'**
+  String get adminMyCultureEmailSkipped;
+
+  /// No description provided for @adminMyCultureEmailFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo fallido'**
+  String get adminMyCultureEmailFailed;
+
+  /// No description provided for @adminMyCultureLeadCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 lead} other{{count} leads}}'**
+  String adminMyCultureLeadCount(int count);
+
+  /// No description provided for @adminMyCultureRespondedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{responded} de {total} respondieron'**
+  String adminMyCultureRespondedCount(int responded, int total);
+
+  /// No description provided for @cultureQuestionsOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas'**
+  String get cultureQuestionsOpen;
+
+  /// No description provided for @cultureSurveyPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa de la encuesta'**
+  String get cultureSurveyPreview;
+
+  /// No description provided for @cultureSurveyDemo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver demo de la encuesta'**
+  String get cultureSurveyDemo;
+
+  /// No description provided for @cultureSurveyDemoCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar enlace demo'**
+  String get cultureSurveyDemoCopy;
+
+  /// No description provided for @cultureSurveyDemoCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace demo copiado. Al abrirlo no se envían respuestas.'**
+  String get cultureSurveyDemoCopied;
+
+  /// No description provided for @cultureQuestionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas de Mi cultura'**
+  String get cultureQuestionsTitle;
+
+  /// No description provided for @cultureQuestionsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Banco de preguntas de la encuesta que responden los colaboradores de cada empresa.'**
+  String get cultureQuestionsSubtitle;
+
+  /// No description provided for @cultureQuestionsBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Mi cultura'**
+  String get cultureQuestionsBack;
+
+  /// No description provided for @cultureQuestionsNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva pregunta'**
+  String get cultureQuestionsNew;
+
+  /// No description provided for @cultureQuestionsEditSurvey.
+  ///
+  /// In es, this message translates to:
+  /// **'Título e intro'**
+  String get cultureQuestionsEditSurvey;
+
+  /// No description provided for @cultureQuestionsShowInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar desactivadas'**
+  String get cultureQuestionsShowInactive;
+
+  /// No description provided for @cultureQuestionsSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por código, nombre, enunciado o sección...'**
+  String get cultureQuestionsSearch;
+
+  /// No description provided for @cultureQuestionsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas de cultura.'**
+  String get cultureQuestionsEmpty;
+
+  /// No description provided for @cultureQuestionsNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna pregunta coincide con la búsqueda.'**
+  String get cultureQuestionsNoResults;
+
+  /// No description provided for @cultureQuestionsInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivada'**
+  String get cultureQuestionsInactive;
+
+  /// No description provided for @cultureQuestionsRequiredBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Obligatoria'**
+  String get cultureQuestionsRequiredBadge;
+
+  /// No description provided for @cultureQuestionsSurveyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Título de la encuesta'**
+  String get cultureQuestionsSurveyTitle;
+
+  /// No description provided for @cultureQuestionsSurveyIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Introducción'**
+  String get cultureQuestionsSurveyIntro;
+
+  /// No description provided for @cultureQuestionsSurveyNoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin título configurado'**
+  String get cultureQuestionsSurveyNoTitle;
+
+  /// No description provided for @cultureQuestionsCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get cultureQuestionsCode;
+
+  /// No description provided for @cultureQuestionsName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get cultureQuestionsName;
+
+  /// No description provided for @cultureQuestionsStatement.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado'**
+  String get cultureQuestionsStatement;
+
+  /// No description provided for @cultureQuestionsInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Instrucción'**
+  String get cultureQuestionsInstruction;
+
+  /// No description provided for @cultureQuestionsFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Formato'**
+  String get cultureQuestionsFormat;
+
+  /// No description provided for @cultureQuestionsOptionsSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Origen de opciones'**
+  String get cultureQuestionsOptionsSource;
+
+  /// No description provided for @cultureQuestionsSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Sección (clave)'**
+  String get cultureQuestionsSection;
+
+  /// No description provided for @cultureQuestionsSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Título de la sección'**
+  String get cultureQuestionsSectionTitle;
+
+  /// No description provided for @cultureQuestionsTechnique.
+  ///
+  /// In es, this message translates to:
+  /// **'Técnica'**
+  String get cultureQuestionsTechnique;
+
+  /// No description provided for @cultureQuestionsRequiredField.
+  ///
+  /// In es, this message translates to:
+  /// **'Obligatoria'**
+  String get cultureQuestionsRequiredField;
+
+  /// No description provided for @cultureQuestionsActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get cultureQuestionsActive;
+
+  /// No description provided for @cultureQuestionsOptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones'**
+  String get cultureQuestionsOptions;
+
+  /// No description provided for @cultureQuestionsOptionId.
+  ///
+  /// In es, this message translates to:
+  /// **'ID'**
+  String get cultureQuestionsOptionId;
+
+  /// No description provided for @cultureQuestionsOptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto'**
+  String get cultureQuestionsOptionLabel;
+
+  /// No description provided for @cultureQuestionsOptionDimension.
+  ///
+  /// In es, this message translates to:
+  /// **'Dimensión'**
+  String get cultureQuestionsOptionDimension;
+
+  /// No description provided for @cultureQuestionsAddOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar opción'**
+  String get cultureQuestionsAddOption;
+
+  /// No description provided for @cultureQuestionsRemoveOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar opción'**
+  String get cultureQuestionsRemoveOption;
+
+  /// No description provided for @cultureQuestionsOptionIdTaken.
+  ///
+  /// In es, this message translates to:
+  /// **'ID repetido'**
+  String get cultureQuestionsOptionIdTaken;
+
+  /// No description provided for @cultureQuestionsUsed.
+  ///
+  /// In es, this message translates to:
+  /// **'Usados en el banco:'**
+  String get cultureQuestionsUsed;
+
+  /// No description provided for @cultureQuestionsDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar la pregunta {code}? Si solo quieres ocultarla, desactívala.'**
+  String cultureQuestionsDeleteBody(String code);
+
+  /// No description provided for @cultureQuestionsErrorLoad.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las preguntas de cultura.'**
+  String get cultureQuestionsErrorLoad;
+
+  /// No description provided for @cultureQuestionsErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el cambio.'**
+  String get cultureQuestionsErrorGeneric;
+
+  /// No description provided for @cultureQuestionsErrorSignIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Vuelve a iniciar sesión.'**
+  String get cultureQuestionsErrorSignIn;
+
+  /// No description provided for @cultureQuestionsErrorPermission.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo el superadmin puede cambiar las preguntas.'**
+  String get cultureQuestionsErrorPermission;
+
+  /// No description provided for @cultureQuestionsErrorNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa pregunta ya no existe. Recarga la lista.'**
+  String get cultureQuestionsErrorNotFound;
+
+  /// No description provided for @cultureQuestionsErrorDuplicate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe una pregunta con ese código.'**
+  String get cultureQuestionsErrorDuplicate;
+
+  /// No description provided for @cultureQuestionsErrorInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa la pregunta: {detail}'**
+  String cultureQuestionsErrorInvalid(String detail);
+
+  /// No description provided for @cultureQuestionsErrorInvalidGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta un dato o hay uno inválido en la pregunta.'**
+  String get cultureQuestionsErrorInvalidGeneric;
+
+  /// No description provided for @cultureQuestionsErrorCodesMismatch.
+  ///
+  /// In es, this message translates to:
+  /// **'El banco cambió mientras reordenabas. Recarga la lista e inténtalo de nuevo.'**
+  String get cultureQuestionsErrorCodesMismatch;
+
+  /// No description provided for @cultureQuestionsErrorNotDeployed.
+  ///
+  /// In es, this message translates to:
+  /// **'El servidor todavía no tiene las preguntas de cultura publicadas. Cuando el backend las suba, aparecerán aquí.'**
+  String get cultureQuestionsErrorNotDeployed;
+
   /// No description provided for @adminQuestionsUploadFile.
   ///
   /// In es, this message translates to:
@@ -3655,6 +4123,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Vista previa'**
   String get adminQuestionsPreview;
+
+  /// No description provided for @affinityDemoCompany.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresa de ejemplo'**
+  String get affinityDemoCompany;
+
+  /// No description provided for @affinityDemoCompanyDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Así se ve la descripción de la empresa que envía la evaluación.'**
+  String get affinityDemoCompanyDescription;
+
+  /// No description provided for @affinityDemoVacancy.
+  ///
+  /// In es, this message translates to:
+  /// **'Vacante de ejemplo'**
+  String get affinityDemoVacancy;
+
+  /// No description provided for @affinityDemoCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ana Demo'**
+  String get affinityDemoCandidate;
+
+  /// No description provided for @adminQuestionsDemo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver demo'**
+  String get adminQuestionsDemo;
 
   /// No description provided for @adminQuestionsPreviewTitle.
   ///
@@ -3941,7 +4439,7 @@ abstract class AppLocalizations {
   /// No description provided for @assessmentPairScaleHint.
   ///
   /// In es, this message translates to:
-  /// **'Toque el recuadro que quede más cerca de la frase con la que se identifica.'**
+  /// **'Toque la frase con la que más se identifica, o elija un punto de la escala.'**
   String get assessmentPairScaleHint;
 
   /// No description provided for @assessmentStatementA.

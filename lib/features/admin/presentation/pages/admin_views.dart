@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
+import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/domain/entities/admin_entities.dart';
 import 'package:talex_platform/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:talex_platform/features/admin/data/datasources/supabase_assessment_question_data_source.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_questions_view.dart';
+import 'package:talex_platform/features/admin/presentation/pages/admin_surveys_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_dialogs.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/provision_company_dialog.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
@@ -20,24 +21,26 @@ class AdminSectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
-        if (state.section == AdminSection.questions ||
-            state.section == AdminSection.cultureSurvey) {
-          return AdminQuestionsView(
-            slug: state.section == AdminSection.cultureSurvey
-                ? cultureSurveySlug
-                : affinitySurveySlug,
-            allowSeed: state.section != AdminSection.cultureSurvey,
-            hideUploadWhenFilled: state.section == AdminSection.cultureSurvey,
-          );
+        if (state.section == AdminSection.questions) {
+          return const AdminQuestionsView();
         }
-        if (state.status == AdminViewStatus.initial ||
-            (state.status == AdminViewStatus.loading &&
+        if (state.section == AdminSection.cultureSurvey) {
+          return const AdminSurveysView();
+        }
+        // La lista de empresas dibuja su propio skeleton debajo del
+        // encabezado y los filtros.
+        final companiesList =
+            state.section == AdminSection.companies &&
+            !state.showCompanyDetail;
+        if (!companiesList && state.status == AdminViewStatus.initial ||
+            !companiesList &&
+                (state.status == AdminViewStatus.loading &&
                 state.companies.isEmpty &&
                 state.metrics == null &&
                 state.processes.isEmpty &&
                 state.people.isEmpty &&
                 state.cultureLeads.isEmpty)) {
-          return const Center(child: CircularProgressIndicator());
+          return const SkeletonPage();
         }
         if (state.status == AdminViewStatus.failure) {
           return Padding(
@@ -79,11 +82,7 @@ class AdminSectionView extends StatelessWidget {
           AdminSection.alerts => AdminAlertsView(state: state),
           AdminSection.xebec => AdminXebecView(state: state),
           AdminSection.questions => const AdminQuestionsView(),
-          AdminSection.cultureSurvey => const AdminQuestionsView(
-            slug: cultureSurveySlug,
-            allowSeed: false,
-            hideUploadWhenFilled: true,
-          ),
+          AdminSection.cultureSurvey => const AdminSurveysView(),
           AdminSection.settings => AdminSettingsView(state: state),
         };
       },
@@ -343,8 +342,12 @@ class AdminCompaniesView extends StatelessWidget {
   Widget build(BuildContext context) {
     final labels = AdminLabels(context);
     final compact = MediaQuery.sizeOf(context).width < 800;
+    final loading =
+        state.status == AdminViewStatus.loading ||
+        state.status == AdminViewStatus.initial;
     return _Page(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AdminPageHeader(
             title: context.l10n.adminCompanies,
@@ -394,97 +397,419 @@ class AdminCompaniesView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 22),
-          if (state.companies.isEmpty)
+          if (loading)
+            _CompaniesSkeleton(compact: compact)
+          else if (state.companies.isEmpty)
             AdminEmptyState(
               message: state.archivedOnly
                   ? context.l10n.noArchivedCompanies
                   : context.l10n.noCompanies,
+              icon: Icons.apartment_outlined,
             )
           else if (compact)
-            ...state.companies.map(
-              (company) => AdminEntityCard(
-                title: company.name,
-                subtitle:
-                    '${context.l10n.lastActivity}: ${labels.date(company.lastActivityAt ?? company.createdAt)}',
-                trailing: labels.companyStatus(company.status),
-                action: _CompanyOverflowMenu(company),
-                onTap: () => context.read<AdminBloc>().add(
-                  AdminCompanyOpened(company.id),
-                ),
-              ),
-            )
+            for (final company in state.companies)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _CompanyCard(company: company),
+              )
           else
-            AdminPanel(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  columns: [
-                    DataColumn(label: Text(context.l10n.adminCompanies)),
-                    DataColumn(label: Text(context.l10n.statusLabel)),
-                    DataColumn(
-                      label: Text(context.l10n.adminProcesses),
-                      numeric: true,
+            _CompaniesTable(companies: state.companies),
+        ],
+      ),
+    );
+  }
+}
+
+// Anchos relativos de las columnas de la tabla de empresas; los comparten el
+// encabezado, las filas y el skeleton para que todo quede alineado.
+const _companyColumnFlex = [5, 2, 1, 2, 1, 2];
+const _companyActionsWidth = 48.0;
+const _companyTableMinWidth = 960.0;
+
+Widget _companyRow(List<Widget> cells, Widget actions) => Row(
+  children: [
+    for (final (index, cell) in cells.indexed)
+      Expanded(
+        flex: _companyColumnFlex[index],
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Align(alignment: Alignment.centerLeft, child: cell),
+        ),
+      ),
+    SizedBox(width: _companyActionsWidth, child: actions),
+  ],
+);
+
+String _companySubtitle(Company company) => [
+  company.sector,
+  company.city,
+].whereType<String>().where((item) => item.trim().isNotEmpty).join(' · ');
+
+void _openCompany(BuildContext context, Company company) =>
+    context.read<AdminBloc>().add(AdminCompanyOpened(company.id));
+
+class _CompaniesTable extends StatelessWidget {
+  const _CompaniesTable({required this.companies});
+  final List<Company> companies;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    const headerStyle = TextStyle(
+      color: AppColors.muted,
+      fontSize: 12.5,
+      fontWeight: FontWeight.w600,
+    );
+    return AdminPanel(
+      child: _CompanyTableFrame(
+        child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
+                  child: _companyRow([
+                    Text(l10n.adminCompanies, style: headerStyle),
+                    Text(l10n.statusLabel, style: headerStyle),
+                    Text(l10n.adminProcesses, style: headerStyle),
+                    Text(
+                      '${l10n.funnelCompleted} / ${l10n.funnelInvited}',
+                      style: headerStyle,
                     ),
-                    DataColumn(
-                      label: Text(context.l10n.funnelInvited),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(context.l10n.funnelStarted),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(context.l10n.funnelCompleted),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(context.l10n.kpiAffinities),
-                      numeric: true,
-                    ),
-                    DataColumn(label: Text(context.l10n.lastActivity)),
-                    DataColumn(label: Text(context.l10n.companyActions)),
-                  ],
-                  rows: [
-                    for (final company in state.companies)
-                      DataRow(
-                        onSelectChanged: (_) => context.read<AdminBloc>().add(
-                          AdminCompanyOpened(company.id),
-                        ),
-                        cells: [
-                          DataCell(
-                            Row(
-                              children: [
-                                CompanyLogoView(url: company.logoUrl, size: 32),
-                                const SizedBox(width: 10),
-                                Flexible(child: Text(company.name)),
-                              ],
-                            ),
-                            onTap: () => context.read<AdminBloc>().add(
-                              AdminCompanyOpened(company.id),
-                            ),
-                          ),
-                          DataCell(Text(labels.companyStatus(company.status))),
-                          DataCell(Text('${company.activeProcesses}')),
-                          DataCell(Text('${company.invitedPeople}')),
-                          DataCell(Text('${company.startedEvaluations}')),
-                          DataCell(Text('${company.completedEvaluations}')),
-                          DataCell(Text('${company.affinitiesDetected}')),
-                          DataCell(
-                            Text(
-                              labels.date(
-                                company.lastActivityAt ?? company.createdAt,
-                              ),
-                            ),
-                          ),
-                          DataCell(_CompanyOverflowMenu(company)),
-                        ],
-                      ),
-                  ],
+                    Text(l10n.kpiAffinities, style: headerStyle),
+                    Text(l10n.lastActivity, style: headerStyle),
+                  ], const SizedBox.shrink()),
                 ),
+                for (final company in companies) ...[
+                  const Divider(height: 1, color: AppColors.divider),
+                  _CompanyTableRow(company: company),
+                ],
+              ],
+        ),
+      ),
+    );
+  }
+}
+
+// Da a la tabla un ancho mínimo y scroll horizontal en pantallas angostas.
+class _CompanyTableFrame extends StatelessWidget {
+  const _CompanyTableFrame({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SizedBox(
+        width: constraints.maxWidth < _companyTableMinWidth
+            ? _companyTableMinWidth
+            : constraints.maxWidth,
+        child: child,
+      ),
+    ),
+  );
+}
+
+class _CompanyTableRow extends StatelessWidget {
+  const _CompanyTableRow({required this.company});
+  final Company company;
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = AdminLabels(context);
+    final subtitle = _companySubtitle(company);
+    const value = TextStyle(color: AppColors.ink, fontSize: 14.5);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _openCompany(context, company),
+        hoverColor: const Color(0xFFF5F8FC),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),
+          child: _companyRow([
+            Row(
+              children: [
+                CompanyLogoView(url: company.logoUrl, size: 36),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        company.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.ink,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (subtitle.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppColors.muted,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            _CompanyStatusPill(company.status),
+            Text('${company.activeProcesses}', style: value),
+            _CompletionCell(company: company),
+            Text('${company.affinitiesDetected}', style: value),
+            Text(
+              labels.date(company.lastActivityAt ?? company.createdAt),
+              style: const TextStyle(color: AppColors.subtitle, fontSize: 14),
+            ),
+          ], _CompanyOverflowMenu(company)),
+        ),
+      ),
+    );
+  }
+}
+
+// Evaluaciones completadas frente a personas invitadas, con barra de avance.
+class _CompletionCell extends StatelessWidget {
+  const _CompletionCell({required this.company});
+  final Company company;
+
+  @override
+  Widget build(BuildContext context) {
+    final invited = company.invitedPeople;
+    final completed = company.completedEvaluations;
+    return SizedBox(
+      width: 120,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$completed / $invited',
+            style: const TextStyle(color: AppColors.ink, fontSize: 14.5),
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: invited == 0 ? 0 : (completed / invited).clamp(0.0, 1.0),
+              minHeight: 4,
+              backgroundColor: const Color(0xFFE9EAEE),
+              color: AppColors.positive,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompanyStatusPill extends StatelessWidget {
+  const _CompanyStatusPill(this.status);
+  final CompanyStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (foreground, background) = switch (status) {
+      CompanyStatus.active => (const Color(0xFF3B6D11), const Color(0xFFEFF7E6)),
+      CompanyStatus.onboarding => (AppColors.brandBlue, const Color(0xFFE8F2FC)),
+      CompanyStatus.inactive => (const Color(0xFF5F6168), const Color(0xFFF0F0F2)),
+      CompanyStatus.atRisk => (const Color(0xFF9A5B00), const Color(0xFFFFF4E0)),
+      CompanyStatus.suspended => (const Color(0xFFB42318), const Color(0xFFFDECEA)),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: foreground,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              AdminLabels(context).companyStatus(status),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: foreground,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
               ),
             ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _CompanyCard extends StatelessWidget {
+  const _CompanyCard({required this.company});
+  final Company company;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final labels = AdminLabels(context);
+    final subtitle = _companySubtitle(company);
+    const meta = TextStyle(color: AppColors.subtitle, fontSize: 13.5);
+    return AdminPanel(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: AppRadii.border,
+          onTap: () => _openCompany(context, company),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CompanyLogoView(url: company.logoUrl, size: 40),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            company.name,
+                            style: const TextStyle(
+                              color: AppColors.ink,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (subtitle.isNotEmpty)
+                            Text(
+                              subtitle,
+                              style: const TextStyle(
+                                color: AppColors.muted,
+                                fontSize: 13,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    _CompanyOverflowMenu(company),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 14,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    _CompanyStatusPill(company.status),
+                    Text(
+                      '${l10n.adminProcesses}: ${company.activeProcesses}',
+                      style: meta,
+                    ),
+                    Text(
+                      '${l10n.funnelCompleted}: ${company.completedEvaluations} / ${company.invitedPeople}',
+                      style: meta,
+                    ),
+                    Text(
+                      '${l10n.kpiAffinities}: ${company.affinitiesDetected}',
+                      style: meta,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${l10n.lastActivity}: ${labels.date(company.lastActivityAt ?? company.createdAt)}',
+                  style: const TextStyle(color: AppColors.muted, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CompaniesSkeleton extends StatelessWidget {
+  const _CompaniesSkeleton({required this.compact});
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    if (compact) {
+      return const Skeleton(child: SkeletonList(count: 5, separate: true));
+    }
+    return Skeleton(
+      child: SkeletonCard(
+        child: _CompanyTableFrame(
+          child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 12, 16),
+              child: _companyRow(const [
+                SkeletonBox(width: 90, height: 12),
+                SkeletonBox(width: 50, height: 12),
+                SkeletonBox(width: 60, height: 12),
+                SkeletonBox(width: 120, height: 12),
+                SkeletonBox(width: 60, height: 12),
+                SkeletonBox(width: 90, height: 12),
+              ], const SizedBox.shrink()),
+            ),
+            for (var index = 0; index < 6; index++) ...[
+              const Divider(height: 1, color: AppColors.divider),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
+                child: _companyRow(const [
+                  Row(
+                    children: [
+                      SkeletonBox(width: 36, height: 36, radius: 18),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SkeletonBox(width: 170, height: 15),
+                            SizedBox(height: 6),
+                            SkeletonBox(width: 110, height: 12),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SkeletonBox(width: 88, height: 24, radius: 12),
+                  SkeletonBox(width: 24, height: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SkeletonBox(width: 56, height: 14),
+                      SizedBox(height: 6),
+                      SkeletonBox(width: 120, height: 4),
+                    ],
+                  ),
+                  SkeletonBox(width: 24, height: 14),
+                  SkeletonBox(width: 90, height: 14),
+                ], const SizedBox.shrink()),
+              ),
+            ],
+          ],
+          ),
+        ),
       ),
     );
   }
@@ -927,10 +1252,7 @@ class AdminCultureLeadsView extends StatelessWidget {
           const SizedBox(height: 20),
           if (state.status == AdminViewStatus.loading &&
               state.cultureLeads.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 48),
-              child: Center(child: CircularProgressIndicator()),
-            )
+            const Skeleton(child: SkeletonList(count: 4, separate: true))
           else if (state.cultureLeads.isEmpty)
             AdminEmptyState(message: l10n.adminCultureLeadsEmpty)
           else
