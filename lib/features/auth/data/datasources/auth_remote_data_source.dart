@@ -6,6 +6,7 @@ import 'package:talex_platform/core/auth/user_role.dart';
 import 'package:talex_platform/core/error/exceptions.dart';
 import 'package:talex_platform/core/data/http_remote_database.dart';
 import 'package:talex_platform/features/auth/data/datasources/google_popup_monitor.dart';
+import 'package:talex_platform/features/talent/domain/talent_error_codes.dart';
 import 'package:talex_platform/features/auth/data/models/auth_user_model.dart';
 
 abstract interface class AuthRemoteDataSource {
@@ -109,28 +110,10 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
     } on FirebaseException {
       data = null;
     }
-    final operational = await _hydrateFromOperationalDb(user, data);
-    return operational ??
-        AuthUserModel(
-          id: user.uid,
-          email: user.email ?? '',
-          displayName: (data?['displayName'] as String?) ?? user.displayName,
-          companyName: data?['companyName'] as String?,
-          role: SuperAdminConfig.matches(user.email)
-              ? UserRole.superadmin
-              : UserRoleX.parse(
-                  data?['role'] == UserRole.superadmin.value
-                      ? UserRole.user.value
-                      : data?['role'],
-                ),
-          companyId: data?['companyId'] as String?,
-          documentNumber: data?['documentNumber'] as String?,
-          mustChangePassword: data?['mustChangePassword'] == true,
-          mustReviewCompanyDna: data?['mustReviewCompanyDna'] == true,
-        );
+    return _hydrateFromOperationalDb(user, data);
   }
 
-  Future<AuthUserModel?> _hydrateFromOperationalDb(
+  Future<AuthUserModel> _hydrateFromOperationalDb(
     User user,
     Map<String, dynamic>? firestore,
   ) async {
@@ -144,9 +127,17 @@ final class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
         },
       );
       final session = await HttpRemoteDatabase().rpc('current_session_profile');
-      return _userFromSession(user, firestore, session);
+      final resolved = _userFromSession(user, firestore, session);
+      if (resolved == null) {
+        throw const ServerException(TalentErrorCodes.apiUnavailable);
+      }
+      return resolved;
+    } on ServerException {
+      await _firebaseAuth.signOut();
+      rethrow;
     } on Object {
-      return null;
+      await _firebaseAuth.signOut();
+      throw const ServerException(TalentErrorCodes.apiUnavailable);
     }
   }
 

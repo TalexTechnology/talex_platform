@@ -1544,6 +1544,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The operation could not be completed. Please try again.';
 
   @override
+  String get errorApiUnavailable =>
+      'TaleX is unavailable. You cannot sign in until the API responds.';
+
+  @override
   String get errorCompanyNotFound => 'The company was not found.';
 
   @override

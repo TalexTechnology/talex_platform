@@ -3002,6 +3002,12 @@ abstract class AppLocalizations {
   /// **'No se pudo completar la operación. Inténtalo nuevamente.'**
   String get errorUnexpected;
 
+  /// No description provided for @errorApiUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.'**
+  String get errorApiUnavailable;
+
   /// No description provided for @errorCompanyNotFound.
   ///
   /// In es, this message translates to:

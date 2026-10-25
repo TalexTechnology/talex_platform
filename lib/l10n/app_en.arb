@@ -507,6 +507,7 @@
   "errorNeedAuthEmail": "You need an authenticated email.",
   "errorPermissionDenied": "You don't have permission for this operation.",
   "errorUnexpected": "The operation could not be completed. Please try again.",
+  "errorApiUnavailable": "TaleX is unavailable. You cannot sign in until the API responds.",
   "errorCompanyNotFound": "The company was not found.",
   "errorRespondentExists": "A respondent with this email already exists for this vacancy.",
   "errorInviteMissing": "There is no invitation for this email.",

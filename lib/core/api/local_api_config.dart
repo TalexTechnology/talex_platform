@@ -1,7 +1,6 @@
-/// URL de la API (MySQL detrás de HTTP). Flutter nunca habla MySQL.
+/// URL de la API. Flutter nunca habla con la base: llama a Vercel.
 ///
-/// Por defecto apunta a local. Se puede override con
-/// `--dart-define=TALEX_API_URL=...`
+/// Por defecto usa producción. Local: `--dart-define=TALEX_API_URL=http://127.0.0.1:8080`
 class LocalApiConfig {
   const LocalApiConfig({required this.url});
 
@@ -10,7 +9,7 @@ class LocalApiConfig {
   static const fromEnvironment = LocalApiConfig(
     url: String.fromEnvironment(
       'TALEX_API_URL',
-      defaultValue: 'http://127.0.0.1:8080',
+      defaultValue: 'https://talex-backend.vercel.app',
     ),
   );
 
@@ -26,7 +25,7 @@ class LocalApiConfig {
     if (uri.host.startsWith('192.168.') || uri.host.startsWith('10.')) {
       return true;
     }
-    return false;
+    return uri.scheme == 'https';
   }
 }
 

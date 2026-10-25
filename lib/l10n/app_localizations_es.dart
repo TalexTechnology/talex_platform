@@ -1546,6 +1546,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo completar la operación. Inténtalo nuevamente.';
 
   @override
+  String get errorApiUnavailable =>
+      'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.';
+
+  @override
   String get errorCompanyNotFound => 'No se encontró la empresa.';
 
   @override

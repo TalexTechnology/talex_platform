@@ -507,6 +507,7 @@
   "errorNeedAuthEmail": "Necesitas un correo autenticado.",
   "errorPermissionDenied": "No tienes permiso para esta operación.",
   "errorUnexpected": "No se pudo completar la operación. Inténtalo nuevamente.",
+  "errorApiUnavailable": "No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.",
   "errorCompanyNotFound": "No se encontró la empresa.",
   "errorRespondentExists": "Ya existe un encuestado con este correo en la vacante.",
   "errorInviteMissing": "No hay una invitación para este correo.",
