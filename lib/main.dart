@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/app/app.dart';
+import 'package:talex_platform/core/debug/debug_error_filter.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:talex_platform/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installDebugErrorFilter();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await configureDependencies();
   final localeCubit = getIt<LocaleCubit>();

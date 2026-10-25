@@ -1971,6 +1971,156 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get cultureQuestionsOpen => 'Preguntas';
+
+  @override
+  String get cultureQuestionsTitle => 'Preguntas de Mi cultura';
+
+  @override
+  String get cultureQuestionsSubtitle =>
+      'Banco de preguntas de la encuesta que responden los colaboradores de cada empresa.';
+
+  @override
+  String get cultureQuestionsBack => 'Volver a Mi cultura';
+
+  @override
+  String get cultureQuestionsNew => 'Nueva pregunta';
+
+  @override
+  String get cultureQuestionsEditSurvey => 'Título e intro';
+
+  @override
+  String get cultureQuestionsShowInactive => 'Mostrar desactivadas';
+
+  @override
+  String get cultureQuestionsSearch =>
+      'Buscar por código, nombre, enunciado o sección...';
+
+  @override
+  String get cultureQuestionsEmpty => 'Todavía no hay preguntas de cultura.';
+
+  @override
+  String get cultureQuestionsNoResults =>
+      'Ninguna pregunta coincide con la búsqueda.';
+
+  @override
+  String get cultureQuestionsInactive => 'Desactivada';
+
+  @override
+  String get cultureQuestionsRequiredBadge => 'Obligatoria';
+
+  @override
+  String get cultureQuestionsSurveyTitle => 'Título de la encuesta';
+
+  @override
+  String get cultureQuestionsSurveyIntro => 'Introducción';
+
+  @override
+  String get cultureQuestionsSurveyNoTitle => 'Sin título configurado';
+
+  @override
+  String get cultureQuestionsCode => 'Código';
+
+  @override
+  String get cultureQuestionsName => 'Nombre';
+
+  @override
+  String get cultureQuestionsStatement => 'Enunciado';
+
+  @override
+  String get cultureQuestionsInstruction => 'Instrucción';
+
+  @override
+  String get cultureQuestionsFormat => 'Formato';
+
+  @override
+  String get cultureQuestionsOptionsSource => 'Origen de opciones';
+
+  @override
+  String get cultureQuestionsSection => 'Sección (clave)';
+
+  @override
+  String get cultureQuestionsSectionTitle => 'Título de la sección';
+
+  @override
+  String get cultureQuestionsTechnique => 'Técnica';
+
+  @override
+  String get cultureQuestionsRequiredField => 'Obligatoria';
+
+  @override
+  String get cultureQuestionsActive => 'Activa';
+
+  @override
+  String get cultureQuestionsOptions => 'Opciones';
+
+  @override
+  String get cultureQuestionsOptionId => 'ID';
+
+  @override
+  String get cultureQuestionsOptionLabel => 'Texto';
+
+  @override
+  String get cultureQuestionsOptionDimension => 'Dimensión';
+
+  @override
+  String get cultureQuestionsAddOption => 'Agregar opción';
+
+  @override
+  String get cultureQuestionsRemoveOption => 'Quitar opción';
+
+  @override
+  String get cultureQuestionsOptionIdTaken => 'ID repetido';
+
+  @override
+  String get cultureQuestionsUsed => 'Usados en el banco:';
+
+  @override
+  String cultureQuestionsDeleteBody(String code) {
+    return '¿Eliminar la pregunta $code? Si solo quieres ocultarla, desactívala.';
+  }
+
+  @override
+  String get cultureQuestionsErrorLoad =>
+      'No pudimos cargar las preguntas de cultura.';
+
+  @override
+  String get cultureQuestionsErrorGeneric => 'No pudimos guardar el cambio.';
+
+  @override
+  String get cultureQuestionsErrorSignIn =>
+      'Tu sesión venció. Vuelve a iniciar sesión.';
+
+  @override
+  String get cultureQuestionsErrorPermission =>
+      'Solo el superadmin puede cambiar las preguntas.';
+
+  @override
+  String get cultureQuestionsErrorNotFound =>
+      'Esa pregunta ya no existe. Recarga la lista.';
+
+  @override
+  String get cultureQuestionsErrorDuplicate =>
+      'Ya existe una pregunta con ese código.';
+
+  @override
+  String cultureQuestionsErrorInvalid(String detail) {
+    return 'Revisa la pregunta: $detail';
+  }
+
+  @override
+  String get cultureQuestionsErrorInvalidGeneric =>
+      'Falta un dato o hay uno inválido en la pregunta.';
+
+  @override
+  String get cultureQuestionsErrorCodesMismatch =>
+      'El banco cambió mientras reordenabas. Recarga la lista e inténtalo de nuevo.';
+
+  @override
+  String get cultureQuestionsErrorNotDeployed =>
+      'El servidor todavía no tiene las preguntas de cultura publicadas. Cuando el backend las suba, aparecerán aquí.';
+
+  @override
   String get adminQuestionsUploadFile => 'Subir archivo';
 
   @override

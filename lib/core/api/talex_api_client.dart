@@ -52,7 +52,11 @@ class TalexApiClient {
         : jsonDecode(response.body);
     if (response.statusCode >= 400) {
       final code = decoded is Map ? '${decoded['code'] ?? ''}' : '';
-      throw ServerException(code.isEmpty ? TalentErrorCodes.unexpected : code);
+      final detail = decoded is Map ? '${decoded['message'] ?? ''}'.trim() : '';
+      throw ServerException(
+        code.isEmpty ? TalentErrorCodes.unexpected : code,
+        detail: detail.isEmpty ? null : detail,
+      );
     }
     if (decoded is List) return decoded;
     if (decoded == null) return const [];

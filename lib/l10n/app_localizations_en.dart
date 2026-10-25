@@ -1967,6 +1967,155 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get cultureQuestionsOpen => 'Questions';
+
+  @override
+  String get cultureQuestionsTitle => 'My culture questions';
+
+  @override
+  String get cultureQuestionsSubtitle =>
+      'Question bank for the survey each company\'s employees answer.';
+
+  @override
+  String get cultureQuestionsBack => 'Back to My culture';
+
+  @override
+  String get cultureQuestionsNew => 'New question';
+
+  @override
+  String get cultureQuestionsEditSurvey => 'Title and intro';
+
+  @override
+  String get cultureQuestionsShowInactive => 'Show inactive';
+
+  @override
+  String get cultureQuestionsSearch =>
+      'Search by code, name, statement or section...';
+
+  @override
+  String get cultureQuestionsEmpty => 'There are no culture questions yet.';
+
+  @override
+  String get cultureQuestionsNoResults => 'No question matches the search.';
+
+  @override
+  String get cultureQuestionsInactive => 'Inactive';
+
+  @override
+  String get cultureQuestionsRequiredBadge => 'Required';
+
+  @override
+  String get cultureQuestionsSurveyTitle => 'Survey title';
+
+  @override
+  String get cultureQuestionsSurveyIntro => 'Introduction';
+
+  @override
+  String get cultureQuestionsSurveyNoTitle => 'No title set';
+
+  @override
+  String get cultureQuestionsCode => 'Code';
+
+  @override
+  String get cultureQuestionsName => 'Name';
+
+  @override
+  String get cultureQuestionsStatement => 'Statement';
+
+  @override
+  String get cultureQuestionsInstruction => 'Instruction';
+
+  @override
+  String get cultureQuestionsFormat => 'Format';
+
+  @override
+  String get cultureQuestionsOptionsSource => 'Options source';
+
+  @override
+  String get cultureQuestionsSection => 'Section (key)';
+
+  @override
+  String get cultureQuestionsSectionTitle => 'Section title';
+
+  @override
+  String get cultureQuestionsTechnique => 'Technique';
+
+  @override
+  String get cultureQuestionsRequiredField => 'Required';
+
+  @override
+  String get cultureQuestionsActive => 'Active';
+
+  @override
+  String get cultureQuestionsOptions => 'Options';
+
+  @override
+  String get cultureQuestionsOptionId => 'ID';
+
+  @override
+  String get cultureQuestionsOptionLabel => 'Text';
+
+  @override
+  String get cultureQuestionsOptionDimension => 'Dimension';
+
+  @override
+  String get cultureQuestionsAddOption => 'Add option';
+
+  @override
+  String get cultureQuestionsRemoveOption => 'Remove option';
+
+  @override
+  String get cultureQuestionsOptionIdTaken => 'Duplicate ID';
+
+  @override
+  String get cultureQuestionsUsed => 'Used in the bank:';
+
+  @override
+  String cultureQuestionsDeleteBody(String code) {
+    return 'Delete question $code? If you only want to hide it, deactivate it.';
+  }
+
+  @override
+  String get cultureQuestionsErrorLoad =>
+      'We couldn\'t load the culture questions.';
+
+  @override
+  String get cultureQuestionsErrorGeneric => 'We couldn\'t save the change.';
+
+  @override
+  String get cultureQuestionsErrorSignIn =>
+      'Your session expired. Sign in again.';
+
+  @override
+  String get cultureQuestionsErrorPermission =>
+      'Only the superadmin can change the questions.';
+
+  @override
+  String get cultureQuestionsErrorNotFound =>
+      'That question no longer exists. Reload the list.';
+
+  @override
+  String get cultureQuestionsErrorDuplicate =>
+      'A question with that code already exists.';
+
+  @override
+  String cultureQuestionsErrorInvalid(String detail) {
+    return 'Check the question: $detail';
+  }
+
+  @override
+  String get cultureQuestionsErrorInvalidGeneric =>
+      'A field in the question is missing or invalid.';
+
+  @override
+  String get cultureQuestionsErrorCodesMismatch =>
+      'The bank changed while you were reordering. Reload the list and try again.';
+
+  @override
+  String get cultureQuestionsErrorNotDeployed =>
+      'The server does not have the culture questions published yet. They will show up here once the backend deploys them.';
+
+  @override
   String get adminQuestionsUploadFile => 'Upload file';
 
   @override

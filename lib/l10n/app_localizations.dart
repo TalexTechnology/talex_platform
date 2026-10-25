@@ -3752,6 +3752,276 @@ abstract class AppLocalizations {
   /// **'{responded} de {total} respondieron'**
   String adminMyCultureRespondedCount(int responded, int total);
 
+  /// No description provided for @cultureQuestionsOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas'**
+  String get cultureQuestionsOpen;
+
+  /// No description provided for @cultureQuestionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas de Mi cultura'**
+  String get cultureQuestionsTitle;
+
+  /// No description provided for @cultureQuestionsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Banco de preguntas de la encuesta que responden los colaboradores de cada empresa.'**
+  String get cultureQuestionsSubtitle;
+
+  /// No description provided for @cultureQuestionsBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Mi cultura'**
+  String get cultureQuestionsBack;
+
+  /// No description provided for @cultureQuestionsNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva pregunta'**
+  String get cultureQuestionsNew;
+
+  /// No description provided for @cultureQuestionsEditSurvey.
+  ///
+  /// In es, this message translates to:
+  /// **'Título e intro'**
+  String get cultureQuestionsEditSurvey;
+
+  /// No description provided for @cultureQuestionsShowInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar desactivadas'**
+  String get cultureQuestionsShowInactive;
+
+  /// No description provided for @cultureQuestionsSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por código, nombre, enunciado o sección...'**
+  String get cultureQuestionsSearch;
+
+  /// No description provided for @cultureQuestionsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas de cultura.'**
+  String get cultureQuestionsEmpty;
+
+  /// No description provided for @cultureQuestionsNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna pregunta coincide con la búsqueda.'**
+  String get cultureQuestionsNoResults;
+
+  /// No description provided for @cultureQuestionsInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivada'**
+  String get cultureQuestionsInactive;
+
+  /// No description provided for @cultureQuestionsRequiredBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Obligatoria'**
+  String get cultureQuestionsRequiredBadge;
+
+  /// No description provided for @cultureQuestionsSurveyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Título de la encuesta'**
+  String get cultureQuestionsSurveyTitle;
+
+  /// No description provided for @cultureQuestionsSurveyIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Introducción'**
+  String get cultureQuestionsSurveyIntro;
+
+  /// No description provided for @cultureQuestionsSurveyNoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin título configurado'**
+  String get cultureQuestionsSurveyNoTitle;
+
+  /// No description provided for @cultureQuestionsCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get cultureQuestionsCode;
+
+  /// No description provided for @cultureQuestionsName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get cultureQuestionsName;
+
+  /// No description provided for @cultureQuestionsStatement.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado'**
+  String get cultureQuestionsStatement;
+
+  /// No description provided for @cultureQuestionsInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Instrucción'**
+  String get cultureQuestionsInstruction;
+
+  /// No description provided for @cultureQuestionsFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Formato'**
+  String get cultureQuestionsFormat;
+
+  /// No description provided for @cultureQuestionsOptionsSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Origen de opciones'**
+  String get cultureQuestionsOptionsSource;
+
+  /// No description provided for @cultureQuestionsSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Sección (clave)'**
+  String get cultureQuestionsSection;
+
+  /// No description provided for @cultureQuestionsSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Título de la sección'**
+  String get cultureQuestionsSectionTitle;
+
+  /// No description provided for @cultureQuestionsTechnique.
+  ///
+  /// In es, this message translates to:
+  /// **'Técnica'**
+  String get cultureQuestionsTechnique;
+
+  /// No description provided for @cultureQuestionsRequiredField.
+  ///
+  /// In es, this message translates to:
+  /// **'Obligatoria'**
+  String get cultureQuestionsRequiredField;
+
+  /// No description provided for @cultureQuestionsActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get cultureQuestionsActive;
+
+  /// No description provided for @cultureQuestionsOptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones'**
+  String get cultureQuestionsOptions;
+
+  /// No description provided for @cultureQuestionsOptionId.
+  ///
+  /// In es, this message translates to:
+  /// **'ID'**
+  String get cultureQuestionsOptionId;
+
+  /// No description provided for @cultureQuestionsOptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto'**
+  String get cultureQuestionsOptionLabel;
+
+  /// No description provided for @cultureQuestionsOptionDimension.
+  ///
+  /// In es, this message translates to:
+  /// **'Dimensión'**
+  String get cultureQuestionsOptionDimension;
+
+  /// No description provided for @cultureQuestionsAddOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar opción'**
+  String get cultureQuestionsAddOption;
+
+  /// No description provided for @cultureQuestionsRemoveOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar opción'**
+  String get cultureQuestionsRemoveOption;
+
+  /// No description provided for @cultureQuestionsOptionIdTaken.
+  ///
+  /// In es, this message translates to:
+  /// **'ID repetido'**
+  String get cultureQuestionsOptionIdTaken;
+
+  /// No description provided for @cultureQuestionsUsed.
+  ///
+  /// In es, this message translates to:
+  /// **'Usados en el banco:'**
+  String get cultureQuestionsUsed;
+
+  /// No description provided for @cultureQuestionsDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar la pregunta {code}? Si solo quieres ocultarla, desactívala.'**
+  String cultureQuestionsDeleteBody(String code);
+
+  /// No description provided for @cultureQuestionsErrorLoad.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las preguntas de cultura.'**
+  String get cultureQuestionsErrorLoad;
+
+  /// No description provided for @cultureQuestionsErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el cambio.'**
+  String get cultureQuestionsErrorGeneric;
+
+  /// No description provided for @cultureQuestionsErrorSignIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Vuelve a iniciar sesión.'**
+  String get cultureQuestionsErrorSignIn;
+
+  /// No description provided for @cultureQuestionsErrorPermission.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo el superadmin puede cambiar las preguntas.'**
+  String get cultureQuestionsErrorPermission;
+
+  /// No description provided for @cultureQuestionsErrorNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa pregunta ya no existe. Recarga la lista.'**
+  String get cultureQuestionsErrorNotFound;
+
+  /// No description provided for @cultureQuestionsErrorDuplicate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe una pregunta con ese código.'**
+  String get cultureQuestionsErrorDuplicate;
+
+  /// No description provided for @cultureQuestionsErrorInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa la pregunta: {detail}'**
+  String cultureQuestionsErrorInvalid(String detail);
+
+  /// No description provided for @cultureQuestionsErrorInvalidGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta un dato o hay uno inválido en la pregunta.'**
+  String get cultureQuestionsErrorInvalidGeneric;
+
+  /// No description provided for @cultureQuestionsErrorCodesMismatch.
+  ///
+  /// In es, this message translates to:
+  /// **'El banco cambió mientras reordenabas. Recarga la lista e inténtalo de nuevo.'**
+  String get cultureQuestionsErrorCodesMismatch;
+
+  /// No description provided for @cultureQuestionsErrorNotDeployed.
+  ///
+  /// In es, this message translates to:
+  /// **'El servidor todavía no tiene las preguntas de cultura publicadas. Cuando el backend las suba, aparecerán aquí.'**
+  String get cultureQuestionsErrorNotDeployed;
+
   /// No description provided for @adminQuestionsUploadFile.
   ///
   /// In es, this message translates to:

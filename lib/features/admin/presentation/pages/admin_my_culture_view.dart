@@ -3,6 +3,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/features/admin/data/datasources/culture_report_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_organization_report.dart';
+import 'package:talex_platform/features/admin/presentation/pages/admin_culture_questions_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
@@ -21,11 +22,17 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
       widget.source ?? CultureReportDataSource();
   late Future<CultureOrganizationReport> _report = _source.load();
   var _query = '';
+  var _showQuestions = false;
 
   void _reload() => setState(() => _report = _source.load());
 
   @override
   Widget build(BuildContext context) {
+    if (_showQuestions) {
+      return AdminCultureQuestionsView(
+        onBack: () => setState(() => _showQuestions = false),
+      );
+    }
     final l10n = context.l10n;
     final compact = MediaQuery.sizeOf(context).width < 720;
     return FutureBuilder<CultureOrganizationReport>(
@@ -123,10 +130,24 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
                 title: l10n.adminSurveysMyCulture,
                 subtitle: l10n.adminMyCultureSubtitle,
                 actions: [
-                  OutlinedButton.icon(
-                    onPressed: loading ? null : _reload,
-                    icon: const Icon(Icons.refresh),
-                    label: Text(l10n.adminMyCultureRefresh),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () => setState(() => _showQuestions = true),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.primaryButton,
+                        ),
+                        icon: const Icon(Icons.quiz_outlined),
+                        label: Text(l10n.cultureQuestionsOpen),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: loading ? null : _reload,
+                        icon: const Icon(Icons.refresh),
+                        label: Text(l10n.adminMyCultureRefresh),
+                      ),
+                    ],
                   ),
                 ],
               ),
