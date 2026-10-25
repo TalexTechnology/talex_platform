@@ -30,10 +30,22 @@ service cloud.firestore {
         && userData().role in [
           'company_admin',
           'company_lead',
+          'ceo',
           'people_ops',
+          'hr',
           'recruiter',
           'hiring_manager'
         ];
+    }
+
+    function candidatePath(candidateId) {
+      return /databases/$(database)/documents/candidates/$(candidateId);
+    }
+
+    function staffOwnsCandidate(candidateId) {
+      return isCompanyStaff()
+        && exists(candidatePath(candidateId))
+        && get(candidatePath(candidateId)).data.companyId == companyId();
     }
 
     function isRespondent() {
@@ -118,6 +130,8 @@ service cloud.firestore {
       allow update: if isSuperAdmin()
         || (signedIn() && inviteId == emailKey())
         || (isCompanyStaff() && resource.data.companyId == companyId());
+      allow delete: if isSuperAdmin()
+        || (isCompanyStaff() && resource.data.companyId == companyId());
     }
 
     match /companies/{id} {
@@ -158,17 +172,35 @@ service cloud.firestore {
       allow create: if isSuperAdmin()
         || (isCompanyStaff() && request.resource.data.companyId == companyId());
       allow update: if isSuperAdmin()
-        || (isCompanyStaff() && resource.data.companyId == companyId())
-        || ownsCandidate(id);
+        || (isCompanyStaff()
+          && resource.data.companyId == companyId()
+          && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['companyAffinity', 'affinityStatus']))
+        || (ownsCandidate(id)
+          && !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['affinityStatus', 'companyId', 'email'])
+          && (!request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(['companyAffinity'])
+            || request.resource.data.companyAffinity == 'unknown'));
+      allow delete: if isSuperAdmin()
+        || (isCompanyStaff() && resource.data.companyId == companyId());
+    }
+
+    match /affinity_analyses/{id} {
+      allow get: if isSuperAdmin() || staffOwnsCandidate(id);
+      allow list: if isSuperAdmin()
+        || (isCompanyStaff() && resource.data.companyId == companyId());
+      allow write: if false;
     }
 
     match /evaluations/{id} {
       allow get: if isSuperAdmin()
         || ownsCandidate(id)
-        || (resource != null && isCompanyStaff() && resource.data.companyId == companyId());
+        || staffOwnsCandidate(id);
       allow list: if isSuperAdmin()
         || (isCompanyStaff() && resource.data.companyId == companyId());
       allow create, update: if isSuperAdmin() || ownsCandidate(id);
+      allow delete: if isSuperAdmin() || staffOwnsCandidate(id);
     }
 
     match /activity_events/{id} {
@@ -198,6 +230,20 @@ service cloud.firestore {
       allow update: if isSuperAdmin() || isCompanyStaff();
       allow delete: if isSuperAdmin()
         || (isCompanyStaff() && resource.data.source == 'company');
+    }
+
+    match /assessment_questions/{id} {
+      allow read: if isSuperAdmin() || isCompanyStaff() || isRespondent();
+      allow write: if isSuperAdmin();
+    }
+
+    match /survey_result_requests/{id} {
+      allow get: if isSuperAdmin() || ownsCandidate(id);
+      allow list: if isSuperAdmin();
+      allow create, update: if ownsCandidate(id)
+        && request.resource.data.candidateId == id
+        && request.resource.data.status == 'pending';
+      allow delete: if isSuperAdmin();
     }
 
     match /admin_audit_logs/{id} {

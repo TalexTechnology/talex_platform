@@ -2,6 +2,8 @@ part of 'talent_bloc.dart';
 
 enum TalentViewStatus { initial, loading, success, failure }
 
+enum TalentCandidateNotice { updated, deleted }
+
 class TalentState extends Equatable {
   const TalentState({
     this.status = TalentViewStatus.initial,
@@ -18,6 +20,8 @@ class TalentState extends Equatable {
     this.processFilter,
     this.affinityFilter,
     this.candidateReport,
+    this.candidateNotice,
+    this.analysisRunning = false,
   });
 
   final TalentViewStatus status;
@@ -34,6 +38,8 @@ class TalentState extends Equatable {
   final CandidateProcessStatus? processFilter;
   final AffinityLevel? affinityFilter;
   final CandidateReport? candidateReport;
+  final TalentCandidateNotice? candidateNotice;
+  final bool analysisRunning;
 
   List<TalentCandidate> get filteredCandidates {
     var items = snapshot.candidates;
@@ -67,6 +73,8 @@ class TalentState extends Equatable {
     AffinityLevel? affinityFilter,
     CandidateReport? candidateReport,
     bool clearCandidateReport = false,
+    TalentCandidateNotice? candidateNotice,
+    bool? analysisRunning,
   }) => TalentState(
     status: status ?? this.status,
     section: section ?? this.section,
@@ -84,6 +92,8 @@ class TalentState extends Equatable {
     candidateReport: clearCandidateReport
         ? null
         : (candidateReport ?? this.candidateReport),
+    candidateNotice: candidateNotice,
+    analysisRunning: analysisRunning ?? this.analysisRunning,
   );
 
   @override
@@ -102,5 +112,7 @@ class TalentState extends Equatable {
     processFilter,
     affinityFilter,
     candidateReport,
+    candidateNotice,
+    analysisRunning,
   ];
 }

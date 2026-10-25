@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
@@ -89,12 +90,12 @@ final class TalentRepositoryImpl implements TalentRepository {
       });
 
   @override
-  Future<Either<Failure, Unit>> tryCompleteRespondentInvite({
-    required String password,
-  }) => _guard(() async {
-    await _source.tryCompleteRespondentInvite(password: password);
-    return unit;
-  });
+  Future<Either<Failure, String>> redeemRespondentInvite({
+    required String token,
+  }) =>
+      _guard(
+        () => _source.redeemRespondentInvite(token: token),
+      );
 
   @override
   Future<Either<Failure, String>> inviteRecruiter({
@@ -126,6 +127,29 @@ final class TalentRepositoryImpl implements TalentRepository {
   });
 
   @override
+  Future<Either<Failure, Unit>> updateCandidate({
+    required String candidateId,
+    required String displayName,
+    required String documentNumber,
+    required String vacancyId,
+  }) => _guard(() async {
+    await _source.updateCandidate(
+      candidateId: candidateId,
+      displayName: displayName,
+      documentNumber: documentNumber,
+      vacancyId: vacancyId,
+    );
+    return unit;
+  });
+
+  @override
+  Future<Either<Failure, Unit>> deleteCandidate(String candidateId) =>
+      _guard(() async {
+        await _source.deleteCandidate(candidateId);
+        return unit;
+      });
+
+  @override
   Future<Either<Failure, RespondentSession>> loadRespondentSession() =>
       _guard(_source.loadRespondentSession);
 
@@ -144,26 +168,43 @@ final class TalentRepositoryImpl implements TalentRepository {
   });
 
   @override
-  Future<Either<Failure, Unit>> completeEvaluation(
+  Future<Either<Failure, TalentCandidate>> completeEvaluation(
     String candidateId, {
     String locale = 'es',
   }) => _guard(() async {
     final candidate = await _source.completeEvaluation(candidateId);
-    final mailed = await _email?.sendAssessmentComplete(
+    final mail = _email?.sendAssessmentComplete(
       to: candidate.email,
       firstName: (candidate.displayName ?? '').split(' ').first,
       companyName: '',
       locale: locale,
       vacancyName: candidate.vacancyName,
     );
-    mailed?.fold((_) {}, (_) {});
-    return unit;
+    if (mail != null) unawaited(mail);
+    return candidate;
   });
+
+  @override
+  Future<Either<Failure, Unit>> requestSurveyResult(String candidateId) =>
+      _guard(() async {
+        await _source.requestSurveyResult(candidateId);
+        return unit;
+      });
 
   @override
   Future<Either<Failure, CandidateReport>> loadCandidateReport(
     String candidateId,
   ) => _guard(() => _source.loadCandidateReport(candidateId));
+
+  @override
+  Future<Either<Failure, AffinityAnalysis>> loadAffinityAnalysis(
+    String candidateId,
+  ) => _guard(() => _source.loadAffinityAnalysis(candidateId));
+
+  @override
+  Future<Either<Failure, AffinityAnalysis>> requestAffinityAnalysis(
+    String candidateId,
+  ) => _guard(() => _source.requestAffinityAnalysis(candidateId));
 
   @override
   Future<Either<Failure, Unit>> saveAssessmentKind({

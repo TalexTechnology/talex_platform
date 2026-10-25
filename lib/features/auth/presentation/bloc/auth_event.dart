@@ -47,6 +47,15 @@ final class AuthInvitePinSubmitted extends AuthEvent {
   List<Object> get props => [pin];
 }
 
+final class AuthRespondentInviteRequested extends AuthEvent {
+  const AuthRespondentInviteRequested(this.token);
+
+  final String token;
+
+  @override
+  List<Object> get props => [token];
+}
+
 final class AuthSignOutRequested extends AuthEvent {
   const AuthSignOutRequested();
   @override

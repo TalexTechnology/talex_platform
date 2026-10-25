@@ -109,18 +109,6 @@ class AppLocalizationsEs extends AppLocalizations {
       '“TaleX transformó nuestro proceso de selección y ayudó a nuestro equipo a tomar mejores decisiones.”';
 
   @override
-  String get testimonialName => 'Gabriel Ramirez';
-
-  @override
-  String get testimonialRole => 'CEO, TaleX';
-
-  @override
-  String get testimonialNameSecondary => 'Pablo Melo';
-
-  @override
-  String get testimonialRoleSecondary => 'CTO, TaleX';
-
-  @override
   String welcomeUser(String name) {
     return 'Bienvenido, $name';
   }
@@ -446,6 +434,40 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminSales => 'Ventas';
+
+  @override
+  String get adminCultureLeads => 'Leads cultura';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'Todavía no hay leads de cultura.';
+
+  @override
+  String get cultureLeadEmployees => 'Empleados';
+
+  @override
+  String get cultureLeadTraits => 'Rasgos culturales';
+
+  @override
+  String get cultureLeadComment => 'Comentario';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'Nuevo';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contactado';
+
+  @override
+  String get cultureLeadStatusQualified => 'Calificado';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Descartado';
 
   @override
   String get adminAnalytics => 'Analytics';
@@ -1167,23 +1189,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get teamRole => 'Rol en la empresa';
 
   @override
-  String get teamRoleCompanyAdmin => 'Administración de empresa';
+  String get teamRoleCompanyAdmin => 'CEO';
 
   @override
-  String get teamRoleCompanyLead => 'Dirección';
+  String get teamRoleCompanyLead => 'Administrador';
 
   @override
-  String get teamRolePeopleOps => 'Personas';
+  String get teamRolePeopleOps => 'Recursos humanos';
 
   @override
   String get teamRoleRecruiter => 'Reclutamiento';
 
   @override
-  String get teamRoleHiringManager => 'Liderazgo de área';
+  String get teamRoleHiringManager => 'Líder técnico';
 
   @override
   String get teamRoleHint =>
-      'Dirección y administración pueden completar el ADN e invitar al resto del equipo. Reclutamiento y liderazgo de área gestionan vacantes y candidatos.';
+      'CEO y administrador pueden invitar al resto del equipo. Recursos humanos, reclutamiento y líder técnico trabajan vacantes y candidatos.';
 
   @override
   String get vacanciesSubtitle =>
@@ -1403,39 +1425,72 @@ class AppLocalizationsEs extends AppLocalizations {
   String get affinityVacancy => 'Vacante';
 
   @override
-  String get affinityCompanyHighHint =>
-      'Hay alta correspondencia con la cultura y la forma de trabajar descritas por la empresa. Texto de maqueta: más adelante aquí irá la lectura real de las dimensiones evaluadas.';
-
-  @override
-  String get affinityCompanyMediumHint =>
-      'Hay correspondencia parcial con el ADN de la empresa. Texto de maqueta: luego se detallará qué dimensiones coinciden y cuáles no.';
-
-  @override
-  String get affinityCompanyLowHint =>
-      'Hay menor correspondencia con la cultura descrita por la empresa. Texto de maqueta: la ficha real explicará en qué se distancia.';
-
-  @override
-  String get affinityVacancyHighHint =>
-      'El perfil de esta persona se acerca a lo que la vacante busca. Texto de maqueta: luego se mostrarán las características del rol con mayor coincidencia.';
-
-  @override
-  String get affinityVacancyMediumHint =>
-      'Hay coincidencia intermedia con el perfil de la vacante. Texto de maqueta: la ficha real indicará qué aspectos del rol calzan mejor.';
-
-  @override
-  String get affinityVacancyLowHint =>
-      'Hay menor correspondencia con el perfil buscado para esta vacante. Texto de maqueta: no significa un juicio sobre la persona, solo respecto a este rol.';
-
-  @override
   String get affinityUnknownHint =>
       'Todavía no hay evaluación completa, por eso la afinidad no está clasificada.';
 
   @override
   String get affinityMockNote =>
-      'Esta explicación es orientativa. La lectura definitiva se construirá con la metodología de TaleX.';
+      'Análisis generado con IA a partir de la encuesta, que es la misma para todas las empresas. Es información de apoyo: TaleX no toma decisiones de contratación ni descarta personas. La decisión final corresponde a tu equipo.';
+
+  @override
+  String get affinityAnalysisNone =>
+      'Esta evaluación todavía no tiene análisis de afinidad.';
+
+  @override
+  String get affinityAnalysisPending =>
+      'Estamos analizando las respuestas de la encuesta. Puede tardar unos segundos.';
+
+  @override
+  String get affinityAnalysisFailed =>
+      'No pudimos completar el análisis de afinidad en este momento. Puedes intentarlo de nuevo.';
+
+  @override
+  String get affinityAnalysisMissingDna =>
+      'Todavía no hay información suficiente de la encuesta para completar el análisis.';
+
+  @override
+  String get affinityAnalysisIncompleteAnswers =>
+      'La evaluación no tiene suficientes respuestas para analizar la afinidad.';
+
+  @override
+  String get affinityAnalyzeAction => 'Analizar afinidad';
+
+  @override
+  String get affinityReanalyzeAction => 'Volver a analizar';
+
+  @override
+  String get affinityAlignmentsTitle => 'Dónde hay afinidad';
+
+  @override
+  String get affinityDifferencesTitle =>
+      'Aspectos que podrían generar dificultades';
+
+  @override
+  String get affinityTopicsTitle => 'Temas para conversar en la entrevista';
+
+  @override
+  String get affinityGuidanceTitle => 'Orientación para Recursos Humanos';
+
+  @override
+  String get affinityDataGapsTitle => 'Información que faltó';
+
+  @override
+  String affinityScoreValue(int score) {
+    return 'Puntaje $score/100';
+  }
 
   @override
   String get continueAction => 'Continuar';
+
+  @override
+  String get respondentWelcomeTitle => 'Quiero conocerte bien';
+
+  @override
+  String get respondentWelcomeBody =>
+      'Hola. Soy TaleXito. Esta encuesta es la misma para todas las empresas. Yo recibo tus respuestas para conocer mejor cómo te gusta trabajar. El resultado no lo determino yo: una persona especializada te lo contará más adelante.';
+
+  @override
+  String get respondentWelcomeAction => 'Listo';
 
   @override
   String respondentHello(String name) {
@@ -1525,6 +1580,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo completar la operación. Inténtalo nuevamente.';
 
   @override
+  String get errorApiUnavailable =>
+      'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.';
+
+  @override
   String get errorCompanyNotFound => 'No se encontró la empresa.';
 
   @override
@@ -1536,6 +1595,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorInviteUsed => 'Esta invitación ya fue utilizada.';
+
+  @override
+  String get errorInviteInvalid => 'El enlace de invitación no es válido.';
+
+  @override
+  String get errorInviteExpired =>
+      'El enlace caducó. Pide una invitación nueva.';
 
   @override
   String get errorInvalidPin => 'El PIN no es válido.';
@@ -1645,13 +1711,47 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get assessmentFinishedTitle => 'Muy bien, acabaste';
+  String get assessmentFinishedTitle => 'TaleXito ya recibió tus respuestas';
+
+  @override
+  String get assessmentFinishedBody =>
+      'TaleXito se encarga de recibir la información. No determina el resultado. Una persona especializada te lo dirá más adelante.';
+
+  @override
+  String get surveyResultRequest => 'Quiero conocer mis resultados';
+
+  @override
+  String get surveyResultRequested =>
+      'Gracias por hacernos saber eso. El resultado se demora un poco. Una persona especializada se encarga de eso.';
+
+  @override
+  String get companyProfileSubtitle => 'Datos generales de la empresa.';
 
   @override
   String get downloadPdf => 'Descargar informe PDF';
 
   @override
   String get candidateResultTitle => 'Informe de resultados';
+
+  @override
+  String get editCandidate => 'Editar candidato';
+
+  @override
+  String get deleteCandidate => 'Eliminar candidato';
+
+  @override
+  String deleteCandidateConfirm(String name) {
+    return '¿Eliminar a $name? Se borrarán sus respuestas y su enlace de invitación dejará de funcionar. Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get deleteAction => 'Eliminar';
+
+  @override
+  String get candidateUpdated => 'Candidato actualizado.';
+
+  @override
+  String get candidateDeleted => 'Candidato eliminado.';
 
   @override
   String get backToResults => 'Volver';
@@ -1665,18 +1765,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get respondentInviteHint =>
-      'La persona recibirá un PIN de 6 dígitos al correo. Caduca a los 15 minutos. Luego se registra con su contraseña o con Google y ese PIN.';
+      'La persona recibirá un correo con un enlace para presentar la prueba de inmediato. Cuando la complete, verás el estado y el resultado aquí.';
 
   @override
   String get firstAccessCompany => 'Primer acceso';
 
   @override
   String get assessmentSignInHint =>
-      'Si te invitaron a una evaluación, entra por Registrarse con el PIN del correo. Si usas Google, después te pediremos el PIN.';
+      'Si te invitaron a una evaluación, usa el enlace del correo para comenzar la prueba. No necesitas registrarte con un PIN.';
 
   @override
   String get respondentInviteSent =>
-      'Invitación lista. El encuestado recibe un PIN por correo.';
+      'Invitación lista. El candidato recibe un enlace por correo para presentar la prueba.';
 
   @override
   String get recoverPasswordTitle => 'Recuperar acceso';
@@ -1753,6 +1853,212 @@ class AppLocalizationsEs extends AppLocalizations {
       'No hay una cuenta TaleX con este correo. Si te invitaron, entra por Primer acceso con el PIN.';
 
   @override
+  String get adminQuestions => 'Encuesta de afinidad';
+
+  @override
+  String get adminQuestionsSubtitle =>
+      'Preguntas que responde el candidato. Puedes verlas, editarlas y actualizarlas.';
+
+  @override
+  String get adminCultureSurvey => 'Encuesta de cultura';
+
+  @override
+  String get adminCultureSurveySubtitle =>
+      'Formulario de valores y cultura de la empresa. Sube el archivo una vez; después solo se edita.';
+
+  @override
+  String get adminCultureSurveyEmpty =>
+      'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.';
+
+  @override
+  String get adminQuestionsUploadFile => 'Subir archivo';
+
+  @override
+  String get adminQuestionsFrontCultura => 'Cultura vivida';
+
+  @override
+  String get adminQuestionsFrontLiderazgo => 'Liderazgo';
+
+  @override
+  String get adminQuestionsFrontTrabajo => 'Forma de trabajar';
+
+  @override
+  String get adminQuestionsFrontPersonas => 'Personas';
+
+  @override
+  String get adminQuestionsFrontApertura => 'Comentarios abiertos';
+
+  @override
+  String get adminQuestionsFormatScale => 'Escala';
+
+  @override
+  String get adminQuestionsFormatText => 'Texto abierto';
+
+  @override
+  String get adminQuestionsFormatSingle => 'Opción única';
+
+  @override
+  String get adminQuestionsFormatMulti => 'Opción múltiple';
+
+  @override
+  String get adminQuestionsNew => 'Nueva pregunta';
+
+  @override
+  String get adminQuestionsEdit => 'Editar pregunta';
+
+  @override
+  String get adminQuestionsPreview => 'Vista previa';
+
+  @override
+  String get adminQuestionsPreviewTitle => 'Vista previa de la encuesta';
+
+  @override
+  String get adminQuestionsPreviewNote =>
+      'Simulación: las respuestas no se guardan.';
+
+  @override
+  String get adminQuestionsPreviewEmpty =>
+      'No hay preguntas activas para mostrar.';
+
+  @override
+  String get adminQuestionsEmpty => 'Todavía no hay preguntas en Firebase.';
+
+  @override
+  String adminQuestionsSeed(int count) {
+    return 'Cargar las $count preguntas base';
+  }
+
+  @override
+  String get adminQuestionsNoResults =>
+      'Ninguna pregunta coincide con el filtro.';
+
+  @override
+  String get adminQuestionsSearch =>
+      'Buscar por código, dimensión o enunciado...';
+
+  @override
+  String get adminQuestionsAll => 'Todas';
+
+  @override
+  String adminQuestionsSummary(int active, int total) {
+    return '$active activas de $total';
+  }
+
+  @override
+  String get adminQuestionsFrontValues => '1 · Valores';
+
+  @override
+  String get adminQuestionsFrontNeeds => '2 · Necesidades';
+
+  @override
+  String get adminQuestionsFrontCapabilities => '3 · Capacidades';
+
+  @override
+  String get adminQuestionsFormatPair => 'Par de enunciados';
+
+  @override
+  String get adminQuestionsFormatExperience => 'Enunciado de experiencia';
+
+  @override
+  String get adminQuestionsCode => 'Código';
+
+  @override
+  String get adminQuestionsFront => 'Frente';
+
+  @override
+  String get adminQuestionsFormat => 'Formato';
+
+  @override
+  String get adminQuestionsDimension => 'Dimensión';
+
+  @override
+  String get adminQuestionsDimensionA => 'Dimensión A';
+
+  @override
+  String get adminQuestionsDimensionB => 'Dimensión B';
+
+  @override
+  String get adminQuestionsInstruction => 'Instrucción';
+
+  @override
+  String get adminQuestionsStatement => 'Enunciado';
+
+  @override
+  String get adminQuestionsStatementA => 'Enunciado A';
+
+  @override
+  String get adminQuestionsStatementB => 'Enunciado B';
+
+  @override
+  String adminQuestionsOption(int number) {
+    return 'Opción $number';
+  }
+
+  @override
+  String get adminQuestionsTimeLimit => 'Tiempo límite (segundos)';
+
+  @override
+  String get adminQuestionsTimeLimitHint => 'Vacío = sin límite';
+
+  @override
+  String get adminQuestionsNoLimit => 'Sin límite';
+
+  @override
+  String adminQuestionsSeconds(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get adminQuestionsActive => 'Activa';
+
+  @override
+  String get adminQuestionsInactive => 'Inactiva';
+
+  @override
+  String get adminQuestionsRequired => 'Este campo es obligatorio.';
+
+  @override
+  String get adminQuestionsCodeTaken =>
+      'Ya existe una pregunta con este código.';
+
+  @override
+  String get adminQuestionsInvalidTime =>
+      'Escribe un número entero mayor que cero.';
+
+  @override
+  String get adminQuestionsDeleteTitle => 'Eliminar pregunta';
+
+  @override
+  String adminQuestionsDeleteBody(String code) {
+    return 'Se eliminará $code de Firebase. Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get adminQuestionsDelete => 'Eliminar';
+
+  @override
+  String get adminQuestionsMoveUp => 'Subir';
+
+  @override
+  String get adminQuestionsMoveDown => 'Bajar';
+
+  @override
+  String get adminQuestionsError =>
+      'No se pudo completar la operación en Firebase.';
+
+  @override
+  String get adminQuestionsRestart => 'Reiniciar';
+
+  @override
+  String get adminQuestionsDeviceMobile => 'Móvil';
+
+  @override
+  String get adminQuestionsDeviceDesktop => 'Escritorio';
+
+  @override
+  String get adminQuestionsTimeUp => 'Tiempo agotado';
+
+  @override
   String get assessmentPairInstruction =>
       '¿Cuál de las dos frases lo describe mejor a usted?';
 
@@ -1803,4 +2109,81 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get frequencyScale5 => 'Siempre';
+
+  @override
+  String get adminRoleSuperadmin => 'Superadmin';
+
+  @override
+  String get adminRoleSuperadminHelp => 'Acceso total al panel de TaleX.';
+
+  @override
+  String get adminRoleUser => 'Usuario';
+
+  @override
+  String get adminRoleUserHelp =>
+      'Acceso estándar, sin panel de administración.';
+
+  @override
+  String get adminRoleChange => 'Cambiar rol';
+
+  @override
+  String get adminQuestionsImport => 'Importar CSV';
+
+  @override
+  String get adminQuestionsImportTitle => 'Importar preguntas';
+
+  @override
+  String adminQuestionsImportBody(int total, int created, int replaced) {
+    return 'El archivo trae $total preguntas: $created nuevas y $replaced que reemplazan a las que ya existen con el mismo código.';
+  }
+
+  @override
+  String get adminQuestionsImportAction => 'Importar';
+
+  @override
+  String get adminQuestionsCsvUnreadable =>
+      'No se pudo leer el archivo. Debe ser un CSV.';
+
+  @override
+  String get adminQuestionsCsvEmpty => 'El archivo no tiene preguntas.';
+
+  @override
+  String adminQuestionsCsvMissingColumns(String columns) {
+    return 'Faltan columnas obligatorias en el CSV: $columns.';
+  }
+
+  @override
+  String adminQuestionsCsvInvalidRow(int row) {
+    return 'Fila $row: falta el código o el enunciado A.';
+  }
+
+  @override
+  String adminQuestionsCsvDuplicate(int row, String code) {
+    return 'Fila $row: el código $code está repetido en el archivo.';
+  }
+
+  @override
+  String get adminQuestionsDeleteAll => 'Eliminar todas';
+
+  @override
+  String get adminQuestionsDeleteAllTitle => 'Eliminar todas las preguntas';
+
+  @override
+  String adminQuestionsDeleteAllBody(int count) {
+    return 'Se eliminarán las $count preguntas de Firebase. Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get adminQuestionsUploading => 'Cargando preguntas…';
+
+  @override
+  String get adminQuestionsDeleting => 'Eliminando preguntas…';
+
+  @override
+  String adminQuestionsUploaded(int count) {
+    return '$count preguntas cargadas en TaleX.';
+  }
+
+  @override
+  String get adminQuestionsDeletedAll => 'Se eliminaron todas las preguntas.';
 }

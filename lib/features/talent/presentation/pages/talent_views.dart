@@ -14,7 +14,6 @@ import 'package:talex_platform/core/widgets/location_picker.dart';
 import 'package:talex_platform/core/widgets/logo_field.dart';
 import 'package:talex_platform/features/talent/domain/services/dna_catalog.dart';
 import 'package:talex_platform/features/talent/presentation/company_options.dart';
-import 'package:talex_platform/features/talent/presentation/widgets/company_dna_fields.dart';
 import 'package:talex_platform/features/talent/presentation/widgets/talent_dialogs.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
@@ -215,15 +214,11 @@ class TalentVacanciesView extends StatelessWidget {
             AdminEmptyState(message: l10n.noVacancies)
           else
             ...state.snapshot.vacancies.map((item) {
-              final parts = [
-                if (item.area != null && item.area!.isNotEmpty)
-                  vacancyAreaLabel(l10n, item.area),
-                if (item.workMode != null && item.workMode!.isNotEmpty)
-                  vacancyWorkModeLabel(l10n, item.workMode),
-                if (item.seniority != null && item.seniority!.isNotEmpty)
-                  vacancySeniorityLabel(l10n, item.seniority),
-                if (item.city != null && item.city!.isNotEmpty) item.city,
-              ];
+              // Simplificado: Solo mostramos el área si fue seleccionada
+              final areaLabel = (item.area != null && item.area!.isNotEmpty)
+                  ? vacancyAreaLabel(l10n, item.area)
+                  : null;
+                  
               final related = state.snapshot.candidates
                   .where((candidate) => candidate.vacancyId == item.id)
                   .toList();
@@ -260,10 +255,10 @@ class TalentVacanciesView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        if (parts.isNotEmpty) ...[
+                        if (areaLabel != null) ...[
                           const SizedBox(height: 6),
                           Text(
-                            parts.join(' · '),
+                            areaLabel,
                             style: const TextStyle(color: AppColors.subtitle),
                           ),
                         ],
@@ -455,21 +450,6 @@ class TalentCandidatesView extends StatelessWidget {
                                   AffinityBadge(item.companyAffinity),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    l10n.affinityVacancy,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: AppColors.muted,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  AffinityBadge(item.vacancyAffinity),
-                                ],
-                              ),
                             ],
                           ),
                         ],
@@ -513,7 +493,7 @@ class TalentReportsView extends StatelessWidget {
                 return AdminEntityCard(
                   title: name,
                   subtitle:
-                      '${item.vacancyName} · ${l10n.affinityCompany} ${affinityWord(context, item.companyAffinity)} · ${l10n.affinityVacancy} ${affinityWord(context, item.vacancyAffinity)}',
+                      '${item.vacancyName} · ${l10n.affinityCompany} ${affinityWord(context, item.companyAffinity)}',
                   trailing: l10n.evaluationCompleted,
                   onTap: () => context.read<TalentBloc>().add(
                     TalentCandidateOpened(item.id),
@@ -639,7 +619,7 @@ class _TalentProfileViewState extends State<TalentProfileView> {
         children: [
           AdminPageHeader(
             title: l10n.companyProfile,
-            subtitle: l10n.companyDna,
+            subtitle: l10n.companyProfileSubtitle,
           ),
           const SizedBox(height: 20),
           _field(l10n.companyName, _name),
@@ -666,18 +646,6 @@ class _TalentProfileViewState extends State<TalentProfileView> {
             onChanged: (value) => _logoUrl = value.url,
           ),
           _field(l10n.description, _description, lines: 3),
-          CompanyDnaFields(
-            values: _values,
-            culture: _culture,
-            standout: _standout,
-            catalog: widget.state.snapshot.dnaCatalog,
-            onValuesChanged: (value) => setState(() => _values = value),
-            onCultureChanged: (value) => setState(() => _culture = value),
-            onStandoutChanged: (value) => setState(() => _standout = value),
-            onDeleteCustom: (type, label) => context.read<TalentBloc>().add(
-              TalentDnaOptionDeleted(type: type, label: label),
-            ),
-          ),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.centerRight,

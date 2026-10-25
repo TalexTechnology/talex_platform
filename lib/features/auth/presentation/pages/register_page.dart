@@ -152,10 +152,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   Expanded(
                     child: AuthTestimonialPanel(
                       quote: context.l10n.testimonial,
-                      name: context.l10n.testimonialName,
-                      role: context.l10n.testimonialRole,
-                      secondaryName: context.l10n.testimonialNameSecondary,
-                      secondaryRole: context.l10n.testimonialRoleSecondary,
                     ),
                   ),
                   Expanded(

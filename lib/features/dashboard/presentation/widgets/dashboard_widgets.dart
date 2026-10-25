@@ -123,11 +123,16 @@ class DashboardTopBar extends StatelessWidget {
     this.onSearch,
     this.onNotifications,
     this.onAssistant,
+    this.assistantTooltip,
+    this.assistantLabel,
+    this.assistantOpen = false,
     this.trailing,
     this.showMenu = false,
   });
   final String searchHint, signOutLabel;
+  final String? assistantTooltip, assistantLabel;
   final VoidCallback? onMenu, onSignOut, onNotifications, onAssistant;
+  final bool assistantOpen;
   final ValueChanged<String>? onSearch;
   final Widget? trailing;
   final bool showMenu;
@@ -165,10 +170,29 @@ class DashboardTopBar extends StatelessWidget {
           onPressed: onNotifications,
           icon: const Icon(Icons.notifications_none),
         ),
-        IconButton(
-          onPressed: onAssistant,
-          icon: const Icon(Icons.bolt_outlined),
-        ),
+        if (onAssistant != null) ...[
+          const SizedBox(width: 8),
+          Tooltip(
+            message: assistantTooltip ?? '',
+            child: TextButton.icon(
+              onPressed: onAssistant,
+              style: TextButton.styleFrom(
+                foregroundColor: assistantOpen
+                    ? AppColors.brandBlue
+                    : AppColors.ink,
+                backgroundColor: assistantOpen
+                    ? AppColors.brandBlue.withValues(alpha: 0.1)
+                    : const Color(0xFFF4F2F3),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
+              icon: const TaleXitoMark(size: 22),
+              label: Text(assistantLabel ?? 'TaleXito'),
+            ),
+          ),
+        ],
         IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline)),
         PopupMenuButton<void>(
           icon: const CircleAvatar(
@@ -309,69 +333,72 @@ class TopMatchesCard extends StatelessWidget {
                   ? null
                   : () => onCandidateTap!(entry.key),
               child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xFFF0EEF0))),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E3E5),
-                    borderRadius: AppRadii.border,
-                  ),
-                  child: Text(entry.value.initials),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 18,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    entry.value.name,
-                    style: const TextStyle(
-                      color: AppColors.ink,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Color(0xFFF0EEF0))),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    entry.value.assessment,
-                    style: const TextStyle(color: AppColors.subtitle),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0EFFF),
+                        color: const Color(0xFFE5E3E5),
                         borderRadius: AppRadii.border,
                       ),
+                      child: Text(entry.value.initials),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
                       child: Text(
-                        entry.value.status,
+                        entry.value.name,
                         style: const TextStyle(
-                          color: AppColors.dashboardAccent,
-                          fontSize: 12,
+                          color: AppColors.ink,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        entry.value.assessment,
+                        style: const TextStyle(color: AppColors.subtitle),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0EFFF),
+                            borderRadius: AppRadii.border,
+                          ),
+                          child: Text(
+                            entry.value.status,
+                            style: const TextStyle(
+                              color: AppColors.dashboardAccent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    const Icon(Icons.chevron_right, color: AppColors.accent),
+                  ],
                 ),
-                const SizedBox(width: 14),
-                const Icon(Icons.chevron_right, color: AppColors.accent),
-              ],
-            ),
-          ),
+              ),
             ),
           ),
         ),
@@ -416,41 +443,41 @@ class PendingActionsCard extends StatelessWidget {
           (action) => InkWell(
             onTap: action.onTap,
             child: Padding(
-            padding: const EdgeInsets.fromLTRB(28, 24, 20, 12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(action.icon, color: AppColors.accent, size: 20),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        action.title,
-                        style: const TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+              padding: const EdgeInsets.fromLTRB(28, 24, 20, 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(action.icon, color: AppColors.accent, size: 20),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          action.title,
+                          style: const TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        action.subtitle,
-                        style: const TextStyle(
-                          color: AppColors.subtitle,
-                          fontSize: 14,
-                          height: 1.35,
+                        const SizedBox(height: 4),
+                        Text(
+                          action.subtitle,
+                          style: const TextStyle(
+                            color: AppColors.subtitle,
+                            fontSize: 14,
+                            height: 1.35,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                if (action.onTap != null)
-                  const Icon(Icons.chevron_right, color: AppColors.accent),
-              ],
+                  if (action.onTap != null)
+                    const Icon(Icons.chevron_right, color: AppColors.accent),
+                ],
+              ),
             ),
-          ),
           ),
         ),
       ],

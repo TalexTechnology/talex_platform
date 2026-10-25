@@ -1,0 +1,30 @@
+{
+  "slug": "culture-perception",
+  "questions": [
+    {
+      "code": "CUL01",
+      "section": "cultura",
+      "format": "scale",
+      "statementA": "Reemplaza este enunciado por la pregunta real.",
+      "options": [
+        "Muy en desacuerdo",
+        "En desacuerdo",
+        "Ni de acuerdo ni en desacuerdo",
+        "De acuerdo",
+        "Muy de acuerdo"
+      ],
+      "order": 1,
+      "required": true,
+      "active": true
+    },
+    {
+      "code": "APE01",
+      "section": "apertura",
+      "format": "text",
+      "statementA": "Reemplaza este enunciado por la pregunta abierta real.",
+      "required": false,
+      "order": 2,
+      "active": true
+    }
+  ]
+}

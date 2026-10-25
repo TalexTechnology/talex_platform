@@ -4,11 +4,16 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
+import 'package:talex_platform/features/assistant/domain/entities/assistant_reply.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_host.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_text.dart';
+import 'package:talex_platform/features/assistant/presentation/brief/assistant_brief_builder.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/dashboard/presentation/widgets/dashboard_widgets.dart';
 import 'package:talex_platform/features/settings/presentation/pages/settings_view.dart';
+import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
+import 'package:talex_platform/features/talent/domain/services/dna_catalog.dart';
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
-import 'package:talex_platform/features/talent/presentation/pages/company_dna_onboarding_page.dart';
 import 'package:talex_platform/features/talent/presentation/pages/talent_candidate_result_view.dart';
 import 'package:talex_platform/features/talent/presentation/pages/talent_views.dart';
 import 'package:talex_platform/features/talent/presentation/pages/talent_password_page.dart';
@@ -50,13 +55,11 @@ class _CompanyShellState extends State<CompanyShell> {
     if (widget.mustChangePassword) {
       return const TalentPasswordPage();
     }
-    if (widget.mustReviewCompanyDna) {
-      return CompanyDnaOnboardingPage(companyId: widget.companyId);
-    }
     return BlocListener<TalentBloc, TalentState>(
       listenWhen: (previous, current) =>
           previous.generatedPin != current.generatedPin ||
           previous.respondentInvited != current.respondentInvited ||
+          previous.candidateNotice != current.candidateNotice ||
           previous.failure != current.failure,
       listener: (context, state) {
         final notifications = getIt<NotificationService>();
@@ -68,6 +71,10 @@ class _CompanyShellState extends State<CompanyShell> {
           notifications.success(
             context.l10n.invitePinReady(state.generatedPin!),
           );
+        } else if (state.candidateNotice == TalentCandidateNotice.updated) {
+          notifications.success(context.l10n.candidateUpdated);
+        } else if (state.candidateNotice == TalentCandidateNotice.deleted) {
+          notifications.success(context.l10n.candidateDeleted);
         } else if (state.respondentInvited) {
           notifications.success(context.l10n.respondentInviteSent);
         }
@@ -79,7 +86,10 @@ class _CompanyShellState extends State<CompanyShell> {
             items: _items(context),
             footerItems: [
               DashboardNavItem(context.l10n.support, Icons.help_outline),
-              DashboardNavItem(context.l10n.documentation, Icons.menu_book_outlined),
+              DashboardNavItem(
+                context.l10n.documentation,
+                Icons.menu_book_outlined,
+              ),
             ],
             selectedIndex: state.section.index,
             onSelected: (index) {
@@ -91,48 +101,102 @@ class _CompanyShellState extends State<CompanyShell> {
               }
             },
           );
-          return Scaffold(
-            key: _scaffoldKey,
-            backgroundColor: AppColors.dashboardBackground,
-            drawer: desktop ? null : Drawer(width: 270, child: sidebar),
-            body: Row(
-              children: [
-                if (desktop) sidebar,
-                Expanded(
-                  child: Column(
-                    children: [
-                      DashboardTopBar(
-                        searchHint: context.l10n.searchHint,
-                        signOutLabel: context.l10n.signOut,
-                        showMenu: !desktop,
-                        onMenu: () => _scaffoldKey.currentState?.openDrawer(),
-                        onSignOut: () => context.read<AuthBloc>().add(
-                          const AuthSignOutRequested(),
+          return AssistantHost(
+            brief: AssistantBriefBuilder.company(
+              snapshot: state.snapshot,
+              status: state.status,
+              locale: Localizations.localeOf(context).languageCode,
+            ),
+            onAnswerEdit: (edit) => _saveAnswers(context, edit),
+            builder: (context, openAssistant, assistantOpen) => Scaffold(
+              key: _scaffoldKey,
+              backgroundColor: AppColors.dashboardBackground,
+              drawer: desktop ? null : Drawer(width: 270, child: sidebar),
+              body: Row(
+                children: [
+                  if (desktop) sidebar,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        DashboardTopBar(
+                          searchHint: context.l10n.searchHint,
+                          signOutLabel: context.l10n.signOut,
+                          showMenu: !desktop,
+                          onMenu: () => _scaffoldKey.currentState?.openDrawer(),
+                          onSignOut: () => context.read<AuthBloc>().add(
+                            const AuthSignOutRequested(),
+                          ),
+                          trailing: const LanguageSelector(compact: true),
+                          assistantTooltip: AssistantText.of(context).openLabel,
+                          assistantLabel: AssistantText.of(context).name,
+                          assistantOpen: assistantOpen,
+                          onAssistant: openAssistant,
                         ),
-                        trailing: const LanguageSelector(compact: true),
-                      ),
-                      Expanded(
-                        child: state.candidateReport != null
-                            ? TalentCandidateResultView(
-                                report: state.candidateReport!,
-                              )
-                            : switch (state.section) {
-                          TalentSection.dashboard => TalentDashboardView(state: state),
-                          TalentSection.vacancies => TalentVacanciesView(state: state),
-                          TalentSection.candidates => TalentCandidatesView(state: state),
-                          TalentSection.reports => TalentReportsView(state: state),
-                          TalentSection.team => TalentTeamView(state: state),
-                          TalentSection.profile => TalentProfileView(state: state),
-                          TalentSection.settings => const SettingsView(),
-                        },
-                      ),
-                    ],
+                        Expanded(
+                          child: state.candidateReport != null
+                              ? TalentCandidateResultView(
+                                  report: state.candidateReport!,
+                                )
+                              : switch (state.section) {
+                                  TalentSection.dashboard =>
+                                    TalentDashboardView(state: state),
+                                  TalentSection.vacancies =>
+                                    TalentVacanciesView(state: state),
+                                  TalentSection.candidates =>
+                                    TalentCandidatesView(state: state),
+                                  TalentSection.reports => TalentReportsView(
+                                    state: state,
+                                  ),
+                                  TalentSection.team => TalentTeamView(
+                                    state: state,
+                                  ),
+                                  TalentSection.profile => TalentProfileView(
+                                    state: state,
+                                  ),
+                                  TalentSection.settings =>
+                                    const SettingsView(),
+                                },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _saveAnswers(BuildContext context, CompanyAnswerEdit edit) {
+    final bloc = context.read<TalentBloc>();
+    final profile = bloc.state.snapshot.profile;
+    final id = bloc.state.companyId ?? profile?.id;
+    if (profile == null || id == null) return;
+    bloc.add(
+      TalentProfileSaved(
+        CompanyProfile(
+          id: id,
+          name: profile.name,
+          nit: profile.nit,
+          logoUrl: profile.logoUrl,
+          sector: profile.sector,
+          size: profile.size,
+          city: profile.city,
+          country: profile.country,
+          region: profile.region,
+          website: profile.website,
+          description: profile.description,
+          values: joinDnaList(edit.values),
+          culture: joinDnaList(edit.culture),
+          standoutPeople: joinDnaList(edit.standout),
+          soughtCharacteristics: profile.soughtCharacteristics,
+          customValues: profile.customValues,
+          customCulture: profile.customCulture,
+          customStandout: profile.customStandout,
+          customAreas: profile.customAreas,
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:talex_platform/features/auth/domain/entities/auth_user.dart';
 import 'package:talex_platform/features/auth/domain/repositories/auth_repository.dart';
 import 'package:talex_platform/features/auth/domain/usecases/auth_usecases.dart';
 import 'package:talex_platform/features/talent/domain/repositories/talent_repository.dart';
+import 'package:talex_platform/features/talent/domain/services/assessment_invite_link.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -38,6 +39,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthInvitePinSubmitted>(_onInvitePinSubmitted);
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthPasswordResetRequested>(_onPasswordResetRequested);
+    on<AuthRespondentInviteRequested>(_onRespondentInviteRequested);
   }
 
   final SignIn _signIn;
@@ -53,6 +55,9 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSessionRequested event,
     Emitter<AuthState> emit,
   ) async {
+    if (AssessmentInviteLink.tokenFromUri(Uri.base) != null) {
+      return;
+    }
     emit(state.copyWith(status: AuthStatus.loading, failure: null));
     final result = await _getCurrentUser();
     emit(
@@ -178,6 +183,75 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
               failure: null,
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onRespondentInviteRequested(
+    AuthRespondentInviteRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: AuthStatus.loading,
+        failure: null,
+        user: null,
+      ),
+    );
+
+    final talent = _talentRepository;
+    final auth = _authRepository;
+
+    if (talent == null || auth == null) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.failure,
+          failure: const ServerFailure('unexpected'),
+          user: null,
+        ),
+      );
+      return;
+    }
+
+    final redeemed = await talent.redeemRespondentInvite(
+      token: event.token,
+    );
+
+    await redeemed.fold(
+      (failure) async {
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            failure: failure,
+            user: null,
+          ),
+        );
+      },
+      (customToken) async {
+        final signedIn = await auth.signInWithCustomToken(
+          token: customToken,
+        );
+
+        await signedIn.fold(
+          (failure) async {
+            emit(
+              state.copyWith(
+                status: AuthStatus.failure,
+                failure: failure,
+                user: null,
+              ),
+            );
+          },
+          (user) async {
+            emit(
+              state.copyWith(
+                status: AuthStatus.authenticated,
+                user: user,
+                failure: null,
+              ),
+            );
+          },
         );
       },
     );

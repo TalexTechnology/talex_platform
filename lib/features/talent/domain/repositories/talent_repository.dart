@@ -25,8 +25,8 @@ abstract interface class TalentRepository {
     String? logoContentType,
   });
   Future<Either<Failure, Unit>> activateWithPin({required String pin});
-  Future<Either<Failure, Unit>> tryCompleteRespondentInvite({
-    required String password,
+  Future<Either<Failure, String>> redeemRespondentInvite({
+    required String token,
   });
   Future<Either<Failure, String>> inviteRecruiter({
     required String companyId,
@@ -39,17 +39,31 @@ abstract interface class TalentRepository {
     required String candidateId,
     required CandidateProcessStatus status,
   });
+  Future<Either<Failure, Unit>> updateCandidate({
+    required String candidateId,
+    required String displayName,
+    required String documentNumber,
+    required String vacancyId,
+  });
+  Future<Either<Failure, Unit>> deleteCandidate(String candidateId);
   Future<Either<Failure, RespondentSession>> loadRespondentSession();
   Future<Either<Failure, Unit>> saveAnswer({
     required String candidateId,
     required String questionId,
     required int value,
   });
-  Future<Either<Failure, Unit>> completeEvaluation(
+  Future<Either<Failure, TalentCandidate>> completeEvaluation(
     String candidateId, {
     String locale = 'es',
   });
+  Future<Either<Failure, Unit>> requestSurveyResult(String candidateId);
   Future<Either<Failure, CandidateReport>> loadCandidateReport(String candidateId);
+  Future<Either<Failure, AffinityAnalysis>> loadAffinityAnalysis(
+    String candidateId,
+  );
+  Future<Either<Failure, AffinityAnalysis>> requestAffinityAnalysis(
+    String candidateId,
+  );
   Future<Either<Failure, Unit>> saveAssessmentKind({
     required String candidateId,
     required AssessmentKind kind,

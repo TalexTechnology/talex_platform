@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-sealed class Failure extends Equatable {
+/// Features can add their own final failures. `base` keeps the type from
+/// being implemented as an unrelated class.
+abstract base class Failure extends Equatable {
   const Failure(this.message);
   final String message;
   @override

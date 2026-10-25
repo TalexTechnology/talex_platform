@@ -142,6 +142,7 @@ class SettingsDropdown extends StatelessWidget {
       ),
       const SizedBox(height: 8),
       DropdownButtonFormField<String>(
+        key: ValueKey('$label-$value'),
         initialValue: value,
         items: items
             .map((item) => DropdownMenuItem(value: item, child: Text(item)))

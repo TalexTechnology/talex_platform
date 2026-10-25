@@ -402,24 +402,22 @@ String teamRoleLabel(AppLocalizations l10n, UserRole role) => switch (role) {
   _ => role.value,
 };
 
-String affinityMockExplanation(
+/// Texto de la ficha de afinidad cuando todavía no hay un análisis listo.
+String affinityAnalysisMessage(
   AppLocalizations l10n,
-  AffinityLevel level, {
-  required bool forCompany,
+  AffinityAnalysis analysis, {
+  required bool evaluationCompleted,
 }) {
-  if (forCompany) {
-    return switch (level) {
-      AffinityLevel.high => l10n.affinityCompanyHighHint,
-      AffinityLevel.medium => l10n.affinityCompanyMediumHint,
-      AffinityLevel.low => l10n.affinityCompanyLowHint,
-      AffinityLevel.unknown => l10n.affinityUnknownHint,
-    };
-  }
-  return switch (level) {
-    AffinityLevel.high => l10n.affinityVacancyHighHint,
-    AffinityLevel.medium => l10n.affinityVacancyMediumHint,
-    AffinityLevel.low => l10n.affinityVacancyLowHint,
-    AffinityLevel.unknown => l10n.affinityUnknownHint,
+  if (analysis.hasResult) return analysis.summary;
+  if (!evaluationCompleted) return l10n.affinityUnknownHint;
+  return switch (analysis.status) {
+    AffinityAnalysisStatus.pending => l10n.affinityAnalysisPending,
+    AffinityAnalysisStatus.failed => l10n.affinityAnalysisFailed,
+    AffinityAnalysisStatus.insufficientData =>
+      analysis.errorCode == 'answers_incomplete'
+          ? l10n.affinityAnalysisIncompleteAnswers
+          : l10n.affinityAnalysisMissingDna,
+    _ => l10n.affinityAnalysisNone,
   };
 }
 

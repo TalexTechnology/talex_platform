@@ -6,6 +6,9 @@ import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
 import 'package:talex_platform/features/admin/domain/entities/admin_entities.dart';
 import 'package:talex_platform/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_host.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_text.dart';
+import 'package:talex_platform/features/assistant/presentation/brief/assistant_brief_builder.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_views.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/dashboard/presentation/widgets/dashboard_widgets.dart';
@@ -28,9 +31,12 @@ class _AdminShellState extends State<AdminShell> {
     AdminSection.affinity,
     AdminSection.commercial,
     AdminSection.sales,
+    AdminSection.cultureLeads,
     AdminSection.analytics,
     AdminSection.alerts,
     // AdminSection.xebec,
+    AdminSection.questions,
+    AdminSection.cultureSurvey,
     AdminSection.settings,
   ];
 
@@ -44,9 +50,12 @@ class _AdminShellState extends State<AdminShell> {
       DashboardNavItem(l10n.adminAffinity, Icons.hub_outlined),
       DashboardNavItem(l10n.adminCommercial, Icons.handshake_outlined),
       DashboardNavItem(l10n.adminSales, Icons.payments_outlined),
+      DashboardNavItem(l10n.adminCultureLeads, Icons.diversity_2_outlined),
       DashboardNavItem(l10n.adminAnalytics, Icons.insights_outlined),
       DashboardNavItem(l10n.adminAlerts, Icons.notifications_active_outlined),
       // DashboardNavItem(l10n.adminXebec, Icons.bolt_outlined),
+      DashboardNavItem(l10n.adminQuestions, Icons.quiz_outlined),
+      DashboardNavItem(l10n.adminCultureSurvey, Icons.diversity_3_outlined),
       DashboardNavItem(l10n.adminSettings, Icons.settings_outlined),
     ];
   }
@@ -69,6 +78,8 @@ class _AdminShellState extends State<AdminShell> {
         bloc.add(AdminPeopleRequested(query: query));
       case AdminSection.commercial:
         bloc.add(AdminDealsRequested(query: query));
+      case AdminSection.cultureLeads:
+        bloc.add(AdminCultureLeadsRequested(query: query));
       default:
         break;
     }
@@ -77,7 +88,8 @@ class _AdminShellState extends State<AdminShell> {
   @override
   Widget build(BuildContext context) => BlocListener<AdminBloc, AdminState>(
     listenWhen: (previous, current) =>
-        previous.operation != current.operation || previous.failure != current.failure,
+        previous.operation != current.operation ||
+        previous.failure != current.failure,
     listener: (context, state) {
       final notifications = getIt<NotificationService>();
       if (state.failure != null) {
@@ -93,39 +105,53 @@ class _AdminShellState extends State<AdminShell> {
           items: _items(context),
           footerItems: [
             DashboardNavItem(context.l10n.support, Icons.help_outline),
-            DashboardNavItem(context.l10n.documentation, Icons.menu_book_outlined),
+            DashboardNavItem(
+              context.l10n.documentation,
+              Icons.menu_book_outlined,
+            ),
           ],
-          selectedIndex: _sections.indexOf(state.section).clamp(0, _sections.length - 1),
+          selectedIndex: _sections
+              .indexOf(state.section)
+              .clamp(0, _sections.length - 1),
           onSelected: _select,
         );
-        return Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: AppColors.dashboardBackground,
-          drawer: desktop ? null : Drawer(width: 270, child: sidebar),
-          body: Row(
-            children: [
-              if (desktop) sidebar,
-              Expanded(
-                child: Column(
-                  children: [
-                    DashboardTopBar(
-                      searchHint: context.l10n.adminSearchHint,
-                      signOutLabel: context.l10n.signOut,
-                      showMenu: !desktop,
-                      onMenu: () => _scaffoldKey.currentState?.openDrawer(),
-                      onSignOut: () => context.read<AuthBloc>().add(
-                        const AuthSignOutRequested(),
+        return AssistantHost(
+          brief: AssistantBriefBuilder.admin(
+            Localizations.localeOf(context).languageCode,
+          ),
+          builder: (context, openAssistant, assistantOpen) => Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: AppColors.dashboardBackground,
+            drawer: desktop ? null : Drawer(width: 270, child: sidebar),
+            body: Row(
+              children: [
+                if (desktop) sidebar,
+                Expanded(
+                  child: Column(
+                    children: [
+                      DashboardTopBar(
+                        searchHint: context.l10n.adminSearchHint,
+                        signOutLabel: context.l10n.signOut,
+                        showMenu: !desktop,
+                        onMenu: () => _scaffoldKey.currentState?.openDrawer(),
+                        onSignOut: () => context.read<AuthBloc>().add(
+                          const AuthSignOutRequested(),
+                        ),
+                        onSearch: (query) => _search(query, state.section),
+                        onNotifications: () =>
+                            _select(_sections.indexOf(AdminSection.alerts)),
+                        trailing: const LanguageSelector(compact: true),
+                        assistantTooltip: AssistantText.of(context).openLabel,
+                        assistantLabel: AssistantText.of(context).name,
+                        assistantOpen: assistantOpen,
+                        onAssistant: openAssistant,
                       ),
-                      onSearch: (query) => _search(query, state.section),
-                      onNotifications: () => _select(_sections.indexOf(AdminSection.alerts)),
-                      trailing: const LanguageSelector(compact: true),
-                      // onAssistant: () => _select(AdminSection.xebec.index),
-                    ),
-                    const Expanded(child: AdminSectionView()),
-                  ],
+                      const Expanded(child: AdminSectionView()),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

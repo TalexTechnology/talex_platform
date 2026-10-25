@@ -6,12 +6,8 @@ class AuthTestimonialPanel extends StatelessWidget {
     super.key,
     this.quote =
         '“TaleX transformed our selection process and helped our team make better decisions.”',
-    this.name = 'Gabriel Ramirez',
-    this.role = 'CEO, TaleX',
-    this.secondaryName = 'Pablo Melo',
-    this.secondaryRole = 'CTO, TaleX',
   });
-  final String quote, name, role, secondaryName, secondaryRole;
+  final String quote;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -40,54 +36,12 @@ class AuthTestimonialPanel extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              _Person(name: name, role: role),
-              const SizedBox(height: 16),
-              _Person(name: secondaryName, role: secondaryRole),
             ],
           ),
         ),
       ],
     ),
   );
-}
-
-class _Person extends StatelessWidget {
-  const _Person({required this.name, required this.role});
-  final String name, role;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const CircleAvatar(
-          radius: 24,
-          backgroundColor: Color(0xFF24364C),
-          child: Icon(Icons.person_outline, color: Colors.white),
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              role,
-              style: const TextStyle(
-                color: Color(0xFFBAC5D8),
-                fontSize: 15,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
 }
 
 class _BackgroundLines extends StatelessWidget {

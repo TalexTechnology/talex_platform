@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
 import 'package:talex_platform/features/settings/presentation/widgets/settings_widgets.dart';
+import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
+import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
+import 'package:talex_platform/features/talent/presentation/company_options.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
 class SettingsView extends StatefulWidget {
@@ -13,10 +17,79 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final _organization = TextEditingController(text: 'TaleX');
+  final _organization = TextEditingController();
   bool _candidateUpdates = true;
   bool _weeklyDigest = true;
   bool _twoFactor = false;
+  bool _bound = false;
+  bool _binding = false;
+  String? _sector;
+  String? _size;
+  String? _timezone;
+
+  void _bind(BuildContext context) {
+    if (_bound || _binding) return;
+    final l10n = context.l10n;
+    _timezone ??= l10n.timezoneBogota;
+    final bloc = _companyBloc(context);
+    if (bloc == null) {
+      _bound = true;
+      if (_organization.text.isEmpty) _organization.text = 'TaleX';
+      return;
+    }
+    final profile = bloc.state.snapshot.profile;
+    if (profile == null) return;
+    final name = profile.name;
+    final sector = resolveCompanySectorId(profile.sector, l10n);
+    final size = resolveCompanySizeId(profile.size, l10n);
+    _binding = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        _bound = true;
+        _binding = false;
+        _organization.text = name;
+        _sector = sector;
+        _size = size;
+      });
+    });
+  }
+
+  void _save() {
+    final l10n = context.l10n;
+    final bloc = _companyBloc(context);
+    final profile = bloc?.state.snapshot.profile;
+    final id = bloc?.state.companyId ?? profile?.id;
+    if (bloc != null && profile != null && id != null) {
+      final name = _organization.text.trim();
+      bloc.add(
+        TalentProfileSaved(
+          CompanyProfile(
+            id: id,
+            name: name.isEmpty ? profile.name : name,
+            nit: profile.nit,
+            logoUrl: profile.logoUrl,
+            sector: _sector ?? profile.sector,
+            size: _size ?? profile.size,
+            city: profile.city,
+            country: profile.country,
+            region: profile.region,
+            website: profile.website,
+            description: profile.description,
+            values: profile.values,
+            culture: profile.culture,
+            standoutPeople: profile.standoutPeople,
+            soughtCharacteristics: profile.soughtCharacteristics,
+            customValues: profile.customValues,
+            customCulture: profile.customCulture,
+            customStandout: profile.customStandout,
+            customAreas: profile.customAreas,
+          ),
+        ),
+      );
+    }
+    getIt<NotificationService>().success(l10n.changesSaved);
+  }
 
   @override
   void dispose() {
@@ -27,30 +100,48 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
+      _bind(context);
+      final l10n = context.l10n;
       final compact = constraints.maxWidth < 760;
       final pagePadding = compact ? 18.0 : 40.0;
+      final sectors = companySectors(l10n);
+      final sizes = companySizes(l10n);
+      final zones = [
+        l10n.timezoneBogota,
+        'America/Lima',
+        'America/Mexico_City',
+        'Europe/Madrid',
+        'America/New_York',
+      ];
       final organizationFields = [
         SettingsTextField(
-          label: context.l10n.organizationName,
+          label: l10n.organizationName,
           controller: _organization,
         ),
         SettingsDropdown(
-          label: context.l10n.industry,
-          value: context.l10n.technologyIndustry,
-          items: [context.l10n.technologyIndustry],
-          onChanged: (_) {},
+          label: l10n.industry,
+          value: _optionLabel(sectors, _sector),
+          items: [for (final option in sectors) option.label],
+          onChanged: (label) => setState(
+            () => _sector = _optionId(sectors, label),
+          ),
         ),
         SettingsDropdown(
-          label: context.l10n.companySize,
-          value: context.l10n.employeesRange,
-          items: [context.l10n.employeesRange],
-          onChanged: (_) {},
+          label: l10n.companySize,
+          value: _optionLabel(sizes, _size),
+          items: [for (final option in sizes) option.label],
+          onChanged: (label) => setState(
+            () => _size = _optionId(sizes, label),
+          ),
         ),
         SettingsDropdown(
-          label: context.l10n.timezone,
-          value: context.l10n.timezoneBogota,
-          items: [context.l10n.timezoneBogota],
-          onChanged: _noop,
+          label: l10n.timezone,
+          value: _timezone ?? l10n.timezoneBogota,
+          items: zones,
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() => _timezone = value);
+          },
         ),
       ];
       return SingleChildScrollView(
@@ -89,9 +180,7 @@ class _SettingsViewState extends State<SettingsView> {
                       ],
                     ),
                     FilledButton.icon(
-                      onPressed: () => getIt<NotificationService>().success(
-                        context.l10n.changesSaved,
-                      ),
+                      onPressed: _save,
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.primaryButton,
                       ),
@@ -115,14 +204,13 @@ class _SettingsViewState extends State<SettingsView> {
                   title: context.l10n.organizationProfile,
                   description: context.l10n.organizationDescription,
                   icon: Icons.business_outlined,
-                  child: GridView.count(
-                    crossAxisCount: compact ? 1 : 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: compact ? 5.2 : 5.8,
-                    children: organizationFields,
+                  child: Column(
+                    children: [
+                      for (var index = 0; index < organizationFields.length; index++) ...[
+                        if (index > 0) const SizedBox(height: 16),
+                        organizationFields[index],
+                      ],
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -194,5 +282,25 @@ class _SettingsViewState extends State<SettingsView> {
     },
   );
 
-  static void _noop(String? _) {}
+  TalentBloc? _companyBloc(BuildContext context) {
+    try {
+      return BlocProvider.of<TalentBloc>(context, listen: false);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _optionLabel(List<CatalogOption> options, String? id) {
+    for (final option in options) {
+      if (option.id == id) return option.label;
+    }
+    return options.first.label;
+  }
+
+  String? _optionId(List<CatalogOption> options, String? label) {
+    for (final option in options) {
+      if (option.label == label) return option.id;
+    }
+    return null;
+  }
 }

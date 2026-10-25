@@ -123,59 +123,92 @@ function resolveSituation(type, situation) {
 
 function copy(locale, type, situation) {
   const en = locale === 'en';
-  const respondent = type === 'respondent_pin';
+  const respondent =
+    type === 'respondent_pin' ||
+    type === 'respondent_invite';
+  const invite = type === 'respondent_invite';
   const recovery = type === 'recovery_pin';
   const completed = type === 'assessment_complete';
+
   return {
     hello: (name) => {
       if (en) return `Hi ${name || 'there'},`;
       return name ? `Hola ${name},` : 'Hola,';
     },
+
     intro: (company, vacancy) => {
       if (recovery) {
         return en
           ? 'We received a request to reset your TaleX password. Enter this PIN on the recovery screen to continue.'
           : 'Recibimos una solicitud para restablecer tu contraseña de TaleX. Ingresa este PIN en la pantalla de recuperación para continuar.';
       }
+
       if (completed) {
         return en
-          ? `You finished the assessment${vacancy ? ` for ${vacancy}` : ''}${company ? ` at ${company}` : ''}. The company will contact you later about the results.`
-          : `Finalizaste la evaluación${vacancy ? ` de ${vacancy}` : ''}${company ? ` en ${company}` : ''} con éxito. La empresa se comunicará contigo después con los resultados.`;
+          ? `You finished the assessment${vacancy ? ` for ${vacancy}` : ''}${company ? ` at ${company}` : ''}.`
+          : `Finalizaste la evaluación${vacancy ? ` de ${vacancy}` : ''}${company ? ` en ${company}` : ''} con éxito.`;
       }
+
+      if (invite) {
+        return en
+          ? vacancy
+            ? `You were invited to a TaleX assessment for ${vacancy}${company ? ` at ${company}` : ''}. Open the invitation to begin your process.`
+            : `You were invited to a TaleX assessment${company ? ` for ${company}` : ''}. Open the invitation to begin your process.`
+          : vacancy
+            ? `Te invitaron a una evaluación en TaleX para ${vacancy}${company ? ` en ${company}` : ''}. Abre la invitación para comenzar tu proceso.`
+            : `Te invitaron a una evaluación en TaleX${company ? ` para ${company}` : ''}. Abre la invitación para comenzar tu proceso.`;
+      }
+
       if (respondent) {
-        if (en) {
-          return vacancy
+        return en
+          ? vacancy
             ? `You were invited to a TaleX assessment for ${vacancy}${company ? ` at ${company}` : ''}. Create your account at TaleX and enter this PIN.`
-            : `You were invited to a TaleX assessment${company ? ` for ${company}` : ''}. Create your account at TaleX and enter this PIN.`;
-        }
-        return vacancy
-          ? `Te invitaron a una evaluación en TaleX para ${vacancy}${company ? ` en ${company}` : ''}. Crea tu cuenta en Registrarse e ingresa este PIN.`
-          : `Te invitaron a una evaluación en TaleX${company ? ` para ${company}` : ''}. Crea tu cuenta en Registrarse e ingresa este PIN.`;
+            : `You were invited to a TaleX assessment${company ? ` for ${company}` : ''}. Create your account at TaleX and enter this PIN.`
+          : vacancy
+            ? `Te invitaron a una evaluación en TaleX para ${vacancy}${company ? ` en ${company}` : ''}. Crea tu cuenta en Registrarse e ingresa este PIN.`
+            : `Te invitaron a una evaluación en TaleX${company ? ` para ${company}` : ''}. Crea tu cuenta en Registrarse e ingresa este PIN.`;
       }
+
       return en
         ? `A TaleX workspace was created for ${company || 'your company'}. Create your account and enter this PIN.`
         : `Se creó un espacio TaleX para ${company || 'tu empresa'}. Crea tu cuenta en Registrarse e ingresa este PIN.`;
     },
+
     pinLabel: recovery
       ? (en ? 'Your recovery PIN' : 'Tu PIN de recuperación')
       : (en ? 'Your activation PIN' : 'Tu PIN de activación'),
+
     pinTtl: en
       ? 'This PIN expires in 15 minutes.'
       : 'Este PIN caduca a los 15 minutos.',
+
     next: recovery
       ? (en
         ? 'Then you will set a new password. If you did not request this, you can ignore this email.'
         : 'Después crearás una nueva contraseña. Si no pediste este cambio, ignora este mensaje.')
       : completed
-        ? (en
-          ? 'You do not need to do anything else in TaleX for now.'
-          : 'Por ahora no necesitas hacer nada más en TaleX.')
-        : (en
-          ? 'You can also create the account with Google and then enter this PIN.'
-          : 'También puedes crear la cuenta con Google y luego ingresar este PIN.'),
-    headline: headline(locale, resolveSituation(type, situation)),
-    cta: en ? 'Open TaleX' : 'Abrir TaleX',
-    footer: recovery
+        ? ''
+        : invite
+          ? (en
+            ? 'Use the button below to open your invitation.'
+            : 'Usa el botón de abajo para abrir tu invitación.')
+          : (en
+            ? 'You can also create the account with Google and then enter this PIN.'
+            : 'También puedes crear la cuenta con Google y luego ingresar este PIN.'),
+
+    headline: respondent || completed
+      ? ''
+      : headline(locale, resolveSituation(type, situation)),
+
+    cta: completed
+      ? ''
+      : invite
+        ? (en ? 'Start assessment' : 'Comenzar evaluación')
+        : (en ? 'Open TaleX' : 'Abrir TaleX'),
+
+    footer: completed
+      ? ''
+      : recovery
       ? (en
         ? 'TaleX sent this message because someone requested a password reset for this email.'
         : 'TaleX envió este mensaje porque alguien pidió restablecer la contraseña de este correo.')
@@ -186,20 +219,32 @@ function copy(locale, type, situation) {
         : respondent
           ? 'TaleX mide afinidad con el perfil de una vacante. Recibiste este mensaje porque una empresa te invitó a una evaluación.'
           : 'TaleX ayuda a los equipos a entender la afinidad. Recibiste este mensaje porque un administrador te invitó.',
+
     subject: (company, vacancy) => {
       if (recovery) {
-        return en ? 'Your TaleX recovery PIN' : 'Tu PIN de recuperación TaleX';
+        return en
+          ? 'Your TaleX recovery PIN'
+          : 'Tu PIN de recuperación TaleX';
       }
+
       if (completed) {
         return en
           ? 'You finished your TaleX assessment'
           : 'Finalizaste tu evaluación en TaleX';
       }
+
+      if (invite) {
+        return en
+          ? `Your TaleX assessment${vacancy ? ` for ${vacancy}` : ''}`
+          : `Tu evaluación en TaleX${vacancy ? ` para ${vacancy}` : ''}`;
+      }
+
       if (respondent) {
         return en
           ? `Your TaleX PIN${vacancy ? ` for ${vacancy}` : ''}`
           : `Tu PIN de TaleX${vacancy ? ` para ${vacancy}` : ''}`;
       }
+
       return en
         ? `Your TaleX PIN for ${company || 'your company'}`
         : `Tu PIN de TaleX para ${company || 'tu empresa'}`;
@@ -209,8 +254,6 @@ function copy(locale, type, situation) {
 
 const brandFiles = [
   {key: 'logo', file: 't_fondo_claro-2.png'},
-  {key: 'firma', file: 'firma.png'},
-  {key: 'marca', file: 'marca.png'},
 ];
 
 const brandHashes = Object.fromEntries(
@@ -228,8 +271,6 @@ function brandImageUrls() {
   const base = `https://us-central1-${project}.cloudfunctions.net/mailBrand`;
   return {
     logo: `${base}?k=${brandHashes.logo}`,
-    firma: `${base}?k=${brandHashes.firma}`,
-    marca: `${base}?k=${brandHashes.marca}`,
   };
 }
 
@@ -254,83 +295,133 @@ exports.mailBrand = onRequest(
   },
 );
 
-function html({locale, type, firstName, companyName, vacancyName, pin, appUrl, situation, images}) {
+function html({
+  locale,
+  type,
+  firstName,
+  companyName,
+  vacancyName,
+  pin,
+  appUrl,
+  situation,
+  images,
+}) {
   const t = copy(locale, type, situation);
+
   const logo = images.logo;
-  const firma = images.firma;
-  const marca = images.marca;
+
   const pinBlock = pin
-    ? `<div style="background:#F3F8FD;border:1px solid #C5DCF0;border-radius:12px;padding:20px;text-align:center;">
-            <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#1D7BD6;font-weight:700;">${t.pinLabel}</div>
-            <div style="margin-top:8px;font-size:36px;letter-spacing:8px;font-weight:700;color:#071326;">${pin}</div>
-            <div style="margin-top:10px;font-size:13px;color:#8DC53F;font-weight:600;">${t.pinTtl}</div>
-          </div>`
+    ? `
+        <div style="background:#F3F8FD;border:1px solid #C5DCF0;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#1D7BD6;font-weight:700;">
+            ${t.pinLabel}
+          </div>
+          <div style="margin-top:8px;font-size:36px;letter-spacing:8px;font-weight:700;color:#071326;">
+            ${pin}
+          </div>
+          <div style="margin-top:10px;font-size:13px;color:#8DC53F;font-weight:600;">
+            ${t.pinTtl}
+          </div>
+        </div>
+      `
     : '';
+
   return `<!DOCTYPE html>
 <html lang="${locale === 'en' ? 'en' : 'es'}">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+
 <body style="margin:0;padding:0;background:#F4F7FA;font-family:Arial,Helvetica,sans-serif;color:#071326;">
+
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#F4F7FA;padding:32px 16px;">
-    <tr><td align="center">
-      <table role="presentation" width="560" cellspacing="0" cellpadding="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px rgba(7,19,38,0.08);">
-        <tr><td style="background:#05060A;padding:22px 24px 16px;">
-          <table role="presentation" cellspacing="0" cellpadding="0">
-            <tr>
-              <td valign="middle" style="padding-right:14px;">
-                <img src="${logo}" alt="" width="48" height="48" style="display:block;width:48px;height:48px;border:0;"/>
-              </td>
-              <td valign="middle">
-                <div style="font-size:22px;line-height:1.1;font-weight:700;color:#ffffff;letter-spacing:0.2px;">TaleX</div>
-                <div style="margin-top:6px;font-size:13px;line-height:1.4;color:#ffffff;">${t.headline}</div>
-              </td>
-            </tr>
-          </table>
-        </td></tr>
-        <tr><td>
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-            <tr>
-              <td style="height:4px;width:50%;background:#1D7BD6;"></td>
-              <td style="height:4px;width:50%;background:#8DC53F;"></td>
-            </tr>
-          </table>
-        </td></tr>
-        <tr><td style="padding:32px;">
-          <p style="margin:0 0 16px;font-size:16px;">${t.hello(firstName)}</p>
-          <p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:#45464A;">${t.intro(companyName, vacancyName)}</p>
-          ${pinBlock}
-          <p style="margin:24px 0;font-size:15px;line-height:1.55;color:#45464A;">${t.next}</p>
-          <a href="${appUrl}" style="display:inline-block;background:#1D7BD6;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:700;">${t.cta}</a>
-        </td></tr>
-        <tr><td style="padding:0 20px 16px;font-size:12px;line-height:1.5;color:#76777C;">${t.footer}</td></tr>
-        <tr>
-          <td style="background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-              <tr>
-                <td align="center" style="background:#ffffff;padding:8px 16px 16px;">
-                  <img src="${firma}" alt="" width="170" style="display:block;width:170px;max-width:170px;height:auto;border:0;margin:0 auto;background:transparent;"/>
-                </td>
-              </tr>
-              <tr>
-                <td style="height:3px;line-height:3px;font-size:0;">
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <td style="height:3px;width:50%;background:#2470BD;line-height:3px;font-size:0;">&nbsp;</td>
-                      <td style="height:3px;width:50%;background:#5D892C;line-height:3px;font-size:0;">&nbsp;</td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td style="background:#05060A;padding:0;">
-                  <img src="${marca}" alt="" width="560" style="display:block;width:100%;max-width:560px;height:auto;border:0;"/>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
+    <tr>
+      <td align="center">
+
+        <table role="presentation" width="560" cellspacing="0" cellpadding="0"
+          style="max-width:560px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px rgba(7,19,38,0.08);">
+
+          <tr>
+            <td style="background:#05060A;padding:22px 24px 16px;">
+              <table role="presentation" cellspacing="0" cellpadding="0">
+                <tr>
+
+                  <td valign="middle" style="padding-right:14px;">
+                    <img
+                      src="${logo}"
+                      alt=""
+                      width="48"
+                      height="48"
+                      style="display:block;width:48px;height:48px;border:0;"
+                    />
+                  </td>
+
+                  <td valign="middle">
+                    <div style="font-size:22px;line-height:1.1;font-weight:700;color:#ffffff;letter-spacing:0.2px;">
+                      TaleX
+                    </div>
+
+                    ${t.headline ? `<div style="margin-top:6px;font-size:13px;line-height:1.4;color:#ffffff;">
+                      ${t.headline}
+                    </div>` : ''}
+                  </td>
+
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="height:4px;width:50%;background:#1D7BD6;"></td>
+                  <td style="height:4px;width:50%;background:#8DC53F;"></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:32px;">
+
+              <p style="margin:0 0 16px;font-size:16px;">
+                ${t.hello(firstName)}
+              </p>
+
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.55;color:#45464A;">
+                ${t.intro(companyName, vacancyName)}
+              </p>
+
+              ${pinBlock}
+
+              ${t.next ? `<p style="margin:24px 0;font-size:15px;line-height:1.55;color:#45464A;">
+                ${t.next}
+              </p>` : ''}
+
+              ${t.cta ? `<a
+                href="${appUrl}"
+                style="display:inline-block;background:#1D7BD6;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:700;"
+              >
+                ${t.cta}
+              </a>` : ''}
+
+            </td>
+          </tr>
+
+          ${t.footer ? `<tr>
+            <td style="padding:0 20px 16px;font-size:12px;line-height:1.5;color:#76777C;">
+              ${t.footer}
+            </td>
+          </tr>` : ''}
+
+        </table>
+
+      </td>
+    </tr>
   </table>
+
 </body>
 </html>`;
 }
@@ -409,28 +500,63 @@ exports.sendInviteEmail = onCall(
       );
     }
     const payload = request.data || {};
+
     const to = String(payload.to || '').trim();
     const pin = String(payload.pin || '').trim();
+    const token = String(payload.token || '').trim();
+
     const locale = payload.locale === 'en' ? 'en' : 'es';
-    const type = payload.type === 'respondent_pin'
-      ? 'respondent_pin'
-      : payload.type === 'assessment_complete'
-        ? 'assessment_complete'
-        : payload.type === 'recovery_pin'
-          ? 'recovery_pin'
-          : 'recruiter_pin';
+
+    const type = payload.type === 'respondent_invite'
+      ? 'respondent_invite'
+      : payload.type === 'respondent_pin'
+        ? 'respondent_pin'
+        : payload.type === 'assessment_complete'
+          ? 'assessment_complete'
+          : payload.type === 'recovery_pin'
+            ? 'recovery_pin'
+            : 'recruiter_pin';
+
     const completed = type === 'assessment_complete';
-    if (!to.includes('@') || (!completed && pin.length < 6)) {
-      throw new HttpsError('invalid-argument', 'Invalid invite payload.');
+    const respondentInvite = type === 'respondent_invite';
+
+    if (!to.includes('@')) {
+      throw new HttpsError(
+        'invalid-argument',
+        'Invalid invite payload.',
+      );
+    }
+
+    if (respondentInvite && !token) {
+      throw new HttpsError(
+        'invalid-argument',
+        'Invitation token required.',
+      );
+    }
+
+    if (!respondentInvite && !completed && pin.length < 6) {
+      throw new HttpsError(
+        'invalid-argument',
+        'Invalid invite payload.',
+      );
     }
     const situation = resolveSituation(type, payload.situation);
     const firstName = String(payload.firstName || '').trim();
     const companyName = String(payload.companyName || '').trim();
     const vacancyName = String(payload.vacancyName || '').trim();
-    const appUrl = String(payload.appUrl || 'https://talex-platform.web.app').replace(/\/$/, '');
-    const t = copy(locale, type, situation);
-    const images = brandImageUrls();
-    const registerUrl = `${appUrl}/#/register`;
+    const appUrl = String(
+      payload.appUrl || 'https://talex-platform.web.app',
+        ).replace(/\/$/, '');
+        
+        const t = copy(locale, type, situation);
+        const images = brandImageUrls();
+        
+        const registerUrl = `${appUrl}/#/register`;
+        const respondentInviteUrl = `${appUrl}/#/assessment?token=${encodeURIComponent(token)}`;
+        
+        const actionUrl = respondentInvite
+          ? respondentInviteUrl
+          : registerUrl;
     try {
       await sendWithFallback({
         host,
@@ -443,19 +569,22 @@ exports.sendInviteEmail = onCall(
           to,
           subject: t.subject(companyName, vacancyName),
           text: completed
-            ? `${t.hello(firstName)}\n${t.intro(companyName, vacancyName)}\n${t.next}`
+          ? `${t.hello(firstName)}\n${t.intro(companyName, vacancyName)}`
+          : respondentInvite
+            ? `${t.hello(firstName)}\n${t.intro(companyName, vacancyName)}\n${t.next}\n${respondentInviteUrl}`
             : `${t.hello(firstName)}\n${t.intro(companyName, vacancyName)}\n${t.pinLabel}: ${pin}\n${t.pinTtl}\n${t.next}\n${registerUrl}`,
-          html: html({
-            locale,
-            type,
-            situation,
-            firstName,
-            companyName,
-            vacancyName,
-            pin: completed ? '' : pin,
-            appUrl: registerUrl,
-            images,
-          }),
+
+        html: html({
+          locale,
+          type,
+          situation,
+          firstName,
+          companyName,
+          vacancyName,
+          pin: completed || respondentInvite ? '' : pin,
+          appUrl: actionUrl,
+          images,
+        }),
         },
       });
     } catch (error) {
@@ -702,6 +831,248 @@ function resetTokenHash(token) {
   return sha256(`talex-reset-token|${token}`);
 }
 
+function isCompanyStaffRole(role) {
+  return [
+    'superadmin',
+    'company_admin',
+    'company_lead',
+    'ceo',
+    'people_ops',
+    'hr',
+    'recruiter',
+    'hiring_manager',
+  ].includes(String(role || ''));
+}
+
+async function customTokenForUsedInvite(db, invite) {
+  const uid = String(invite.redeemedBy || '').trim();
+  try {
+    if (uid) {
+      await admin.auth().getUser(uid);
+      return {
+        customToken: await admin.auth().createCustomToken(uid),
+      };
+    }
+    const email = String(invite.email || '').trim().toLowerCase();
+    const authUser = await admin.auth().getUserByEmail(email);
+    const profile = await db.collection('users').doc(authUser.uid).get();
+    const data = profile.data() || {};
+    if (
+      data.role === 'respondent' &&
+      (!invite.candidateId || data.candidateId === invite.candidateId)
+    ) {
+      return {
+        customToken: await admin.auth().createCustomToken(authUser.uid),
+      };
+    }
+  } catch (error) {
+    console.error('customTokenForUsedInvite error', error);
+  }
+  throw new HttpsError('failed-precondition', 'errorInviteUsed');
+}
+
+exports.redeemRespondentInvite = onCall(
+  {
+    region: 'us-central1',
+    cors: true,
+    timeoutSeconds: 60,
+    invoker: 'public',
+  },
+  async (request) => {
+    const token = String(request.data?.token || '').trim();
+
+    if (!token) {
+      throw new HttpsError(
+        'invalid-argument',
+        'errorInviteInvalid',
+      );
+    }
+
+    const db = admin.firestore();
+    const tokenHash = sha256(token);
+
+    const snapshot = await db
+      .collection('activation_invites')
+      .where('tokenHash', '==', tokenHash)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      throw new HttpsError(
+        'not-found',
+        'errorInviteInvalid',
+      );
+    }
+
+    const inviteDoc = snapshot.docs[0];
+    const inviteRef = inviteDoc.ref;
+    const invite = inviteDoc.data() || {};
+
+    if (invite.kind !== 'respondent') {
+      throw new HttpsError(
+        'failed-precondition',
+        'errorInviteInvalid',
+      );
+    }
+
+    if (invite.used === true) {
+      return customTokenForUsedInvite(db, invite);
+    }
+
+    const expiresAt = toMillis(invite.tokenExpiresAt);
+
+    if (!expiresAt || expiresAt <= Date.now()) {
+      throw new HttpsError(
+        'failed-precondition',
+        'errorInviteExpired',
+      );
+    }
+
+    const email = String(invite.email || '')
+      .trim()
+      .toLowerCase();
+
+    if (!email.includes('@')) {
+      throw new HttpsError(
+        'failed-precondition',
+        'errorInviteInvalid',
+      );
+    }
+
+    let authUser;
+
+    try {
+      authUser = await admin.auth().getUserByEmail(email);
+    } catch (error) {
+      if (error.code !== 'auth/user-not-found') {
+        console.error('redeemRespondentInvite getUserByEmail error', error);
+        throw new HttpsError(
+          'internal',
+          'errorUnexpected',
+        );
+      }
+
+      authUser = await admin.auth().createUser({
+        email,
+        emailVerified: true,
+        displayName: [
+          invite.firstName,
+          invite.lastName,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .trim() || undefined,
+      });
+    }
+
+    const userRef = db
+      .collection('users')
+      .doc(authUser.uid);
+
+    const existingUser = await userRef.get();
+    const existingData = existingUser.data() || {};
+    const existingRole = existingData.role;
+
+    if (isCompanyStaffRole(existingRole)) {
+      throw new HttpsError(
+        'failed-precondition',
+        'errorInviteInvalid',
+      );
+    }
+
+    await db.runTransaction(async (transaction) => {
+      const currentInviteSnapshot = await transaction.get(
+        inviteRef,
+      );
+
+      if (!currentInviteSnapshot.exists) {
+        throw new HttpsError(
+          'not-found',
+          'errorInviteInvalid',
+        );
+      }
+
+      const currentInvite =
+        currentInviteSnapshot.data() || {};
+
+      if (currentInvite.used === true) {
+        throw new HttpsError(
+          'failed-precondition',
+          'errorInviteUsed',
+        );
+      }
+
+      const currentExpiresAt =
+        toMillis(currentInvite.tokenExpiresAt);
+
+      if (
+        !currentExpiresAt ||
+        currentExpiresAt <= Date.now()
+      ) {
+        throw new HttpsError(
+          'failed-precondition',
+          'errorInviteExpired',
+        );
+      }
+
+      transaction.set(
+        userRef,
+        {
+          uid: authUser.uid,
+          role: 'respondent',
+          companyId: currentInvite.companyId,
+          candidateId: currentInvite.candidateId,
+          documentNumber: currentInvite.documentNumber,
+          mustChangePassword: false,
+          mustReviewCompanyDna: false,
+          isActive: true,
+          displayName: [
+            currentInvite.firstName,
+            currentInvite.lastName,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .trim(),
+          email,
+          createdAt: existingUser.exists
+            ? existingData.createdAt ||
+              admin.firestore.FieldValue.serverTimestamp()
+            : admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt:
+            admin.firestore.FieldValue.serverTimestamp(),
+        },
+        {merge: true},
+      );
+
+      transaction.update(
+        inviteRef,
+        {
+          used: true,
+          redeemedAt:
+            admin.firestore.FieldValue.serverTimestamp(),
+          redeemedBy: authUser.uid,
+        },
+      );
+    });
+
+    const customToken =
+      await admin.auth().createCustomToken(
+        authUser.uid,
+      );
+
+    try {
+      const {linkRespondent} = require('./supabase_session');
+      await linkRespondent(authUser.uid, tokenHash);
+    } catch (error) {
+      console.error('redeemRespondentInvite supabase link', error);
+    }
+
+    return {
+      customToken,
+    };
+  },
+);
+
 function toMillis(value) {
   if (!value) return 0;
   if (typeof value.toMillis === 'function') return value.toMillis();
@@ -928,4 +1299,15 @@ exports.completePasswordReset = onCall(callablePublic, async (request) => {
   );
   return {ok: true};
 });
+
+const affinity = require('./affinity');
+exports.analyzeAffinityOnCompletion = affinity.analyzeAffinityOnCompletion;
+exports.analyzeCandidateAffinity = affinity.analyzeCandidateAffinity;
+
+const assistant = require('./assistant');
+exports.askAssistant = assistant.askAssistant;
+
+const supabaseSession = require('./supabase_session');
+exports.mintSupabaseSession = supabaseSession.mintSupabaseSession;
+exports.getSupabasePublicConfig = supabaseSession.getSupabasePublicConfig;
 

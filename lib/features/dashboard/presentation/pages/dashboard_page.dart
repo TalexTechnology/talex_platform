@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_host.dart';
+import 'package:talex_platform/features/assistant/presentation/assistant_text.dart';
+import 'package:talex_platform/features/assistant/presentation/brief/assistant_brief_builder.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/dashboard/presentation/widgets/dashboard_widgets.dart';
 import 'package:talex_platform/l10n/l10n.dart';
@@ -53,58 +56,71 @@ class _DashboardPageState extends State<DashboardPage> {
   ];
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final desktop = constraints.maxWidth >= 1000;
-      final sidebar = DashboardSidebar(
-        items: _navigation(context),
-        footerItems: [
-          DashboardNavItem(context.l10n.support, Icons.help_outline),
-          DashboardNavItem(
-            context.l10n.documentation,
-            Icons.menu_book_outlined,
-          ),
-        ],
-        selectedIndex: _selectedIndex,
-        onSelected: _selectSection,
-      );
-      return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: AppColors.dashboardBackground,
-        drawer: desktop ? null : Drawer(width: 270, child: sidebar),
-        body: Row(
-          children: [
-            if (desktop) sidebar,
-            Expanded(
-              child: Column(
-                children: [
-                    DashboardTopBar(
-                      searchHint: context.l10n.searchHint,
-                      signOutLabel: context.l10n.signOut,
-                      showMenu: !desktop,
-                      onMenu: () => _scaffoldKey.currentState?.openDrawer(),
-                      onSignOut: () => context.read<AuthBloc>().add(
-                        const AuthSignOutRequested(),
-                      ),
-                      trailing: const LanguageSelector(compact: true),
-                  ),
-                  Expanded(
-                    child: switch (_selectedIndex) {
-                      1 => InvitationsView(onCreate: _openCreateInvitation),
-                      6 => const SettingsView(),
-                      _ => _DashboardContent(
-                        onEnablePerson: _openCreateInvitation,
-                      ),
-                    },
-                  ),
-                ],
+  Widget build(BuildContext context) {
+    final brief = AssistantBriefBuilder.workspace(
+      invitations: context.watch<InvitationBloc>().state.invitations,
+      locale: Localizations.localeOf(context).languageCode,
+    );
+    return AssistantHost(
+      brief: brief,
+      builder: (context, openAssistant, assistantOpen) => LayoutBuilder(
+        builder: (context, constraints) {
+          final desktop = constraints.maxWidth >= 1000;
+          final sidebar = DashboardSidebar(
+            items: _navigation(context),
+            footerItems: [
+              DashboardNavItem(context.l10n.support, Icons.help_outline),
+              DashboardNavItem(
+                context.l10n.documentation,
+                Icons.menu_book_outlined,
               ),
+            ],
+            selectedIndex: _selectedIndex,
+            onSelected: _selectSection,
+          );
+          return Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: AppColors.dashboardBackground,
+            drawer: desktop ? null : Drawer(width: 270, child: sidebar),
+            body: Row(
+              children: [
+                if (desktop) sidebar,
+                Expanded(
+                  child: Column(
+                    children: [
+                      DashboardTopBar(
+                        searchHint: context.l10n.searchHint,
+                        signOutLabel: context.l10n.signOut,
+                        showMenu: !desktop,
+                        onMenu: () => _scaffoldKey.currentState?.openDrawer(),
+                        onSignOut: () => context.read<AuthBloc>().add(
+                          const AuthSignOutRequested(),
+                        ),
+                        trailing: const LanguageSelector(compact: true),
+                        assistantTooltip: AssistantText.of(context).openLabel,
+                        assistantLabel: AssistantText.of(context).name,
+                        assistantOpen: assistantOpen,
+                        onAssistant: openAssistant,
+                      ),
+                      Expanded(
+                        child: switch (_selectedIndex) {
+                          1 => InvitationsView(onCreate: _openCreateInvitation),
+                          6 => const SettingsView(),
+                          _ => _DashboardContent(
+                            onEnablePerson: _openCreateInvitation,
+                          ),
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    },
-  );
+          );
+        },
+      ),
+    );
+  }
 }
 
 class _DashboardContent extends StatelessWidget {
@@ -253,10 +269,7 @@ class _DashboardContent extends StatelessWidget {
               spacing: 24,
               runSpacing: 24,
               children: metrics
-                  .map(
-                    (card) =>
-                        SizedBox(width: cardWidth, child: card),
-                  )
+                  .map((card) => SizedBox(width: cardWidth, child: card))
                   .toList(),
             ),
             const SizedBox(height: 36),

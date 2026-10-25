@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:talex_platform/core/auth/user_role.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
@@ -11,6 +9,7 @@ import 'package:talex_platform/core/widgets/language_selector.dart';
 import 'package:talex_platform/features/auth/presentation/pages/recover_access_page.dart';
 import 'package:talex_platform/features/auth/presentation/pages/register_page.dart';
 import 'package:talex_platform/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:talex_platform/features/talent/presentation/talent_error_message.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
 class AuthPage extends StatefulWidget {
@@ -24,17 +23,6 @@ class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    if (kDebugMode && SuperAdminConfig.hasEmail) {
-      _email.text = SuperAdminConfig.email.trim();
-      if (SuperAdminConfig.password.isNotEmpty) {
-        _password.text = SuperAdminConfig.password;
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -55,23 +43,24 @@ class _AuthPageState extends State<AuthPage> {
     backgroundColor: AppColors.background,
     body: BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state.status == AuthStatus.passwordResetSent) {
+          getIt<NotificationService>().success(context.l10n.resetEmailSent);
+          return;
+        }
+        final raw = state.failure?.message;
+        final mapped = raw != null && raw.startsWith('error')
+            ? talentErrorMessage(context.l10n, raw)
+            : raw;
         if (state.status == AuthStatus.googleFailure) {
           getIt<NotificationService>().error(
-            state.failure?.message ?? context.l10n.googleSignInError,
+            mapped == null || mapped.isEmpty
+                ? context.l10n.googleSignInError
+                : mapped,
           );
           return;
         }
-        final message =
-            state.failure?.message ??
-            (state.status == AuthStatus.passwordResetSent
-                ? context.l10n.resetEmailSent
-                : null);
-        if (message != null) {
-          final notifications = getIt<NotificationService>();
-          state.status == AuthStatus.passwordResetSent
-              ? notifications.success(message)
-              : notifications.error(message);
-        }
+        if (mapped == null || mapped.isEmpty) return;
+        getIt<NotificationService>().error(mapped);
       },
       child: SafeArea(
         child: LayoutBuilder(
@@ -108,7 +97,14 @@ class _AuthPageState extends State<AuthPage> {
                             maxWidth: size.cardMaxWidth,
                           ),
                           child: BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) => AuthLoginCard(
+                            builder: (context, state) {
+                              final raw = state.failure?.message;
+                              final mapped = raw != null && raw.startsWith('error')
+                                  ? talentErrorMessage(context.l10n, raw)
+                                  : raw;
+                              return Column(
+                                children: [
+                                  AuthLoginCard(
                               formKey: _formKey,
                               emailController: _email,
                               passwordController: _password,
@@ -157,6 +153,20 @@ class _AuthPageState extends State<AuthPage> {
                                   ? context.l10n.passwordLengthError
                                   : null,
                             ),
+                                  if (mapped != null && mapped.isNotEmpty) ...[
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      mapped,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: Color(0xFFB42318),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              );
+                            },
                           ),
                         ),
                       ),

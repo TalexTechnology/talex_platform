@@ -43,6 +43,13 @@ class AdminLabels {
     DealStage.client => l10n.dealClient,
   };
 
+  String cultureLead(CultureLeadStatus status) => switch (status) {
+    CultureLeadStatus.newLead => l10n.cultureLeadStatusNew,
+    CultureLeadStatus.contacted => l10n.cultureLeadStatusContacted,
+    CultureLeadStatus.qualified => l10n.cultureLeadStatusQualified,
+    CultureLeadStatus.discarded => l10n.cultureLeadStatusDiscarded,
+  };
+
   String activity(ActivityKind kind) => switch (kind) {
     ActivityKind.companyCreated => l10n.newCompany,
     ActivityKind.companyActivated => l10n.companyStatusActive,

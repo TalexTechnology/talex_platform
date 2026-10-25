@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +11,8 @@ import 'package:talex_platform/features/talent/domain/entities/talent_entities.d
 import 'package:talex_platform/features/talent/domain/services/dna_catalog.dart';
 import 'package:talex_platform/features/talent/domain/services/pin_hasher.dart';
 import 'package:talex_platform/features/talent/domain/talent_error_codes.dart';
+import 'package:crypto/crypto.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 abstract interface class TalentDataSource {
   Future<TalentSnapshot> loadCompany(String companyId);
@@ -30,7 +34,7 @@ abstract interface class TalentDataSource {
     String? logoContentType,
   });
   Future<void> activateWithPin({required String pin});
-  Future<void> tryCompleteRespondentInvite({required String password});
+  Future<String> redeemRespondentInvite({required String token});
   Future<String> inviteRecruiter({
     required String companyId,
     required String email,
@@ -42,6 +46,13 @@ abstract interface class TalentDataSource {
     required String candidateId,
     required CandidateProcessStatus status,
   });
+  Future<void> updateCandidate({
+    required String candidateId,
+    required String displayName,
+    required String documentNumber,
+    required String vacancyId,
+  });
+  Future<void> deleteCandidate(String candidateId);
   Future<RespondentSession> loadRespondentSession();
   Future<void> saveAnswer({
     required String candidateId,
@@ -49,7 +60,10 @@ abstract interface class TalentDataSource {
     required int value,
   });
   Future<TalentCandidate> completeEvaluation(String candidateId);
+  Future<void> requestSurveyResult(String candidateId);
   Future<CandidateReport> loadCandidateReport(String candidateId);
+  Future<AffinityAnalysis> loadAffinityAnalysis(String candidateId);
+  Future<AffinityAnalysis> requestAffinityAnalysis(String candidateId);
   Future<void> saveAssessmentKind({
     required String candidateId,
     required AssessmentKind kind,
@@ -63,10 +77,30 @@ abstract interface class TalentDataSource {
 }
 
 final class FirebaseTalentDataSource implements TalentDataSource {
-  FirebaseTalentDataSource(this._auth, this._firestore, this._storage);
+  FirebaseTalentDataSource(
+    this._auth,
+    this._firestore,
+    this._storage,
+    this._functions,
+  );
+
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
+  final FirebaseFunctions _functions;
+
+  String _generateInviteToken() {
+    final random = Random.secure();
+    final bytes = List<int>.generate(
+      32,
+      (_) => random.nextInt(256),
+    );
+    return base64UrlEncode(bytes).replaceAll('=', '');
+  }
+
+  String _hashInviteToken(String token) {
+    return sha256.convert(utf8.encode(token)).toString();
+  }
 
   CollectionReference<Map<String, dynamic>> get _companies =>
       _firestore.collection('companies');
@@ -82,6 +116,62 @@ final class FirebaseTalentDataSource implements TalentDataSource {
       _firestore.collection('users');
   CollectionReference<Map<String, dynamic>> get _dnaCatalog =>
       _firestore.collection('dna_catalog');
+  CollectionReference<Map<String, dynamic>> get _affinityAnalyses =>
+      _firestore.collection('affinity_analyses');
+
+  final _candidateCompanies = <String, String?>{};
+
+  @override
+  Future<String> redeemRespondentInvite({
+    required String token,
+  }) async {
+    final callable = _functions.httpsCallable(
+      'redeemRespondentInvite',
+      options: HttpsCallableOptions(
+        timeout: const Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      final result = await callable.call({
+        'token': token.trim(),
+      });
+
+      final data = Map<String, dynamic>.from(
+        result.data as Map,
+      );
+
+      final customToken = data['customToken'] as String?;
+
+      if (customToken == null || customToken.isEmpty) {
+        throw const ServerException(
+          TalentErrorCodes.inviteInvalid,
+        );
+      }
+
+      return customToken;
+    } on FirebaseFunctionsException catch (error) {
+      switch (error.code) {
+        case 'not-found':
+          throw const ServerException(
+            TalentErrorCodes.inviteInvalid,
+          );
+
+        case 'failed-precondition':
+          throw ServerException(
+            error.message ?? TalentErrorCodes.inviteInvalid,
+          );
+
+        case 'invalid-argument':
+          throw const ServerException(
+            TalentErrorCodes.inviteInvalid,
+          );
+
+        default:
+          rethrow;
+      }
+    }
+  }
 
   String get _uid {
     final uid = _auth.currentUser?.uid;
@@ -315,7 +405,9 @@ final class FirebaseTalentDataSource implements TalentDataSource {
         orElse: () => AffinityLevel.unknown,
       ),
       evaluationCompleted: data['evaluationCompleted'] == true,
+      resultRequested: data['resultRequested'] == true,
       assessmentKind: _assessmentKind(data['assessmentKind']),
+      affinityAnalyzed: data['affinityStatus'] is String,
       updatedAt: _date(data['updatedAt']),
     );
   }
@@ -346,6 +438,39 @@ final class FirebaseTalentDataSource implements TalentDataSource {
       'pinExpiresAt': Timestamp.fromDate(InvitePin.expiresAt()),
     });
     return secret;
+  }
+
+    Future<String> _writeRespondentInvite({
+    required String email,
+    required String companyId,
+    required String vacancyId,
+    String? firstName,
+    String? lastName,
+    String? documentNumber,
+    String? candidateId,
+  }) async {
+    final token = _generateInviteToken();
+    final tokenHash = _hashInviteToken(token);
+
+    await _invites.doc(email.trim().toLowerCase()).set({
+      'email': email.trim().toLowerCase(),
+      'companyId': companyId,
+      'vacancyId': vacancyId,
+      'kind': InviteKind.respondent.name,
+      'role': UserRole.respondent.value,
+      'tokenHash': tokenHash,
+      'tokenExpiresAt': Timestamp.fromDate(
+        DateTime.now().add(const Duration(days: 14)),
+      ),
+      'firstName': firstName,
+      'lastName': lastName,
+      'documentNumber': documentNumber,
+      'candidateId': candidateId,
+      'used': false,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return token;
   }
 
   @override
@@ -483,11 +608,10 @@ final class FirebaseTalentDataSource implements TalentDataSource {
         .limit(1)
         .get();
     if (existing.docs.isNotEmpty) {
-      return _writeInvite(
+      return _writeRespondentInvite(
         email: email,
         companyId: companyId,
-        kind: InviteKind.respondent,
-        role: UserRole.respondent,
+        vacancyId: vacancyId,
         firstName: displayName?.trim().split(' ').first,
         lastName: displayName != null && displayName.trim().contains(' ')
             ? displayName.trim().split(' ').skip(1).join(' ')
@@ -510,11 +634,10 @@ final class FirebaseTalentDataSource implements TalentDataSource {
       'updatedAt': FieldValue.serverTimestamp(),
       'createdAt': FieldValue.serverTimestamp(),
     });
-    return _writeInvite(
+    return _writeRespondentInvite(
       email: email,
       companyId: companyId,
-      kind: InviteKind.respondent,
-      role: UserRole.respondent,
+      vacancyId: vacancyId,
       firstName: displayName?.trim().split(' ').first,
       lastName: displayName != null && displayName.trim().contains(' ')
           ? displayName.trim().split(' ').skip(1).join(' ')
@@ -597,15 +720,6 @@ final class FirebaseTalentDataSource implements TalentDataSource {
     await _completeInvite(secret: pin, requireMatch: true);
   });
 
-  @override
-  Future<void> tryCompleteRespondentInvite({required String password}) =>
-      _guard(() async {
-        await _completeInvite(
-          secret: password,
-          expectedKind: InviteKind.respondent,
-          requireMatch: false,
-        );
-      });
 
   Future<void> _completeInvite({
     required String secret,
@@ -647,8 +761,7 @@ final class FirebaseTalentDataSource implements TalentDataSource {
       'candidateId': data['candidateId'],
       'documentNumber': data['documentNumber'],
       'mustChangePassword': false,
-      'mustReviewCompanyDna':
-          role == UserRole.companyAdmin || role == UserRole.companyLead,
+      'mustReviewCompanyDna': false,
       'activationPinHash': PinHasher.hash(secret.trim(), _email),
       'displayName': [
         data['firstName'],
@@ -693,6 +806,65 @@ final class FirebaseTalentDataSource implements TalentDataSource {
   });
 
   @override
+  Future<void> updateCandidate({
+    required String candidateId,
+    required String displayName,
+    required String documentNumber,
+    required String vacancyId,
+  }) => _guard(() async {
+    final candidateRef = _candidates.doc(candidateId);
+    final candidate = await candidateRef.get();
+    final vacancy = _vacancy(await _vacancies.doc(vacancyId).get());
+    final name = displayName.trim();
+    await candidateRef.set({
+      'displayName': name,
+      'documentNumber': documentNumber.trim(),
+      'vacancyId': vacancyId,
+      'vacancyName': vacancy.name,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+    final email = (candidate.data()?['email'] as String?)?.trim().toLowerCase();
+    if (email == null || email.isEmpty) return;
+    final inviteRef = _invites.doc(email);
+    final invite = await _readInvite(inviteRef);
+    if (invite?['candidateId'] != candidateId) return;
+    final parts = name.split(' ');
+    await inviteRef.set({
+      'firstName': parts.first,
+      'lastName': parts.length > 1 ? parts.skip(1).join(' ') : null,
+      'documentNumber': documentNumber.trim(),
+      'vacancyId': vacancyId,
+    }, SetOptions(merge: true));
+  });
+
+  @override
+  Future<void> deleteCandidate(String candidateId) => _guard(() async {
+    final candidateRef = _candidates.doc(candidateId);
+    final candidate = await candidateRef.get();
+    if (!candidate.exists) return;
+    final email = (candidate.data()?['email'] as String?)?.trim().toLowerCase();
+    await _evaluations.doc(candidateId).delete();
+    if (email != null && email.isNotEmpty) {
+      final inviteRef = _invites.doc(email);
+      final invite = await _readInvite(inviteRef);
+      if (invite?['candidateId'] == candidateId) {
+        await inviteRef.delete();
+      }
+    }
+    await candidateRef.delete();
+  });
+
+  Future<Map<String, dynamic>?> _readInvite(
+    DocumentReference<Map<String, dynamic>> ref,
+  ) async {
+    try {
+      return (await ref.get()).data();
+    } on FirebaseException {
+      return null;
+    }
+  }
+
+  @override
   Future<RespondentSession> loadRespondentSession() => _guard(() async {
     final user = await _users.doc(_uid).get();
     var candidateId = user.data()?['candidateId'] as String?;
@@ -714,27 +886,41 @@ final class FirebaseTalentDataSource implements TalentDataSource {
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     }
-    final candidate = _candidate(await _candidates.doc(candidateId).get());
-    final companyId =
-        user.data()?['companyId'] as String? ?? candidate.companyId;
-    CompanyProfile? company;
-    if (companyId.isNotEmpty) {
+    Future<CompanyProfile?> loadCompany(String companyId) async {
+      if (companyId.isEmpty) return null;
       try {
         final companyDoc = await _companies.doc(companyId).get();
-        if (companyDoc.exists) company = _profile(companyDoc);
+        return companyDoc.exists ? _profile(companyDoc) : null;
       } on FirebaseException {
-        company = null;
+        return null;
       }
     }
-    Map<String, int> answers = const {};
-    AssessmentKind? evaluationKind;
-    try {
-      final evaluation = await _evaluations.doc(candidateId).get();
-      answers = _answers(evaluation.data()?['answers']);
-      evaluationKind = _assessmentKind(evaluation.data()?['assessmentKind']);
-    } on FirebaseException {
-      answers = const {};
+
+    Future<Map<String, dynamic>?> loadEvaluation() async {
+      try {
+        return (await _evaluations.doc(candidateId).get()).data();
+      } on FirebaseException {
+        return null;
+      }
     }
+
+    final userCompanyId = user.data()?['companyId'] as String?;
+    final results = await Future.wait<Object?>([
+      _candidates.doc(candidateId).get(),
+      loadEvaluation(),
+      if (userCompanyId != null && userCompanyId.isNotEmpty)
+        loadCompany(userCompanyId),
+    ]);
+    final candidate = _candidate(
+      results[0]! as DocumentSnapshot<Map<String, dynamic>>,
+    );
+    final evaluation = results[1] as Map<String, dynamic>?;
+    final company = results.length > 2
+        ? results[2] as CompanyProfile?
+        : await loadCompany(candidate.companyId);
+    _candidateCompanies[candidate.id] = candidate.companyId;
+    final answers = _answers(evaluation?['answers']);
+    final evaluationKind = _assessmentKind(evaluation?['assessmentKind']);
     return RespondentSession(
       candidate: TalentCandidate(
         id: candidate.id,
@@ -762,96 +948,223 @@ final class FirebaseTalentDataSource implements TalentDataSource {
     required String questionId,
     required int value,
   }) => _guard(() async {
-    final candidate = await _candidates.doc(candidateId).get();
-    final ref = _evaluations.doc(candidateId);
-    final existing = await ref.get();
-    if (!existing.exists) {
-      await ref.set({
+    final companyId = _candidateCompanies.containsKey(candidateId)
+        ? _candidateCompanies[candidateId]
+        : _candidateCompanies[candidateId] =
+              (await _candidates.doc(candidateId).get()).data()?['companyId']
+                  as String?;
+    final batch = _firestore.batch()
+      ..set(_evaluations.doc(candidateId), {
         'candidateId': candidateId,
-        'companyId': candidate.data()?['companyId'],
+        'companyId': companyId,
         'answers': {questionId: value},
         'updatedAt': FieldValue.serverTimestamp(),
         'respondentId': _uid,
-      });
-    } else {
-      await ref.update({
-        'answers.$questionId': value,
+      }, SetOptions(merge: true))
+      ..set(_candidates.doc(candidateId), {
+        'processStatus': CandidateProcessStatus.inProgress.name,
         'updatedAt': FieldValue.serverTimestamp(),
-        'respondentId': _uid,
-      });
-    }
-    await _candidates.doc(candidateId).set({
-      'processStatus': CandidateProcessStatus.inProgress.name,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+      }, SetOptions(merge: true));
+    await batch.commit();
   });
 
   @override
   Future<TalentCandidate> completeEvaluation(String candidateId) =>
       _guard(() async {
-        final evaluation = await _evaluations.doc(candidateId).get();
-        final answers = _answers(evaluation.data()?['answers']);
-        // Los pares de valores y necesidades describen preferencias; se
-        // guardan como perfil por dimensión hasta tener el perfil de la
-        // empresa para compararlos. La afinidad con la vacante sale de las
-        // experiencias (capacidades).
-        const companyLevel = AffinityLevel.unknown;
+        final snapshots = await Future.wait([
+          _evaluations.doc(candidateId).get(),
+          _candidates.doc(candidateId).get(),
+        ]);
+        final answers = _answers(snapshots[0].data()?['answers']);
+        final candidateData = snapshots[1].data() ?? const <String, dynamic>{};
+        // La afinidad con la empresa la calcula el backend al detectar la
+        // evaluación completa; aquí solo se cierra la evaluación.
         final vacancyLevel = affinityLevelFromAverage(
           capabilitiesAverage(answers),
         );
-        await _candidates.doc(candidateId).set({
-          'processStatus': CandidateProcessStatus.completed.name,
-          'evaluationCompleted': true,
-          'companyAffinity': companyLevel.name,
-          'vacancyAffinity': vacancyLevel.name,
-          'updatedAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
-        await _evaluations.doc(candidateId).set({
-          'completed': true,
-          'completedAt': FieldValue.serverTimestamp(),
-          'dimensionScores': {
-            'values': pairDimensionScores(answers, AssessmentBlock.workValues),
-            'needs': pairDimensionScores(answers, AssessmentBlock.needs),
-            'capabilities': capabilitiesAverage(answers),
-          },
-        }, SetOptions(merge: true));
-        return _candidate(await _candidates.doc(candidateId).get());
+        final batch = _firestore.batch()
+          ..set(_candidates.doc(candidateId), {
+            'processStatus': CandidateProcessStatus.completed.name,
+            'evaluationCompleted': true,
+            'vacancyAffinity': vacancyLevel.name,
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true))
+          ..set(_evaluations.doc(candidateId), {
+            'companyId': candidateData['companyId'],
+            'completed': true,
+            'completedAt': FieldValue.serverTimestamp(),
+            'dimensionScores': {
+              'values': pairDimensionScores(answers, AssessmentBlock.workValues),
+              'needs': pairDimensionScores(answers, AssessmentBlock.needs),
+              'capabilities': capabilitiesAverage(answers),
+            },
+          }, SetOptions(merge: true));
+        await batch.commit();
+        final candidate = _candidate(snapshots[1]);
+        return TalentCandidate(
+          id: candidate.id,
+          companyId: candidate.companyId,
+          vacancyId: candidate.vacancyId,
+          vacancyName: candidate.vacancyName,
+          email: candidate.email,
+          documentNumber: candidate.documentNumber,
+          displayName: candidate.displayName,
+          processStatus: CandidateProcessStatus.completed,
+          companyAffinity: candidate.companyAffinity,
+          vacancyAffinity: vacancyLevel,
+          evaluationCompleted: true,
+          assessmentKind: candidate.assessmentKind,
+          resultRequested: candidate.resultRequested,
+          updatedAt: DateTime.now(),
+        );
       });
+
+  @override
+  Future<void> requestSurveyResult(String candidateId) => _guard(() async {
+    final candidateSnap = await _candidates.doc(candidateId).get();
+    final data = candidateSnap.data() ?? const <String, dynamic>{};
+    final companyId = data['companyId'] as String?;
+    String? companyName;
+    if (companyId != null && companyId.isNotEmpty) {
+      final company = await _firestore.collection('companies').doc(companyId).get();
+      companyName = company.data()?['name'] as String?;
+    }
+    final batch = _firestore.batch()
+      ..set(_candidates.doc(candidateId), {
+        'resultRequested': true,
+        'resultRequestedAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true))
+      ..set(_firestore.collection('survey_result_requests').doc(candidateId), {
+        'candidateId': candidateId,
+        'companyId': companyId,
+        'companyName': companyName,
+        'displayName': data['displayName'] ?? data['email'],
+        'email': data['email'],
+        'vacancyName': data['vacancyName'],
+        'status': 'pending',
+        'requestedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    await batch.commit();
+  });
 
   @override
   Future<CandidateReport> loadCandidateReport(String candidateId) =>
       _guard(() async {
-        final candidate = _candidate(await _candidates.doc(candidateId).get());
-        final evaluation = await _evaluations.doc(candidateId).get();
-        CompanyProfile? company;
-        Vacancy? vacancy;
-        if (candidate.companyId.isNotEmpty) {
-          final companyDoc = await _companies.doc(candidate.companyId).get();
-          if (companyDoc.exists) company = _profile(companyDoc);
-        }
-        if (candidate.vacancyId.isNotEmpty) {
-          final vacancyDoc = await _vacancies.doc(candidate.vacancyId).get();
-          if (vacancyDoc.exists) vacancy = _vacancy(vacancyDoc);
-        }
+        final snapshots = await Future.wait([
+          _candidates.doc(candidateId).get(),
+          _evaluations.doc(candidateId).get(),
+        ]);
+        final candidate = _candidate(snapshots[0]);
+        final related = await Future.wait<Object?>([
+          candidate.companyId.isEmpty
+              ? Future.value()
+              : _companies.doc(candidate.companyId).get(),
+          candidate.vacancyId.isEmpty
+              ? Future.value()
+              : _vacancies.doc(candidate.vacancyId).get(),
+          _readAffinityAnalysis(candidateId),
+        ]);
+        final companyDoc =
+            related[0] as DocumentSnapshot<Map<String, dynamic>>?;
+        final vacancyDoc =
+            related[1] as DocumentSnapshot<Map<String, dynamic>>?;
         return CandidateReport(
           candidate: candidate,
-          answers: _answers(evaluation.data()?['answers']),
-          company: company,
-          vacancy: vacancy,
+          answers: _answers(snapshots[1].data()?['answers']),
+          company: companyDoc != null && companyDoc.exists
+              ? _profile(companyDoc)
+              : null,
+          vacancy: vacancyDoc != null && vacancyDoc.exists
+              ? _vacancy(vacancyDoc)
+              : null,
+          analysis: related[2]! as AffinityAnalysis,
         );
       });
+
+  @override
+  Future<AffinityAnalysis> loadAffinityAnalysis(String candidateId) =>
+      _guard(() => _readAffinityAnalysis(candidateId));
+
+  @override
+  Future<AffinityAnalysis> requestAffinityAnalysis(String candidateId) =>
+      _guard(() async {
+        try {
+          await _functions
+              .httpsCallable(
+                'analyzeCandidateAffinity',
+                options: HttpsCallableOptions(
+                  timeout: const Duration(seconds: 120),
+                ),
+              )
+              .call({'candidateId': candidateId});
+        } on FirebaseFunctionsException catch (error) {
+          if (error.code == 'permission-denied') {
+            throw const ServerException(TalentErrorCodes.permissionDenied);
+          }
+        }
+        return _readAffinityAnalysis(candidateId);
+      });
+
+  Future<AffinityAnalysis> _readAffinityAnalysis(String candidateId) async {
+    try {
+      final doc = await _affinityAnalyses.doc(candidateId).get();
+      final data = doc.data();
+      return data == null ? const AffinityAnalysis() : _affinityAnalysis(data);
+    } on FirebaseException {
+      return const AffinityAnalysis();
+    }
+  }
+
+  AffinityAnalysis _affinityAnalysis(Map<String, dynamic> data) {
+    AffinityLevel level(Object? value) => AffinityLevel.values.firstWhere(
+      (item) => item.name == value,
+      orElse: () => AffinityLevel.unknown,
+    );
+    List<AffinityInsight> insights(Object? value) => [
+      if (value is List)
+        for (final item in value.whereType<Map>())
+          if ('${item['aspect'] ?? ''}'.trim().isNotEmpty)
+            AffinityInsight(
+              aspect: '${item['aspect']}'.trim(),
+              evidence: '${item['evidence'] ?? ''}'.trim(),
+            ),
+    ];
+    return AffinityAnalysis(
+      status: switch (data['status']) {
+        'pending' => AffinityAnalysisStatus.pending,
+        'completed' => AffinityAnalysisStatus.completed,
+        'failed' => AffinityAnalysisStatus.failed,
+        'insufficient_data' => AffinityAnalysisStatus.insufficientData,
+        _ => AffinityAnalysisStatus.none,
+      },
+      level: level(data['level']),
+      score: (data['score'] as num?)?.toInt(),
+      confidence: level(data['confidence']),
+      summary: (data['summary'] as String?)?.trim() ?? '',
+      alignments: insights(data['alignments']),
+      differences: insights(data['differences']),
+      conversationTopics: _stringList(data['conversationTopics']),
+      guidance: (data['guidance'] as String?)?.trim() ?? '',
+      dataGaps: _stringList(data['dataGaps']),
+      errorCode: data['error'] as String?,
+      analyzedAt: _optionalDate(data['analyzedAt']),
+    );
+  }
 
   @override
   Future<void> saveAssessmentKind({
     required String candidateId,
     required AssessmentKind kind,
   }) => _guard(() async {
+    final candidate = await _candidates.doc(candidateId).get();
     await _candidates.doc(candidateId).set({
       'assessmentKind': kind.name,
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
     await _evaluations.doc(candidateId).set({
       'candidateId': candidateId,
+      'companyId': candidate.data()?['companyId'],
       'assessmentKind': kind.name,
       'updatedAt': FieldValue.serverTimestamp(),
       'respondentId': _uid,

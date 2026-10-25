@@ -290,30 +290,6 @@ abstract class AppLocalizations {
   /// **'“TaleX transformó nuestro proceso de selección y ayudó a nuestro equipo a tomar mejores decisiones.”'**
   String get testimonial;
 
-  /// No description provided for @testimonialName.
-  ///
-  /// In es, this message translates to:
-  /// **'Gabriel Ramirez'**
-  String get testimonialName;
-
-  /// No description provided for @testimonialRole.
-  ///
-  /// In es, this message translates to:
-  /// **'CEO, TaleX'**
-  String get testimonialRole;
-
-  /// No description provided for @testimonialNameSecondary.
-  ///
-  /// In es, this message translates to:
-  /// **'Pablo Melo'**
-  String get testimonialNameSecondary;
-
-  /// No description provided for @testimonialRoleSecondary.
-  ///
-  /// In es, this message translates to:
-  /// **'CTO, TaleX'**
-  String get testimonialRoleSecondary;
-
   /// No description provided for @welcomeUser.
   ///
   /// In es, this message translates to:
@@ -925,6 +901,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ventas'**
   String get adminSales;
+
+  /// No description provided for @adminCultureLeads.
+  ///
+  /// In es, this message translates to:
+  /// **'Leads cultura'**
+  String get adminCultureLeads;
+
+  /// No description provided for @adminCultureLeadsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Prospectos del diagnóstico de la landing /micultura. No se crea empresa ni membresía.'**
+  String get adminCultureLeadsSubtitle;
+
+  /// No description provided for @adminCultureLeadsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay leads de cultura.'**
+  String get adminCultureLeadsEmpty;
+
+  /// No description provided for @cultureLeadEmployees.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleados'**
+  String get cultureLeadEmployees;
+
+  /// No description provided for @cultureLeadTraits.
+  ///
+  /// In es, this message translates to:
+  /// **'Rasgos culturales'**
+  String get cultureLeadTraits;
+
+  /// No description provided for @cultureLeadComment.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario'**
+  String get cultureLeadComment;
+
+  /// No description provided for @cultureLeadUtm.
+  ///
+  /// In es, this message translates to:
+  /// **'UTM'**
+  String get cultureLeadUtm;
+
+  /// No description provided for @cultureLeadStatusNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo'**
+  String get cultureLeadStatusNew;
+
+  /// No description provided for @cultureLeadStatusContacted.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactado'**
+  String get cultureLeadStatusContacted;
+
+  /// No description provided for @cultureLeadStatusQualified.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificado'**
+  String get cultureLeadStatusQualified;
+
+  /// No description provided for @cultureLeadStatusDiscarded.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartado'**
+  String get cultureLeadStatusDiscarded;
 
   /// No description provided for @adminAnalytics.
   ///
@@ -2309,19 +2351,19 @@ abstract class AppLocalizations {
   /// No description provided for @teamRoleCompanyAdmin.
   ///
   /// In es, this message translates to:
-  /// **'Administración de empresa'**
+  /// **'CEO'**
   String get teamRoleCompanyAdmin;
 
   /// No description provided for @teamRoleCompanyLead.
   ///
   /// In es, this message translates to:
-  /// **'Dirección'**
+  /// **'Administrador'**
   String get teamRoleCompanyLead;
 
   /// No description provided for @teamRolePeopleOps.
   ///
   /// In es, this message translates to:
-  /// **'Personas'**
+  /// **'Recursos humanos'**
   String get teamRolePeopleOps;
 
   /// No description provided for @teamRoleRecruiter.
@@ -2333,13 +2375,13 @@ abstract class AppLocalizations {
   /// No description provided for @teamRoleHiringManager.
   ///
   /// In es, this message translates to:
-  /// **'Liderazgo de área'**
+  /// **'Líder técnico'**
   String get teamRoleHiringManager;
 
   /// No description provided for @teamRoleHint.
   ///
   /// In es, this message translates to:
-  /// **'Dirección y administración pueden completar el ADN e invitar al resto del equipo. Reclutamiento y liderazgo de área gestionan vacantes y candidatos.'**
+  /// **'CEO y administrador pueden invitar al resto del equipo. Recursos humanos, reclutamiento y líder técnico trabajan vacantes y candidatos.'**
   String get teamRoleHint;
 
   /// No description provided for @vacanciesSubtitle.
@@ -2756,42 +2798,6 @@ abstract class AppLocalizations {
   /// **'Vacante'**
   String get affinityVacancy;
 
-  /// No description provided for @affinityCompanyHighHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Hay alta correspondencia con la cultura y la forma de trabajar descritas por la empresa. Texto de maqueta: más adelante aquí irá la lectura real de las dimensiones evaluadas.'**
-  String get affinityCompanyHighHint;
-
-  /// No description provided for @affinityCompanyMediumHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Hay correspondencia parcial con el ADN de la empresa. Texto de maqueta: luego se detallará qué dimensiones coinciden y cuáles no.'**
-  String get affinityCompanyMediumHint;
-
-  /// No description provided for @affinityCompanyLowHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Hay menor correspondencia con la cultura descrita por la empresa. Texto de maqueta: la ficha real explicará en qué se distancia.'**
-  String get affinityCompanyLowHint;
-
-  /// No description provided for @affinityVacancyHighHint.
-  ///
-  /// In es, this message translates to:
-  /// **'El perfil de esta persona se acerca a lo que la vacante busca. Texto de maqueta: luego se mostrarán las características del rol con mayor coincidencia.'**
-  String get affinityVacancyHighHint;
-
-  /// No description provided for @affinityVacancyMediumHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Hay coincidencia intermedia con el perfil de la vacante. Texto de maqueta: la ficha real indicará qué aspectos del rol calzan mejor.'**
-  String get affinityVacancyMediumHint;
-
-  /// No description provided for @affinityVacancyLowHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Hay menor correspondencia con el perfil buscado para esta vacante. Texto de maqueta: no significa un juicio sobre la persona, solo respecto a este rol.'**
-  String get affinityVacancyLowHint;
-
   /// No description provided for @affinityUnknownHint.
   ///
   /// In es, this message translates to:
@@ -2801,14 +2807,110 @@ abstract class AppLocalizations {
   /// No description provided for @affinityMockNote.
   ///
   /// In es, this message translates to:
-  /// **'Esta explicación es orientativa. La lectura definitiva se construirá con la metodología de TaleX.'**
+  /// **'Análisis generado con IA a partir de la encuesta, que es la misma para todas las empresas. Es información de apoyo: TaleX no toma decisiones de contratación ni descarta personas. La decisión final corresponde a tu equipo.'**
   String get affinityMockNote;
+
+  /// No description provided for @affinityAnalysisNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta evaluación todavía no tiene análisis de afinidad.'**
+  String get affinityAnalysisNone;
+
+  /// No description provided for @affinityAnalysisPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Estamos analizando las respuestas de la encuesta. Puede tardar unos segundos.'**
+  String get affinityAnalysisPending;
+
+  /// No description provided for @affinityAnalysisFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar el análisis de afinidad en este momento. Puedes intentarlo de nuevo.'**
+  String get affinityAnalysisFailed;
+
+  /// No description provided for @affinityAnalysisMissingDna.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay información suficiente de la encuesta para completar el análisis.'**
+  String get affinityAnalysisMissingDna;
+
+  /// No description provided for @affinityAnalysisIncompleteAnswers.
+  ///
+  /// In es, this message translates to:
+  /// **'La evaluación no tiene suficientes respuestas para analizar la afinidad.'**
+  String get affinityAnalysisIncompleteAnswers;
+
+  /// No description provided for @affinityAnalyzeAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Analizar afinidad'**
+  String get affinityAnalyzeAction;
+
+  /// No description provided for @affinityReanalyzeAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a analizar'**
+  String get affinityReanalyzeAction;
+
+  /// No description provided for @affinityAlignmentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde hay afinidad'**
+  String get affinityAlignmentsTitle;
+
+  /// No description provided for @affinityDifferencesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aspectos que podrían generar dificultades'**
+  String get affinityDifferencesTitle;
+
+  /// No description provided for @affinityTopicsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Temas para conversar en la entrevista'**
+  String get affinityTopicsTitle;
+
+  /// No description provided for @affinityGuidanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Orientación para Recursos Humanos'**
+  String get affinityGuidanceTitle;
+
+  /// No description provided for @affinityDataGapsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Información que faltó'**
+  String get affinityDataGapsTitle;
+
+  /// No description provided for @affinityScoreValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Puntaje {score}/100'**
+  String affinityScoreValue(int score);
 
   /// No description provided for @continueAction.
   ///
   /// In es, this message translates to:
   /// **'Continuar'**
   String get continueAction;
+
+  /// No description provided for @respondentWelcomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Quiero conocerte bien'**
+  String get respondentWelcomeTitle;
+
+  /// No description provided for @respondentWelcomeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola. Soy TaleXito. Esta encuesta es la misma para todas las empresas. Yo recibo tus respuestas para conocer mejor cómo te gusta trabajar. El resultado no lo determino yo: una persona especializada te lo contará más adelante.'**
+  String get respondentWelcomeBody;
+
+  /// No description provided for @respondentWelcomeAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get respondentWelcomeAction;
 
   /// No description provided for @respondentHello.
   ///
@@ -2966,6 +3068,12 @@ abstract class AppLocalizations {
   /// **'No se pudo completar la operación. Inténtalo nuevamente.'**
   String get errorUnexpected;
 
+  /// No description provided for @errorApiUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conectar con TaleX. No puedes entrar hasta que la API responda.'**
+  String get errorApiUnavailable;
+
   /// No description provided for @errorCompanyNotFound.
   ///
   /// In es, this message translates to:
@@ -2989,6 +3097,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Esta invitación ya fue utilizada.'**
   String get errorInviteUsed;
+
+  /// No description provided for @errorInviteInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace de invitación no es válido.'**
+  String get errorInviteInvalid;
+
+  /// No description provided for @errorInviteExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace caducó. Pide una invitación nueva.'**
+  String get errorInviteExpired;
 
   /// No description provided for @errorInvalidPin.
   ///
@@ -3191,8 +3311,32 @@ abstract class AppLocalizations {
   /// No description provided for @assessmentFinishedTitle.
   ///
   /// In es, this message translates to:
-  /// **'Muy bien, acabaste'**
+  /// **'TaleXito ya recibió tus respuestas'**
   String get assessmentFinishedTitle;
+
+  /// No description provided for @assessmentFinishedBody.
+  ///
+  /// In es, this message translates to:
+  /// **'TaleXito se encarga de recibir la información. No determina el resultado. Una persona especializada te lo dirá más adelante.'**
+  String get assessmentFinishedBody;
+
+  /// No description provided for @surveyResultRequest.
+  ///
+  /// In es, this message translates to:
+  /// **'Quiero conocer mis resultados'**
+  String get surveyResultRequest;
+
+  /// No description provided for @surveyResultRequested.
+  ///
+  /// In es, this message translates to:
+  /// **'Gracias por hacernos saber eso. El resultado se demora un poco. Una persona especializada se encarga de eso.'**
+  String get surveyResultRequested;
+
+  /// No description provided for @companyProfileSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos generales de la empresa.'**
+  String get companyProfileSubtitle;
 
   /// No description provided for @downloadPdf.
   ///
@@ -3205,6 +3349,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Informe de resultados'**
   String get candidateResultTitle;
+
+  /// No description provided for @editCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar candidato'**
+  String get editCandidate;
+
+  /// No description provided for @deleteCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar candidato'**
+  String get deleteCandidate;
+
+  /// No description provided for @deleteCandidateConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar a {name}? Se borrarán sus respuestas y su enlace de invitación dejará de funcionar. Esta acción no se puede deshacer.'**
+  String deleteCandidateConfirm(String name);
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get deleteAction;
+
+  /// No description provided for @candidateUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Candidato actualizado.'**
+  String get candidateUpdated;
+
+  /// No description provided for @candidateDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Candidato eliminado.'**
+  String get candidateDeleted;
 
   /// No description provided for @backToResults.
   ///
@@ -3227,7 +3407,7 @@ abstract class AppLocalizations {
   /// No description provided for @respondentInviteHint.
   ///
   /// In es, this message translates to:
-  /// **'La persona recibirá un PIN de 6 dígitos al correo. Caduca a los 15 minutos. Luego se registra con su contraseña o con Google y ese PIN.'**
+  /// **'La persona recibirá un correo con un enlace para presentar la prueba de inmediato. Cuando la complete, verás el estado y el resultado aquí.'**
   String get respondentInviteHint;
 
   /// No description provided for @firstAccessCompany.
@@ -3239,13 +3419,13 @@ abstract class AppLocalizations {
   /// No description provided for @assessmentSignInHint.
   ///
   /// In es, this message translates to:
-  /// **'Si te invitaron a una evaluación, entra por Registrarse con el PIN del correo. Si usas Google, después te pediremos el PIN.'**
+  /// **'Si te invitaron a una evaluación, usa el enlace del correo para comenzar la prueba. No necesitas registrarte con un PIN.'**
   String get assessmentSignInHint;
 
   /// No description provided for @respondentInviteSent.
   ///
   /// In es, this message translates to:
-  /// **'Invitación lista. El encuestado recibe un PIN por correo.'**
+  /// **'Invitación lista. El candidato recibe un enlace por correo para presentar la prueba.'**
   String get respondentInviteSent;
 
   /// No description provided for @recoverPasswordTitle.
@@ -3368,6 +3548,378 @@ abstract class AppLocalizations {
   /// **'No hay una cuenta TaleX con este correo. Si te invitaron, entra por Primer acceso con el PIN.'**
   String get errorAccountNotFound;
 
+  /// No description provided for @adminQuestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuesta de afinidad'**
+  String get adminQuestions;
+
+  /// No description provided for @adminQuestionsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas que responde el candidato. Puedes verlas, editarlas y actualizarlas.'**
+  String get adminQuestionsSubtitle;
+
+  /// No description provided for @adminCultureSurvey.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuesta de cultura'**
+  String get adminCultureSurvey;
+
+  /// No description provided for @adminCultureSurveySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Formulario de valores y cultura de la empresa. Sube el archivo una vez; después solo se edita.'**
+  String get adminCultureSurveySubtitle;
+
+  /// No description provided for @adminCultureSurveyEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas de cultura. Sube un archivo CSV o JSON para cargarlas.'**
+  String get adminCultureSurveyEmpty;
+
+  /// No description provided for @adminQuestionsUploadFile.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir archivo'**
+  String get adminQuestionsUploadFile;
+
+  /// No description provided for @adminQuestionsFrontCultura.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura vivida'**
+  String get adminQuestionsFrontCultura;
+
+  /// No description provided for @adminQuestionsFrontLiderazgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Liderazgo'**
+  String get adminQuestionsFrontLiderazgo;
+
+  /// No description provided for @adminQuestionsFrontTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'Forma de trabajar'**
+  String get adminQuestionsFrontTrabajo;
+
+  /// No description provided for @adminQuestionsFrontPersonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Personas'**
+  String get adminQuestionsFrontPersonas;
+
+  /// No description provided for @adminQuestionsFrontApertura.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentarios abiertos'**
+  String get adminQuestionsFrontApertura;
+
+  /// No description provided for @adminQuestionsFormatScale.
+  ///
+  /// In es, this message translates to:
+  /// **'Escala'**
+  String get adminQuestionsFormatScale;
+
+  /// No description provided for @adminQuestionsFormatText.
+  ///
+  /// In es, this message translates to:
+  /// **'Texto abierto'**
+  String get adminQuestionsFormatText;
+
+  /// No description provided for @adminQuestionsFormatSingle.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción única'**
+  String get adminQuestionsFormatSingle;
+
+  /// No description provided for @adminQuestionsFormatMulti.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción múltiple'**
+  String get adminQuestionsFormatMulti;
+
+  /// No description provided for @adminQuestionsNew.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva pregunta'**
+  String get adminQuestionsNew;
+
+  /// No description provided for @adminQuestionsEdit.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar pregunta'**
+  String get adminQuestionsEdit;
+
+  /// No description provided for @adminQuestionsPreview.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa'**
+  String get adminQuestionsPreview;
+
+  /// No description provided for @adminQuestionsPreviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa de la encuesta'**
+  String get adminQuestionsPreviewTitle;
+
+  /// No description provided for @adminQuestionsPreviewNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Simulación: las respuestas no se guardan.'**
+  String get adminQuestionsPreviewNote;
+
+  /// No description provided for @adminQuestionsPreviewEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay preguntas activas para mostrar.'**
+  String get adminQuestionsPreviewEmpty;
+
+  /// No description provided for @adminQuestionsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay preguntas en Firebase.'**
+  String get adminQuestionsEmpty;
+
+  /// No description provided for @adminQuestionsSeed.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargar las {count} preguntas base'**
+  String adminQuestionsSeed(int count);
+
+  /// No description provided for @adminQuestionsNoResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna pregunta coincide con el filtro.'**
+  String get adminQuestionsNoResults;
+
+  /// No description provided for @adminQuestionsSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por código, dimensión o enunciado...'**
+  String get adminQuestionsSearch;
+
+  /// No description provided for @adminQuestionsAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas'**
+  String get adminQuestionsAll;
+
+  /// No description provided for @adminQuestionsSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'{active} activas de {total}'**
+  String adminQuestionsSummary(int active, int total);
+
+  /// No description provided for @adminQuestionsFrontValues.
+  ///
+  /// In es, this message translates to:
+  /// **'1 · Valores'**
+  String get adminQuestionsFrontValues;
+
+  /// No description provided for @adminQuestionsFrontNeeds.
+  ///
+  /// In es, this message translates to:
+  /// **'2 · Necesidades'**
+  String get adminQuestionsFrontNeeds;
+
+  /// No description provided for @adminQuestionsFrontCapabilities.
+  ///
+  /// In es, this message translates to:
+  /// **'3 · Capacidades'**
+  String get adminQuestionsFrontCapabilities;
+
+  /// No description provided for @adminQuestionsFormatPair.
+  ///
+  /// In es, this message translates to:
+  /// **'Par de enunciados'**
+  String get adminQuestionsFormatPair;
+
+  /// No description provided for @adminQuestionsFormatExperience.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado de experiencia'**
+  String get adminQuestionsFormatExperience;
+
+  /// No description provided for @adminQuestionsCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get adminQuestionsCode;
+
+  /// No description provided for @adminQuestionsFront.
+  ///
+  /// In es, this message translates to:
+  /// **'Frente'**
+  String get adminQuestionsFront;
+
+  /// No description provided for @adminQuestionsFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Formato'**
+  String get adminQuestionsFormat;
+
+  /// No description provided for @adminQuestionsDimension.
+  ///
+  /// In es, this message translates to:
+  /// **'Dimensión'**
+  String get adminQuestionsDimension;
+
+  /// No description provided for @adminQuestionsDimensionA.
+  ///
+  /// In es, this message translates to:
+  /// **'Dimensión A'**
+  String get adminQuestionsDimensionA;
+
+  /// No description provided for @adminQuestionsDimensionB.
+  ///
+  /// In es, this message translates to:
+  /// **'Dimensión B'**
+  String get adminQuestionsDimensionB;
+
+  /// No description provided for @adminQuestionsInstruction.
+  ///
+  /// In es, this message translates to:
+  /// **'Instrucción'**
+  String get adminQuestionsInstruction;
+
+  /// No description provided for @adminQuestionsStatement.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado'**
+  String get adminQuestionsStatement;
+
+  /// No description provided for @adminQuestionsStatementA.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado A'**
+  String get adminQuestionsStatementA;
+
+  /// No description provided for @adminQuestionsStatementB.
+  ///
+  /// In es, this message translates to:
+  /// **'Enunciado B'**
+  String get adminQuestionsStatementB;
+
+  /// No description provided for @adminQuestionsOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Opción {number}'**
+  String adminQuestionsOption(int number);
+
+  /// No description provided for @adminQuestionsTimeLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo límite (segundos)'**
+  String get adminQuestionsTimeLimit;
+
+  /// No description provided for @adminQuestionsTimeLimitHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Vacío = sin límite'**
+  String get adminQuestionsTimeLimitHint;
+
+  /// No description provided for @adminQuestionsNoLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin límite'**
+  String get adminQuestionsNoLimit;
+
+  /// No description provided for @adminQuestionsSeconds.
+  ///
+  /// In es, this message translates to:
+  /// **'{seconds} s'**
+  String adminQuestionsSeconds(int seconds);
+
+  /// No description provided for @adminQuestionsActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get adminQuestionsActive;
+
+  /// No description provided for @adminQuestionsInactive.
+  ///
+  /// In es, this message translates to:
+  /// **'Inactiva'**
+  String get adminQuestionsInactive;
+
+  /// No description provided for @adminQuestionsRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Este campo es obligatorio.'**
+  String get adminQuestionsRequired;
+
+  /// No description provided for @adminQuestionsCodeTaken.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe una pregunta con este código.'**
+  String get adminQuestionsCodeTaken;
+
+  /// No description provided for @adminQuestionsInvalidTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número entero mayor que cero.'**
+  String get adminQuestionsInvalidTime;
+
+  /// No description provided for @adminQuestionsDeleteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar pregunta'**
+  String get adminQuestionsDeleteTitle;
+
+  /// No description provided for @adminQuestionsDeleteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminará {code} de Firebase. Esta acción no se puede deshacer.'**
+  String adminQuestionsDeleteBody(String code);
+
+  /// No description provided for @adminQuestionsDelete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get adminQuestionsDelete;
+
+  /// No description provided for @adminQuestionsMoveUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir'**
+  String get adminQuestionsMoveUp;
+
+  /// No description provided for @adminQuestionsMoveDown.
+  ///
+  /// In es, this message translates to:
+  /// **'Bajar'**
+  String get adminQuestionsMoveDown;
+
+  /// No description provided for @adminQuestionsError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo completar la operación en Firebase.'**
+  String get adminQuestionsError;
+
+  /// No description provided for @adminQuestionsRestart.
+  ///
+  /// In es, this message translates to:
+  /// **'Reiniciar'**
+  String get adminQuestionsRestart;
+
+  /// No description provided for @adminQuestionsDeviceMobile.
+  ///
+  /// In es, this message translates to:
+  /// **'Móvil'**
+  String get adminQuestionsDeviceMobile;
+
+  /// No description provided for @adminQuestionsDeviceDesktop.
+  ///
+  /// In es, this message translates to:
+  /// **'Escritorio'**
+  String get adminQuestionsDeviceDesktop;
+
+  /// No description provided for @adminQuestionsTimeUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiempo agotado'**
+  String get adminQuestionsTimeUp;
+
   /// No description provided for @assessmentPairInstruction.
   ///
   /// In es, this message translates to:
@@ -3463,6 +4015,132 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Siempre'**
   String get frequencyScale5;
+
+  /// No description provided for @adminRoleSuperadmin.
+  ///
+  /// In es, this message translates to:
+  /// **'Superadmin'**
+  String get adminRoleSuperadmin;
+
+  /// No description provided for @adminRoleSuperadminHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso total al panel de TaleX.'**
+  String get adminRoleSuperadminHelp;
+
+  /// No description provided for @adminRoleUser.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get adminRoleUser;
+
+  /// No description provided for @adminRoleUserHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso estándar, sin panel de administración.'**
+  String get adminRoleUserHelp;
+
+  /// No description provided for @adminRoleChange.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar rol'**
+  String get adminRoleChange;
+
+  /// No description provided for @adminQuestionsImport.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar CSV'**
+  String get adminQuestionsImport;
+
+  /// No description provided for @adminQuestionsImportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar preguntas'**
+  String get adminQuestionsImportTitle;
+
+  /// No description provided for @adminQuestionsImportBody.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo trae {total} preguntas: {created} nuevas y {replaced} que reemplazan a las que ya existen con el mismo código.'**
+  String adminQuestionsImportBody(int total, int created, int replaced);
+
+  /// No description provided for @adminQuestionsImportAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar'**
+  String get adminQuestionsImportAction;
+
+  /// No description provided for @adminQuestionsCsvUnreadable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo leer el archivo. Debe ser un CSV.'**
+  String get adminQuestionsCsvUnreadable;
+
+  /// No description provided for @adminQuestionsCsvEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo no tiene preguntas.'**
+  String get adminQuestionsCsvEmpty;
+
+  /// No description provided for @adminQuestionsCsvMissingColumns.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan columnas obligatorias en el CSV: {columns}.'**
+  String adminQuestionsCsvMissingColumns(String columns);
+
+  /// No description provided for @adminQuestionsCsvInvalidRow.
+  ///
+  /// In es, this message translates to:
+  /// **'Fila {row}: falta el código o el enunciado A.'**
+  String adminQuestionsCsvInvalidRow(int row);
+
+  /// No description provided for @adminQuestionsCsvDuplicate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fila {row}: el código {code} está repetido en el archivo.'**
+  String adminQuestionsCsvDuplicate(int row, String code);
+
+  /// No description provided for @adminQuestionsDeleteAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar todas'**
+  String get adminQuestionsDeleteAll;
+
+  /// No description provided for @adminQuestionsDeleteAllTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar todas las preguntas'**
+  String get adminQuestionsDeleteAllTitle;
+
+  /// No description provided for @adminQuestionsDeleteAllBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminarán las {count} preguntas de Firebase. Esta acción no se puede deshacer.'**
+  String adminQuestionsDeleteAllBody(int count);
+
+  /// No description provided for @adminQuestionsUploading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando preguntas…'**
+  String get adminQuestionsUploading;
+
+  /// No description provided for @adminQuestionsDeleting.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminando preguntas…'**
+  String get adminQuestionsDeleting;
+
+  /// No description provided for @adminQuestionsUploaded.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} preguntas cargadas en TaleX.'**
+  String adminQuestionsUploaded(int count);
+
+  /// No description provided for @adminQuestionsDeletedAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminaron todas las preguntas.'**
+  String get adminQuestionsDeletedAll;
 }
 
 class _AppLocalizationsDelegate

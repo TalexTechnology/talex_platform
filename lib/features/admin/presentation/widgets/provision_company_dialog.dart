@@ -15,10 +15,8 @@ import 'package:talex_platform/features/admin/presentation/bloc/admin_bloc.dart'
 import 'package:talex_platform/features/talent/data/services/invite_email_service.dart';
 import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
 import 'package:talex_platform/features/talent/domain/repositories/talent_repository.dart';
-import 'package:talex_platform/features/talent/domain/services/dna_catalog.dart';
 import 'package:talex_platform/features/talent/presentation/company_options.dart';
 import 'package:talex_platform/features/talent/presentation/talent_error_message.dart';
-import 'package:talex_platform/features/talent/presentation/widgets/company_dna_fields.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
 Future<void> showProvisionCompanyDialog(BuildContext context) {
@@ -41,16 +39,11 @@ class _ProvisionCompanyDialog extends StatefulWidget {
 
 class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
   var _step = 0;
-  var _skipDna = false;
   var _submitting = false;
   String? _sector;
   String? _size;
   var _location = const LocationValue(country: 'Colombia');
   LogoSelection _logo = const LogoSelection();
-  var _values = <String>[];
-  var _culture = <String>[];
-  var _standout = <String>[];
-  var _catalog = <DnaCatalogEntry>[];
   final _name = TextEditingController();
   final _nit = TextEditingController();
   final _website = TextEditingController();
@@ -58,18 +51,6 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
   final _first = TextEditingController();
   final _last = TextEditingController();
   final _email = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCatalog();
-  }
-
-  Future<void> _loadCatalog() async {
-    final result = await getIt<TalentRepository>().loadDnaCatalog();
-    if (!mounted) return;
-    result.fold((_) {}, (items) => setState(() => _catalog = items));
-  }
 
   @override
   void dispose() {
@@ -112,9 +93,6 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
               website: _website.text.trim(),
               logoUrl: _logo.url,
               description: _description.text.trim(),
-              values: _skipDna ? null : joinDnaList(_values),
-              culture: _skipDna ? null : joinDnaList(_culture),
-              standoutPeople: _skipDna ? null : joinDnaList(_standout),
             ),
             recruiterFirstName: _first.text.trim(),
             recruiterLastName: _last.text.trim(),
@@ -162,7 +140,7 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final steps = [l10n.provisionStepCompany, l10n.provisionStepDna, l10n.provisionStepInvite];
+    final steps = [l10n.provisionStepCompany, l10n.provisionStepInvite];
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): _close,
@@ -271,39 +249,6 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                               _field(l10n.description, _description, lines: 3),
                             ],
                           ),
-                          1 => Column(
-                            children: [
-                              CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                value: _skipDna,
-                                activeColor: AppColors.dashboardAccent,
-                                onChanged: (value) =>
-                                    setState(() => _skipDna = value ?? false),
-                                title: Text(l10n.skipCompanyDna),
-                                controlAffinity: ListTileControlAffinity.leading,
-                              ),
-                              if (!_skipDna)
-                                CompanyDnaFields(
-                                  values: _values,
-                                  culture: _culture,
-                                  standout: _standout,
-                                  catalog: _catalog,
-                                  onValuesChanged: (value) =>
-                                      setState(() => _values = value),
-                                  onCultureChanged: (value) =>
-                                      setState(() => _culture = value),
-                                  onStandoutChanged: (value) =>
-                                      setState(() => _standout = value),
-                                  onDeleteCustom: (type, label) {
-                                    getIt<TalentRepository>()
-                                        .deleteDnaCatalogOption(
-                                      type: type,
-                                      label: label,
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
                           _ => Column(
                             children: [
                               _field(l10n.firstName, _first),
@@ -334,20 +279,8 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                         FilledButton(
                           onPressed: _submitting
                               ? null
-                              : _step < 2
-                              ? () {
-                                  if (_step == 1 &&
-                                      !_skipDna &&
-                                      (_values.isEmpty ||
-                                          _culture.isEmpty ||
-                                          _standout.isEmpty)) {
-                                    getIt<NotificationService>().error(
-                                      l10n.dnaRequired,
-                                    );
-                                    return;
-                                  }
-                                  setState(() => _step += 1);
-                                }
+                              : _step < 1
+                              ? () => setState(() => _step += 1)
                               : _finish,
                           child: _submitting
                               ? const SizedBox(
@@ -358,7 +291,7 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                                     color: Colors.white,
                                   ),
                                 )
-                              : Text(_step < 2 ? l10n.next : l10n.sendInvitation),
+                              : Text(_step < 1 ? l10n.next : l10n.sendInvitation),
                         ),
                       ],
                     ),

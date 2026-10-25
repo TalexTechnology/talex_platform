@@ -16,6 +16,7 @@ class CandidateReportPdf {
     required String Function(AffinityLevel) affinityLabel,
   }) async {
     final candidate = report.candidate;
+    final analysis = report.analysis;
     final doc = pw.Document();
     doc.addPage(
       pw.MultiPage(
@@ -61,29 +62,30 @@ class CandidateReportPdf {
             l10n.affinityWithCompany,
             style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14),
           ),
-          pw.Text(affinityLabel(candidate.companyAffinity)),
           pw.Text(
-            affinityMockExplanation(
+            [
+              affinityLabel(
+                analysis.hasResult ? analysis.level : candidate.companyAffinity,
+              ),
+              if (analysis.hasResult && analysis.score != null)
+                l10n.affinityScoreValue(analysis.score!),
+            ].join(' · '),
+          ),
+          pw.Text(
+            affinityAnalysisMessage(
               l10n,
-              candidate.companyAffinity,
-              forCompany: true,
+              analysis,
+              evaluationCompleted: candidate.evaluationCompleted,
             ),
             style: const pw.TextStyle(fontSize: 11, lineSpacing: 2),
           ),
-          pw.SizedBox(height: 12),
-          pw.Text(
-            l10n.affinityWithVacancy,
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14),
-          ),
-          pw.Text(affinityLabel(candidate.vacancyAffinity)),
-          pw.Text(
-            affinityMockExplanation(
-              l10n,
-              candidate.vacancyAffinity,
-              forCompany: false,
-            ),
-            style: const pw.TextStyle(fontSize: 11, lineSpacing: 2),
-          ),
+          if (analysis.hasResult) ...[
+            ..._insights(l10n.affinityAlignmentsTitle, analysis.alignments),
+            ..._insights(l10n.affinityDifferencesTitle, analysis.differences),
+            ..._items(l10n.affinityTopicsTitle, analysis.conversationTopics),
+            if (analysis.guidance.trim().isNotEmpty)
+              ..._items(l10n.affinityGuidanceTitle, [analysis.guidance.trim()]),
+          ],
           pw.SizedBox(height: 8),
           pw.Text(
             l10n.affinityMockNote,
@@ -138,6 +140,44 @@ class CandidateReportPdf {
     );
     return doc.save();
   }
+
+  List<pw.Widget> _heading(String title) => [
+    pw.SizedBox(height: 10),
+    pw.Text(
+      title,
+      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12),
+    ),
+    pw.SizedBox(height: 4),
+  ];
+
+  List<pw.Widget> _insights(String title, List<AffinityInsight> insights) => [
+    if (insights.isNotEmpty) ..._heading(title),
+    for (final item in insights)
+      pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 4),
+        child: pw.RichText(
+          text: pw.TextSpan(
+            style: const pw.TextStyle(fontSize: 11),
+            children: [
+              pw.TextSpan(
+                text: '- ${item.aspect}. ',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+              pw.TextSpan(text: item.evidence),
+            ],
+          ),
+        ),
+      ),
+  ];
+
+  List<pw.Widget> _items(String title, List<String> items) => [
+    if (items.isNotEmpty) ..._heading(title),
+    for (final item in items)
+      pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 3),
+        child: pw.Text('- $item', style: const pw.TextStyle(fontSize: 11)),
+      ),
+  ];
 
   pw.Widget _row(String label, String value) => pw.Padding(
     padding: const pw.EdgeInsets.only(bottom: 4),

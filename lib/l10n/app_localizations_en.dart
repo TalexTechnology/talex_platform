@@ -108,18 +108,6 @@ class AppLocalizationsEn extends AppLocalizations {
       '“TaleX transformed our selection process and helped our team make better decisions.”';
 
   @override
-  String get testimonialName => 'Gabriel Ramirez';
-
-  @override
-  String get testimonialRole => 'CEO, TaleX';
-
-  @override
-  String get testimonialNameSecondary => 'Pablo Melo';
-
-  @override
-  String get testimonialRoleSecondary => 'CTO, TaleX';
-
-  @override
   String welcomeUser(String name) {
     return 'Welcome, $name';
   }
@@ -445,6 +433,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminSales => 'Sales';
+
+  @override
+  String get adminCultureLeads => 'Culture leads';
+
+  @override
+  String get adminCultureLeadsSubtitle =>
+      'Prospects from the /micultura landing diagnosis. No company or membership is created.';
+
+  @override
+  String get adminCultureLeadsEmpty => 'There are no culture leads yet.';
+
+  @override
+  String get cultureLeadEmployees => 'Employees';
+
+  @override
+  String get cultureLeadTraits => 'Cultural traits';
+
+  @override
+  String get cultureLeadComment => 'Comment';
+
+  @override
+  String get cultureLeadUtm => 'UTM';
+
+  @override
+  String get cultureLeadStatusNew => 'New';
+
+  @override
+  String get cultureLeadStatusContacted => 'Contacted';
+
+  @override
+  String get cultureLeadStatusQualified => 'Qualified';
+
+  @override
+  String get cultureLeadStatusDiscarded => 'Discarded';
 
   @override
   String get adminAnalytics => 'Analytics';
@@ -1165,23 +1187,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get teamRole => 'Role in the company';
 
   @override
-  String get teamRoleCompanyAdmin => 'Company administration';
+  String get teamRoleCompanyAdmin => 'CEO';
 
   @override
-  String get teamRoleCompanyLead => 'Leadership';
+  String get teamRoleCompanyLead => 'Administrator';
 
   @override
-  String get teamRolePeopleOps => 'People';
+  String get teamRolePeopleOps => 'Human resources';
 
   @override
   String get teamRoleRecruiter => 'Recruiting';
 
   @override
-  String get teamRoleHiringManager => 'Hiring manager';
+  String get teamRoleHiringManager => 'Technical lead';
 
   @override
   String get teamRoleHint =>
-      'Leadership and administration can complete the company DNA and invite the rest of the team. Recruiting and hiring managers work on vacancies and candidates.';
+      'The CEO and the administrator can invite the rest of the team. Human resources, recruiting, and the technical lead work on vacancies and candidates.';
 
   @override
   String get vacanciesSubtitle =>
@@ -1401,39 +1423,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get affinityVacancy => 'Vacancy';
 
   @override
-  String get affinityCompanyHighHint =>
-      'There is a strong match with the culture and way of working described by the company. Mock copy: the real reading of evaluated dimensions will appear here later.';
-
-  @override
-  String get affinityCompanyMediumHint =>
-      'There is a partial match with the company DNA. Mock copy: later this will say which dimensions align.';
-
-  @override
-  String get affinityCompanyLowHint =>
-      'There is a lower match with the culture described by the company. Mock copy: the real profile will explain the distance.';
-
-  @override
-  String get affinityVacancyHighHint =>
-      'This person\'s profile is close to what the vacancy is looking for. Mock copy: matching role traits will appear here later.';
-
-  @override
-  String get affinityVacancyMediumHint =>
-      'There is a mid-level match with the vacancy profile. Mock copy: the real profile will show which parts of the role fit better.';
-
-  @override
-  String get affinityVacancyLowHint =>
-      'There is a lower match with the profile sought for this vacancy. Mock copy: this is not a judgment of the person, only of fit for this role.';
-
-  @override
   String get affinityUnknownHint =>
       'There is no complete assessment yet, so affinity is not classified.';
 
   @override
   String get affinityMockNote =>
-      'This explanation is a placeholder. The final reading will come from TaleX methodology.';
+      'AI-generated analysis based on the survey, which is the same for every company. It is supporting information: TaleX does not make hiring decisions or rule people out. The final decision belongs to your team.';
+
+  @override
+  String get affinityAnalysisNone =>
+      'This assessment does not have an affinity analysis yet.';
+
+  @override
+  String get affinityAnalysisPending =>
+      'We are analyzing the survey answers. This may take a few seconds.';
+
+  @override
+  String get affinityAnalysisFailed =>
+      'We could not complete the affinity analysis right now. You can try again.';
+
+  @override
+  String get affinityAnalysisMissingDna =>
+      'There is not enough survey information yet to complete the analysis.';
+
+  @override
+  String get affinityAnalysisIncompleteAnswers =>
+      'The assessment does not have enough answers to analyze affinity.';
+
+  @override
+  String get affinityAnalyzeAction => 'Analyze affinity';
+
+  @override
+  String get affinityReanalyzeAction => 'Analyze again';
+
+  @override
+  String get affinityAlignmentsTitle => 'Where there is affinity';
+
+  @override
+  String get affinityDifferencesTitle =>
+      'Aspects that could make adaptation harder';
+
+  @override
+  String get affinityTopicsTitle => 'Topics to discuss in the interview';
+
+  @override
+  String get affinityGuidanceTitle => 'Guidance for Human Resources';
+
+  @override
+  String get affinityDataGapsTitle => 'Missing information';
+
+  @override
+  String affinityScoreValue(int score) {
+    return 'Score $score/100';
+  }
 
   @override
   String get continueAction => 'Continue';
+
+  @override
+  String get respondentWelcomeTitle => 'I want to get to know you';
+
+  @override
+  String get respondentWelcomeBody =>
+      'Hi. I am TaleXito. This survey is the same for every company. I receive your answers so we can understand how you like to work. I do not decide the result: a specialist will share it with you later.';
+
+  @override
+  String get respondentWelcomeAction => 'OK';
 
   @override
   String respondentHello(String name) {
@@ -1523,6 +1578,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The operation could not be completed. Please try again.';
 
   @override
+  String get errorApiUnavailable =>
+      'TaleX is unavailable. You cannot sign in until the API responds.';
+
+  @override
   String get errorCompanyNotFound => 'The company was not found.';
 
   @override
@@ -1534,6 +1593,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorInviteUsed => 'This invitation has already been used.';
+
+  @override
+  String get errorInviteInvalid => 'This invitation link is not valid.';
+
+  @override
+  String get errorInviteExpired =>
+      'This invitation link expired. Ask for a new invitation.';
 
   @override
   String get errorInvalidPin => 'The PIN is not valid.';
@@ -1643,13 +1709,47 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get assessmentFinishedTitle => 'Well done, you finished';
+  String get assessmentFinishedTitle => 'TaleXito has your answers';
+
+  @override
+  String get assessmentFinishedBody =>
+      'TaleXito receives the information. It does not decide the result. A specialist will tell you later.';
+
+  @override
+  String get surveyResultRequest => 'I want to know my results';
+
+  @override
+  String get surveyResultRequested =>
+      'Thanks for letting us know. The result takes a little while. A specialist takes care of it.';
+
+  @override
+  String get companyProfileSubtitle => 'General company details.';
 
   @override
   String get downloadPdf => 'Download PDF report';
 
   @override
   String get candidateResultTitle => 'Results report';
+
+  @override
+  String get editCandidate => 'Edit candidate';
+
+  @override
+  String get deleteCandidate => 'Delete candidate';
+
+  @override
+  String deleteCandidateConfirm(String name) {
+    return 'Delete $name? Their answers will be removed and their invitation link will stop working. This cannot be undone.';
+  }
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get candidateUpdated => 'Candidate updated.';
+
+  @override
+  String get candidateDeleted => 'Candidate deleted.';
 
   @override
   String get backToResults => 'Back';
@@ -1663,18 +1763,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get respondentInviteHint =>
-      'The person will receive a 6-digit PIN by email. It expires after 15 minutes. Then they register with their password or Google and that PIN.';
+      'The person will receive an email with a link to take the assessment right away. When they finish, you will see the status and result here.';
 
   @override
   String get firstAccessCompany => 'First access';
 
   @override
   String get assessmentSignInHint =>
-      'If you were invited to an assessment, create your account and enter the PIN from the email. If you use Google, you will enter the PIN next.';
+      'If you were invited to an assessment, use the link in the email to start. You do not need to register with a PIN.';
 
   @override
   String get respondentInviteSent =>
-      'Invitation ready. The respondent receives a PIN by email.';
+      'Invitation ready. The candidate receives an email link to take the assessment.';
 
   @override
   String get recoverPasswordTitle => 'Recover access';
@@ -1751,6 +1851,210 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is no TaleX account with this email. If you were invited, use First access with the PIN.';
 
   @override
+  String get adminQuestions => 'Affinity survey';
+
+  @override
+  String get adminQuestionsSubtitle =>
+      'Questions the candidate answers. You can view, edit, and update them.';
+
+  @override
+  String get adminCultureSurvey => 'Culture survey';
+
+  @override
+  String get adminCultureSurveySubtitle =>
+      'Company values and culture form. Upload the file once; after that you only edit.';
+
+  @override
+  String get adminCultureSurveyEmpty =>
+      'There are no culture questions yet. Upload a CSV or JSON file to add them.';
+
+  @override
+  String get adminQuestionsUploadFile => 'Upload file';
+
+  @override
+  String get adminQuestionsFrontCultura => 'Lived culture';
+
+  @override
+  String get adminQuestionsFrontLiderazgo => 'Leadership';
+
+  @override
+  String get adminQuestionsFrontTrabajo => 'Way of working';
+
+  @override
+  String get adminQuestionsFrontPersonas => 'People';
+
+  @override
+  String get adminQuestionsFrontApertura => 'Open comments';
+
+  @override
+  String get adminQuestionsFormatScale => 'Scale';
+
+  @override
+  String get adminQuestionsFormatText => 'Open text';
+
+  @override
+  String get adminQuestionsFormatSingle => 'Single choice';
+
+  @override
+  String get adminQuestionsFormatMulti => 'Multiple choice';
+
+  @override
+  String get adminQuestionsNew => 'New question';
+
+  @override
+  String get adminQuestionsEdit => 'Edit question';
+
+  @override
+  String get adminQuestionsPreview => 'Preview';
+
+  @override
+  String get adminQuestionsPreviewTitle => 'Survey preview';
+
+  @override
+  String get adminQuestionsPreviewNote => 'Simulation: answers are not saved.';
+
+  @override
+  String get adminQuestionsPreviewEmpty =>
+      'There are no active questions to show.';
+
+  @override
+  String get adminQuestionsEmpty => 'There are no questions in Firebase yet.';
+
+  @override
+  String adminQuestionsSeed(int count) {
+    return 'Load the $count base questions';
+  }
+
+  @override
+  String get adminQuestionsNoResults => 'No question matches the filter.';
+
+  @override
+  String get adminQuestionsSearch =>
+      'Search by code, dimension or statement...';
+
+  @override
+  String get adminQuestionsAll => 'All';
+
+  @override
+  String adminQuestionsSummary(int active, int total) {
+    return '$active active of $total';
+  }
+
+  @override
+  String get adminQuestionsFrontValues => '1 · Values';
+
+  @override
+  String get adminQuestionsFrontNeeds => '2 · Needs';
+
+  @override
+  String get adminQuestionsFrontCapabilities => '3 · Capabilities';
+
+  @override
+  String get adminQuestionsFormatPair => 'Statement pair';
+
+  @override
+  String get adminQuestionsFormatExperience => 'Experience statement';
+
+  @override
+  String get adminQuestionsCode => 'Code';
+
+  @override
+  String get adminQuestionsFront => 'Front';
+
+  @override
+  String get adminQuestionsFormat => 'Format';
+
+  @override
+  String get adminQuestionsDimension => 'Dimension';
+
+  @override
+  String get adminQuestionsDimensionA => 'Dimension A';
+
+  @override
+  String get adminQuestionsDimensionB => 'Dimension B';
+
+  @override
+  String get adminQuestionsInstruction => 'Instruction';
+
+  @override
+  String get adminQuestionsStatement => 'Statement';
+
+  @override
+  String get adminQuestionsStatementA => 'Statement A';
+
+  @override
+  String get adminQuestionsStatementB => 'Statement B';
+
+  @override
+  String adminQuestionsOption(int number) {
+    return 'Option $number';
+  }
+
+  @override
+  String get adminQuestionsTimeLimit => 'Time limit (seconds)';
+
+  @override
+  String get adminQuestionsTimeLimitHint => 'Empty = no limit';
+
+  @override
+  String get adminQuestionsNoLimit => 'No limit';
+
+  @override
+  String adminQuestionsSeconds(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get adminQuestionsActive => 'Active';
+
+  @override
+  String get adminQuestionsInactive => 'Inactive';
+
+  @override
+  String get adminQuestionsRequired => 'This field is required.';
+
+  @override
+  String get adminQuestionsCodeTaken =>
+      'A question with this code already exists.';
+
+  @override
+  String get adminQuestionsInvalidTime =>
+      'Enter a whole number greater than zero.';
+
+  @override
+  String get adminQuestionsDeleteTitle => 'Delete question';
+
+  @override
+  String adminQuestionsDeleteBody(String code) {
+    return '$code will be deleted from Firebase. This action cannot be undone.';
+  }
+
+  @override
+  String get adminQuestionsDelete => 'Delete';
+
+  @override
+  String get adminQuestionsMoveUp => 'Move up';
+
+  @override
+  String get adminQuestionsMoveDown => 'Move down';
+
+  @override
+  String get adminQuestionsError =>
+      'The operation could not be completed in Firebase.';
+
+  @override
+  String get adminQuestionsRestart => 'Restart';
+
+  @override
+  String get adminQuestionsDeviceMobile => 'Mobile';
+
+  @override
+  String get adminQuestionsDeviceDesktop => 'Desktop';
+
+  @override
+  String get adminQuestionsTimeUp => 'Time is up';
+
+  @override
   String get assessmentPairInstruction =>
       'Which of the two statements describes you better?';
 
@@ -1801,4 +2105,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get frequencyScale5 => 'Always';
+
+  @override
+  String get adminRoleSuperadmin => 'Superadmin';
+
+  @override
+  String get adminRoleSuperadminHelp => 'Full access to the TaleX admin panel.';
+
+  @override
+  String get adminRoleUser => 'User';
+
+  @override
+  String get adminRoleUserHelp => 'Standard access, without the admin panel.';
+
+  @override
+  String get adminRoleChange => 'Change role';
+
+  @override
+  String get adminQuestionsImport => 'Import CSV';
+
+  @override
+  String get adminQuestionsImportTitle => 'Import questions';
+
+  @override
+  String adminQuestionsImportBody(int total, int created, int replaced) {
+    return 'The file has $total questions: $created new and $replaced replacing existing ones with the same code.';
+  }
+
+  @override
+  String get adminQuestionsImportAction => 'Import';
+
+  @override
+  String get adminQuestionsCsvUnreadable =>
+      'The file could not be read. It must be a CSV.';
+
+  @override
+  String get adminQuestionsCsvEmpty => 'The file has no questions.';
+
+  @override
+  String adminQuestionsCsvMissingColumns(String columns) {
+    return 'The CSV is missing required columns: $columns.';
+  }
+
+  @override
+  String adminQuestionsCsvInvalidRow(int row) {
+    return 'Row $row: the code or statement A is missing.';
+  }
+
+  @override
+  String adminQuestionsCsvDuplicate(int row, String code) {
+    return 'Row $row: code $code is repeated in the file.';
+  }
+
+  @override
+  String get adminQuestionsDeleteAll => 'Delete all';
+
+  @override
+  String get adminQuestionsDeleteAllTitle => 'Delete all questions';
+
+  @override
+  String adminQuestionsDeleteAllBody(int count) {
+    return 'All $count questions will be deleted from Firebase. This action cannot be undone.';
+  }
+
+  @override
+  String get adminQuestionsUploading => 'Loading questions…';
+
+  @override
+  String get adminQuestionsDeleting => 'Deleting questions…';
+
+  @override
+  String adminQuestionsUploaded(int count) {
+    return '$count questions loaded into TaleX.';
+  }
+
+  @override
+  String get adminQuestionsDeletedAll => 'All questions were deleted.';
 }

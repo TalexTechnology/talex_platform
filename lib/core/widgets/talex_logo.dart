@@ -46,3 +46,23 @@ class TalexLogo extends StatelessWidget {
     ),
   );
 }
+
+/// Isotipo de TaleX para TaleXito (botón, encabezado y mensajes).
+class TaleXitoMark extends StatelessWidget {
+  const TaleXitoMark({super.key, this.size = 22});
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+    AppAssets.talexMarkLight,
+    width: size,
+    height: size,
+    fit: BoxFit.contain,
+    filterQuality: FilterQuality.high,
+    semanticLabel: 'TaleXito',
+    errorBuilder: (_, _, _) => Icon(
+      Icons.chat_bubble_outline,
+      size: size * 0.85,
+    ),
+  );
+}

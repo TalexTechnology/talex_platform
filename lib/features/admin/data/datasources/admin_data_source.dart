@@ -27,6 +27,14 @@ abstract interface class AdminDataSource {
   });
   Future<AffinitySummary> getAffinitySummary({String? companyId});
   Future<List<Deal>> getDeals({String query, DealStage? stage});
+  Future<List<CultureLead>> listCultureLeads({
+    String query,
+    CultureLeadStatus? status,
+  });
+  Future<void> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  });
   Future<(SalesSummary, List<Sale>)> getSales({
     required DateTime from,
     required DateTime to,
@@ -805,6 +813,18 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       });
 
   @override
+  Future<List<CultureLead>> listCultureLeads({
+    String query = '',
+    CultureLeadStatus? status,
+  }) => _guard(() async => const []);
+
+  @override
+  Future<void> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  }) => _guard(() async {});
+
+  @override
   Future<(SalesSummary, List<Sale>)> getSales({
     required DateTime from,
     required DateTime to,
@@ -884,7 +904,47 @@ final class FirebaseAdminDataSource implements AdminDataSource {
   @override
   Future<List<AdminAlert>> getAlerts() async {
     final dashboard = await getDashboard();
-    return dashboard.alerts;
+    final requests = await _surveyResultAlerts();
+    return [...requests, ...dashboard.alerts];
+  }
+
+  Future<List<AdminAlert>> _surveyResultAlerts() async {
+    try {
+      final snapshot = await _firestore
+          .collection('survey_result_requests')
+          .orderBy('requestedAt', descending: true)
+          .limit(50)
+          .get();
+      return [
+        for (final doc in snapshot.docs)
+          if (doc.data()['status'] == 'pending' || doc.data()['status'] == null)
+            () {
+              final data = doc.data();
+              final person = '${data['displayName'] ?? data['email'] ?? doc.id}';
+              final company = data['companyName'] as String?;
+              final vacancy = data['vacancyName'] as String?;
+              final requestedAt = data['requestedAt'];
+              return AdminAlert(
+                id: 'result-${doc.id}',
+                type: AlertType.operational,
+                priority: AlertPriority.high,
+                title: person,
+                description:
+                    '$person quiere conocer el resultado de su encuesta'
+                    '${company == null ? '' : ' en $company'}'
+                    '${vacancy == null ? '' : ' · $vacancy'}.',
+                suggestedAction:
+                    'Una persona especializada debe revisar la encuesta y comunicar el resultado.',
+                createdAt: requestedAt is Timestamp
+                    ? requestedAt.toDate()
+                    : DateTime.now(),
+                entityName: company,
+              );
+            }(),
+      ];
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override
@@ -1221,6 +1281,7 @@ final class InMemoryAdminDataSource implements AdminDataSource {
   final processes = <TalentProcess>[];
   final people = <PersonEvaluation>[];
   final deals = <Deal>[];
+  final cultureLeads = <CultureLead>[];
   final sales = <Sale>[];
   final activity = <ActivityEvent>[];
   final users = <AdminUserAccount>[];
@@ -1347,6 +1408,42 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     var items = [...deals];
     if (stage != null) items = items.where((item) => item.stage == stage).toList();
     return items;
+  }
+
+  @override
+  Future<List<CultureLead>> listCultureLeads({
+    String query = '',
+    CultureLeadStatus? status,
+  }) async {
+    var items = [...cultureLeads];
+    if (status != null) {
+      items = items.where((item) => item.status == status).toList();
+    }
+    final needle = query.trim().toLowerCase();
+    if (needle.isNotEmpty) {
+      items = items
+          .where(
+            (item) =>
+                item.companyName.toLowerCase().contains(needle) ||
+                item.email.toLowerCase().contains(needle),
+          )
+          .toList();
+    }
+    items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return items;
+  }
+
+  @override
+  Future<void> updateCultureLeadStatus({
+    required String id,
+    required CultureLeadStatus status,
+  }) async {
+    final index = cultureLeads.indexWhere((item) => item.id == id);
+    if (index < 0) return;
+    cultureLeads[index] = cultureLeads[index].copyWith(
+      status: status,
+      updatedAt: DateTime.now(),
+    );
   }
 
   @override

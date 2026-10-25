@@ -6,7 +6,6 @@ import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/affinity_badge.dart';
 import 'package:talex_platform/core/widgets/app_select_field.dart';
-import 'package:talex_platform/core/widgets/location_picker.dart';
 import 'package:talex_platform/features/talent/data/services/invite_email_service.dart';
 import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
 import 'package:talex_platform/features/talent/domain/repositories/talent_repository.dart';
@@ -45,49 +44,24 @@ class _CreateVacancyDialog extends StatefulWidget {
 class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
   final _name = TextEditingController();
   final _description = TextEditingController();
-  final _profile = TextEditingController();
   String? _area;
   String? _customArea;
-  String? _mode;
-  String? _contract;
-  String? _seniority;
-  var _includeRemoteCity = false;
-  late LocationValue _location;
-
-  @override
-  void initState() {
-    super.initState();
-    final company = widget.company;
-    _location = LocationValue(
-      country: company?.country ?? 'Colombia',
-      region: company?.region,
-      city: company?.city,
-    );
-  }
 
   @override
   void dispose() {
     _name.dispose();
     _description.dispose();
-    _profile.dispose();
     super.dispose();
   }
 
-  bool get _needsCity => vacancyWorkModeNeedsCity(_mode);
-  bool get _showLocation => _needsCity || _includeRemoteCity;
-
   void _submit() {
-    if (_name.text.trim().isEmpty || _mode == null) return;
-    if (_needsCity && (_location.city == null || _location.city!.trim().isEmpty)) {
-      return;
-    }
-    final city = _showLocation ? _location.city : null;
-    final country = _showLocation ? _location.country : null;
-    final region = _showLocation ? _location.region : null;
+    if (_name.text.trim().isEmpty) return;
+    
     final area = _area == VacancyAreaId.other
         ? _customArea?.trim()
         : _area;
     if (_area == VacancyAreaId.other && (area == null || area.isEmpty)) return;
+
     context.read<TalentBloc>().add(
       TalentVacancyCreated(
         Vacancy(
@@ -98,13 +72,6 @@ class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
           createdAt: DateTime.now(),
           area: area,
           description: _description.text.trim(),
-          city: city,
-          country: country,
-          region: region,
-          workMode: _mode,
-          contractType: _contract,
-          seniority: _seniority,
-          roleProfile: _profile.text.trim(),
         ),
       ),
     );
@@ -121,6 +88,7 @@ class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
           CatalogOption(item, item),
     ];
     final areas = [...catalogAreas, ...custom];
+
     return _FormDialog(
       title: l10n.createVacancy,
       submitLabel: l10n.createVacancy,
@@ -151,111 +119,7 @@ class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
             style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
           ),
         ),
-        _input(l10n.description, _description, lines: 3),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: DropdownButtonFormField<String>(
-            initialValue: _mode,
-            isExpanded: true,
-            alignment: Alignment.center,
-            decoration: InputDecoration(
-              labelText: l10n.workMode,
-              border: const OutlineInputBorder(),
-            ),
-            items: [
-              DropdownMenuItem(
-                value: VacancyWorkMode.remote,
-                alignment: Alignment.center,
-                child: Text(l10n.workModeRemote, textAlign: TextAlign.center),
-              ),
-              DropdownMenuItem(
-                value: VacancyWorkMode.onsite,
-                alignment: Alignment.center,
-                child: Text(l10n.workModeOnsite, textAlign: TextAlign.center),
-              ),
-              DropdownMenuItem(
-                value: VacancyWorkMode.hybrid,
-                alignment: Alignment.center,
-                child: Text(l10n.workModeHybrid, textAlign: TextAlign.center),
-              ),
-            ],
-            onChanged: (value) => setState(() {
-              _mode = value;
-              if (_needsCity) _includeRemoteCity = false;
-            }),
-          ),
-        ),
-        Text(
-          l10n.workModeHint,
-          style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
-        ),
-        const SizedBox(height: 12),
-        if (_mode == VacancyWorkMode.remote)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              value: _includeRemoteCity,
-              onChanged: (value) => setState(() => _includeRemoteCity = value ?? false),
-              title: Text(l10n.vacancyCityOptional),
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-          ),
-        if (_showLocation)
-          LocationPicker(
-            key: ValueKey(_mode),
-            initial: _location,
-            onChanged: (value) => _location = value,
-          ),
-        AppSelectField(
-          label: l10n.contractType,
-          value: resolveContractId(_contract, l10n),
-          options: vacancyContractTypes(l10n),
-          onChanged: (value) => setState(() => _contract = value),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: DropdownButtonFormField<String>(
-            initialValue: _seniority,
-            isExpanded: true,
-            alignment: Alignment.center,
-            decoration: InputDecoration(
-              labelText: l10n.seniority,
-              border: const OutlineInputBorder(),
-            ),
-            items: [
-              DropdownMenuItem(
-                value: VacancySeniority.junior,
-                alignment: Alignment.center,
-                child: Text(l10n.seniorityJunior, textAlign: TextAlign.center),
-              ),
-              DropdownMenuItem(
-                value: VacancySeniority.mid,
-                alignment: Alignment.center,
-                child: Text(l10n.seniorityMid, textAlign: TextAlign.center),
-              ),
-              DropdownMenuItem(
-                value: VacancySeniority.senior,
-                alignment: Alignment.center,
-                child: Text(l10n.senioritySenior, textAlign: TextAlign.center),
-              ),
-              DropdownMenuItem(
-                value: VacancySeniority.lead,
-                alignment: Alignment.center,
-                child: Text(l10n.seniorityLead, textAlign: TextAlign.center),
-              ),
-            ],
-            onChanged: (value) => setState(() => _seniority = value),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Text(
-            l10n.seniorityHint,
-            style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
-          ),
-        ),
-        _input(l10n.roleProfile, _profile, lines: 3),
+        _input(l10n.description, _description, lines: 4),
       ],
     );
   }
@@ -327,25 +191,33 @@ class _CreateRespondentDialogState extends State<_CreateRespondentDialog> {
         setState(() => _submitting = false);
         getIt<NotificationService>().error(talentErrorMessage(l10n, failure.message));
       },
-      (pin) async {
-        final mail = await getIt<InviteEmailService>().sendRespondentPin(
-          to: email,
-          firstName: _name.text.trim().split(' ').first,
-          companyName: widget.state.snapshot.profile?.name ?? '',
-          pin: pin,
-          locale: locale,
-          vacancyName: vacancy.name,
-        );
-        final notifications = getIt<NotificationService>();
-        notifications.success(l10n.invitePinReady(pin));
-        mail.fold(
-          (failure) => notifications.error(talentErrorMessage(l10n, failure.message)),
-          (_) => notifications.success(l10n.emailSent),
-        );
-        if (!mounted) return;
-        context.read<TalentBloc>().add(TalentLoaded(widget.state.companyId!));
-        Navigator.pop(context);
-      },
+      (token) async {
+      final mail = await getIt<InviteEmailService>().sendRespondentInvite(
+        to: email,
+        firstName: _name.text.trim().split(' ').first,
+        companyName: widget.state.snapshot.profile?.name ?? '',
+        token: token,
+        locale: locale,
+        vacancyName: vacancy.name,
+      );
+
+      final notifications = getIt<NotificationService>();
+
+      mail.fold(
+        (failure) => notifications.error(
+          talentErrorMessage(l10n, failure.message),
+        ),
+        (_) => notifications.success(l10n.emailSent),
+      );
+
+      if (!mounted) return;
+
+      context.read<TalentBloc>().add(
+        TalentLoaded(widget.state.companyId!),
+      );
+
+      Navigator.pop(context);
+    },
     );
   }
 
@@ -393,6 +265,129 @@ class _CreateRespondentDialogState extends State<_CreateRespondentDialog> {
       ],
     );
   }
+}
+
+Future<void> showEditCandidateDialog(
+  BuildContext context,
+  TalentCandidate candidate,
+) {
+  final bloc = context.read<TalentBloc>();
+  return showDialog<void>(
+    context: context,
+    builder: (_) => BlocProvider.value(
+      value: bloc,
+      child: _EditCandidateDialog(
+        candidate: candidate,
+        vacancies: bloc.state.snapshot.vacancies,
+      ),
+    ),
+  );
+}
+
+class _EditCandidateDialog extends StatefulWidget {
+  const _EditCandidateDialog({required this.candidate, required this.vacancies});
+  final TalentCandidate candidate;
+  final List<Vacancy> vacancies;
+
+  @override
+  State<_EditCandidateDialog> createState() => _EditCandidateDialogState();
+}
+
+class _EditCandidateDialogState extends State<_EditCandidateDialog> {
+  late final _name = TextEditingController(text: widget.candidate.displayName ?? '');
+  late final _document = TextEditingController(text: widget.candidate.documentNumber);
+  late String _vacancyId = widget.vacancies.any((item) => item.id == widget.candidate.vacancyId)
+      ? widget.candidate.vacancyId
+      : (widget.vacancies.isEmpty ? widget.candidate.vacancyId : widget.vacancies.first.id);
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _document.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_name.text.trim().isEmpty || _document.text.trim().length < 6) return;
+    context.read<TalentBloc>().add(
+      TalentCandidateUpdated(
+        candidateId: widget.candidate.id,
+        displayName: _name.text.trim(),
+        documentNumber: _document.text.trim(),
+        vacancyId: _vacancyId,
+      ),
+    );
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return _FormDialog(
+      title: l10n.editCandidate,
+      onSubmit: _submit,
+      children: [
+        _input(l10n.fullName, _name),
+        _input(l10n.documentNumber, _document),
+        if (widget.vacancies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: DropdownButtonFormField<String>(
+              initialValue: _vacancyId,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: l10n.vacancy,
+                border: const OutlineInputBorder(),
+              ),
+              items: widget.vacancies
+                  .map(
+                    (item) => DropdownMenuItem(value: item.id, child: Text(item.name)),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) setState(() => _vacancyId = value);
+              },
+            ),
+          ),
+        Text(
+          '${l10n.emailAddress}: ${widget.candidate.email}',
+          style: const TextStyle(color: AppColors.muted),
+        ),
+      ],
+    );
+  }
+}
+
+Future<void> showDeleteCandidateDialog(
+  BuildContext context,
+  TalentCandidate candidate,
+) {
+  final bloc = context.read<TalentBloc>();
+  final l10n = context.l10n;
+  final name = candidate.displayName?.trim().isNotEmpty == true
+      ? candidate.displayName!
+      : candidate.email;
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(l10n.deleteCandidate),
+      content: Text(l10n.deleteCandidateConfirm(name)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700),
+          onPressed: () {
+            bloc.add(TalentCandidateDeleted(candidate.id));
+            Navigator.pop(dialogContext);
+          },
+          child: Text(l10n.deleteAction),
+        ),
+      ],
+    ),
+  );
 }
 
 Future<void> showInviteRecruiterDialog(
@@ -546,12 +541,6 @@ Future<void> showComparisonDialog(
               cells: [
                 DataCell(Text(context.l10n.affinityWithCompany)),
                 ...candidates.map((item) => DataCell(AffinityBadge(item.companyAffinity))),
-              ],
-            ),
-            DataRow(
-              cells: [
-                DataCell(Text(context.l10n.affinityWithVacancy)),
-                ...candidates.map((item) => DataCell(AffinityBadge(item.vacancyAffinity))),
               ],
             ),
           ],
