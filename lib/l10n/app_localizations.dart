@@ -1124,6 +1124,48 @@ abstract class AppLocalizations {
   /// **'Reintentar'**
   String get retry;
 
+  /// No description provided for @splashVerifyingSession.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificando tu sesión'**
+  String get splashVerifyingSession;
+
+  /// No description provided for @splashSigningIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciando sesión'**
+  String get splashSigningIn;
+
+  /// No description provided for @splashLoadingSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando tus configuraciones'**
+  String get splashLoadingSettings;
+
+  /// No description provided for @splashPreparingWorkspace.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando tu espacio de trabajo'**
+  String get splashPreparingWorkspace;
+
+  /// No description provided for @splashSigningOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrando sesión de forma segura'**
+  String get splashSigningOut;
+
+  /// No description provided for @splashValidatingInvite.
+  ///
+  /// In es, this message translates to:
+  /// **'Validando tu invitación'**
+  String get splashValidatingInvite;
+
+  /// No description provided for @splashPreparingAssessment.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando tu evaluación'**
+  String get splashPreparingAssessment;
+
   /// No description provided for @newCompany.
   ///
   /// In es, this message translates to:

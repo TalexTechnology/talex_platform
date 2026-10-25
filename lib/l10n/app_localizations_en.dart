@@ -547,6 +547,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get splashVerifyingSession => 'Verifying your session';
+
+  @override
+  String get splashSigningIn => 'Signing you in';
+
+  @override
+  String get splashLoadingSettings => 'Loading your settings';
+
+  @override
+  String get splashPreparingWorkspace => 'Preparing your workspace';
+
+  @override
+  String get splashSigningOut => 'Signing you out securely';
+
+  @override
+  String get splashValidatingInvite => 'Validating your invitation';
+
+  @override
+  String get splashPreparingAssessment => 'Preparing your assessment';
+
+  @override
   String get newCompany => 'New company';
 
   @override

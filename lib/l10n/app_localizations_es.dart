@@ -548,6 +548,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get retry => 'Reintentar';
 
   @override
+  String get splashVerifyingSession => 'Verificando tu sesión';
+
+  @override
+  String get splashSigningIn => 'Iniciando sesión';
+
+  @override
+  String get splashLoadingSettings => 'Cargando tus configuraciones';
+
+  @override
+  String get splashPreparingWorkspace => 'Preparando tu espacio de trabajo';
+
+  @override
+  String get splashSigningOut => 'Cerrando sesión de forma segura';
+
+  @override
+  String get splashValidatingInvite => 'Validando tu invitación';
+
+  @override
+  String get splashPreparingAssessment => 'Preparando tu evaluación';
+
+  @override
   String get newCompany => 'Nueva empresa';
 
   @override
