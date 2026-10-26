@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
+import 'package:talex_platform/core/constants/app_radii.dart';
 
 class AuthField extends StatefulWidget {
   const AuthField({
@@ -12,10 +13,10 @@ class AuthField extends StatefulWidget {
     this.obscureText = false,
     this.validator,
     this.onSubmitted,
-    this.height = 43,
-    this.iconColor = AppColors.muted,
-    this.borderColor = AppColors.border,
-    this.focusedBorderColor = AppColors.ink,
+    this.height = 48,
+    this.iconColor,
+    this.borderColor,
+    this.focusedBorderColor,
     this.fillColor,
     this.textStyle,
     this.hintStyle,
@@ -30,9 +31,9 @@ class AuthField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onSubmitted;
   final double height;
-  final Color iconColor;
-  final Color borderColor;
-  final Color focusedBorderColor;
+  final Color? iconColor;
+  final Color? borderColor;
+  final Color? focusedBorderColor;
   final Color? fillColor;
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
@@ -72,7 +73,7 @@ class _AuthFieldState extends State<AuthField> {
       onFieldSubmitted: widget.onSubmitted,
       style:
           widget.textStyle ??
-          const TextStyle(color: AppColors.ink, fontSize: 15),
+          TextStyle(color: AppColors.text, fontSize: 15),
       decoration:
           widget.decoration ??
           InputDecoration(
@@ -80,10 +81,10 @@ class _AuthFieldState extends State<AuthField> {
             hintText: widget.hint,
             hintStyle:
                 widget.hintStyle ??
-                const TextStyle(color: AppColors.muted, fontSize: 15),
+                TextStyle(color: AppColors.textDimmer, fontSize: 15),
             prefixIcon: widget.icon == null
                 ? null
-                : Icon(widget.icon, color: widget.iconColor, size: 21),
+                : Icon(widget.icon, color: (widget.iconColor ?? AppColors.textDimmer), size: 21),
             suffixIcon: widget.obscureText
                 ? IconButton(
                     onPressed: () => setState(() {
@@ -93,18 +94,21 @@ class _AuthFieldState extends State<AuthField> {
                       _obscureText
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      color: widget.iconColor,
+                      color: (widget.iconColor ?? AppColors.textDimmer),
                       size: 20,
                     ),
                     tooltip: _passwordTooltip(context),
                   )
                 : null,
-            filled: widget.fillColor != null,
-            fillColor: widget.fillColor,
-            contentPadding: const EdgeInsets.symmetric(vertical: 11),
-            border: _border(widget.borderColor),
-            enabledBorder: _border(widget.borderColor),
-            focusedBorder: _border(widget.focusedBorderColor, 1.2),
+            filled: true,
+            fillColor: widget.fillColor ?? AppColors.surface,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: widget.icon == null ? 16 : 0,
+              vertical: 13,
+            ),
+            border: _border((widget.borderColor ?? AppColors.border)),
+            enabledBorder: _border((widget.borderColor ?? AppColors.border)),
+            focusedBorder: _border((widget.focusedBorderColor ?? AppColors.blue), 1.5),
             errorStyle: const TextStyle(height: 0, fontSize: 0),
           ),
     ),
@@ -118,7 +122,7 @@ class _AuthFieldState extends State<AuthField> {
 
   OutlineInputBorder _border(Color color, [double width = 1]) =>
       OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
+        borderRadius: AppRadii.border,
         borderSide: BorderSide(color: color, width: width),
       );
 }
@@ -132,9 +136,9 @@ class AuthFieldLabel extends StatelessWidget {
     text,
     style:
         style ??
-        const TextStyle(
-          color: AppColors.ink,
-          fontSize: 15,
+        TextStyle(
+          color: AppColors.textMuted,
+          fontSize: 13.5,
           height: 1.2,
           fontWeight: FontWeight.w600,
         ),

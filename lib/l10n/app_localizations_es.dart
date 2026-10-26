@@ -2465,4 +2465,479 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminQuestionsDeletedAll => 'Se eliminaron todas las preguntas.';
+
+  @override
+  String get authBrandEyebrow => 'Fit cultural';
+
+  @override
+  String get authBrandTitleLead => 'Contrata personas que';
+
+  @override
+  String get authBrandTitleAccent => 'encajan.';
+
+  @override
+  String get authBrandBody =>
+      'Medimos el fit cultural entre cada candidato y tu empresa, antes de contratar. El fit informa; la persona decide.';
+
+  @override
+  String get authBrandExample => 'Ejemplo';
+
+  @override
+  String get authBrandCompany => 'Empresa';
+
+  @override
+  String get authBrandCandidate => 'Candidato';
+
+  @override
+  String get authBrandDimCollaboration => 'Colaboración';
+
+  @override
+  String get authBrandDimAutonomy => 'Autonomía';
+
+  @override
+  String get authBrandDimStructure => 'Estructura';
+
+  @override
+  String get authBrandDimInnovation => 'Innovación';
+
+  @override
+  String get authBrandAligned => 'Alineado';
+
+  @override
+  String get authBrandFriction => 'Fricción';
+
+  @override
+  String get authSignInEyebrow => 'Plataforma TaleX';
+
+  @override
+  String get adminEyebrow => 'Administración TaleX';
+
+  @override
+  String get companyEyebrow => 'Espacio de empresa';
+
+  @override
+  String get themeSwitchToLight => 'Cambiar a tema claro';
+
+  @override
+  String get themeSwitchToDark => 'Cambiar a tema oscuro';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get appearanceDescription =>
+      'Elige cómo se ve TaleX en este dispositivo.';
+
+  @override
+  String get themeSystem => 'Sistema';
+
+  @override
+  String get themeLight => 'Claro';
+
+  @override
+  String get themeDark => 'Oscuro';
+
+  @override
+  String get cultureResponsesBack => 'Volver a Mi cultura';
+
+  @override
+  String get cultureResponsesAnonymous =>
+      'Respuestas anónimas: no se guarda quién respondió y el orden es aleatorio.';
+
+  @override
+  String get cultureResponsesSummary => 'Resumen';
+
+  @override
+  String get cultureResponsesIndividual => 'Por persona';
+
+  @override
+  String get cultureResponsesEmpty =>
+      'Aún nadie del equipo ha respondido la encuesta de esta empresa.';
+
+  @override
+  String get cultureResponsesError => 'No pudimos cargar las respuestas.';
+
+  @override
+  String get cultureResponsesMost => 'Más probable';
+
+  @override
+  String get cultureResponsesLeast => 'Menos probable';
+
+  @override
+  String get cultureResponsesYes => 'Sí';
+
+  @override
+  String get cultureResponsesNo => 'No';
+
+  @override
+  String get cultureResponsesNoAnswers => 'Nadie respondió esta pregunta.';
+
+  @override
+  String get cultureResponsesLead => 'Lead de la landing';
+
+  @override
+  String get cultureResponsesRespondents => 'Respuestas';
+
+  @override
+  String get cultureResponsesQuestions => 'Preguntas';
+
+  @override
+  String get cultureResponsesSurveyLink => 'Abrir encuesta de la empresa';
+
+  @override
+  String cultureResponsesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count respuestas anónimas',
+      one: '1 respuesta anónima',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cultureResponsesPerson(int index) {
+    return 'Respuesta $index';
+  }
+
+  @override
+  String cultureResponsesAnswered(int count, int total) {
+    return '$count de $total respondieron';
+  }
+
+  @override
+  String cultureResponsesForecast(String value) {
+    return 'Pronóstico promedio: $value%';
+  }
+
+  @override
+  String get cultureResponsesAll => 'Todos';
+
+  @override
+  String get cultureResponsesLeaders => 'Líderes';
+
+  @override
+  String get cultureResponsesEmployees => 'Empleados';
+
+  @override
+  String get cultureResponsesLeader => 'Líder';
+
+  @override
+  String get cultureResponsesEmployee => 'Empleado';
+
+  @override
+  String get cultureReportGenerate => 'Generar reporte';
+
+  @override
+  String get cultureReportBack => 'Volver a las respuestas';
+
+  @override
+  String get cultureReportTitle => 'Informe de cultura';
+
+  @override
+  String get cultureReportError => 'No pudimos generar el informe.';
+
+  @override
+  String get cultureReportPending =>
+      'El informe aún no está listo: faltan respuestas del equipo para analizar la cultura.';
+
+  @override
+  String get cultureReportCoverage => 'Cobertura';
+
+  @override
+  String get cultureReportKeyPoints => 'Lo más importante';
+
+  @override
+  String get cultureReportTruth => 'Un punto para conversar';
+
+  @override
+  String get cultureReportSummary => 'En pocas palabras';
+
+  @override
+  String get cultureReportDna => 'Así es la cultura hoy';
+
+  @override
+  String get cultureReportDominant => 'Lo que más se vive';
+
+  @override
+  String get cultureReportWeak => 'Lo que menos se vive';
+
+  @override
+  String get cultureReportStrength => 'Qué tan compartida es';
+
+  @override
+  String get cultureReportMirror => '¿Líderes y equipo ven lo mismo?';
+
+  @override
+  String get cultureReportAlignment => 'Qué tanto coinciden';
+
+  @override
+  String get cultureReportBlindSpots => 'Donde el liderazgo lo ve distinto';
+
+  @override
+  String get cultureReportSaid => 'Lo que se dice y lo que se vive';
+
+  @override
+  String get cultureReportCoherence => 'Coincidencia';
+
+  @override
+  String get cultureReportOffer => 'Lo que de verdad ofrece trabajar aquí';
+
+  @override
+  String get cultureReportOffered => 'Lo que sí encuentras';
+
+  @override
+  String get cultureReportNotOffered => 'Lo que aún no está';
+
+  @override
+  String get cultureReportPromises => 'Cuidado al prometer';
+
+  @override
+  String get cultureReportVoice => 'En palabras del equipo';
+
+  @override
+  String get cultureReportDoingWell => 'Aquí le va bien a quien…';
+
+  @override
+  String get cultureReportDoingBadly => 'Aquí le cuesta más a quien…';
+
+  @override
+  String get cultureReportHiring => 'Qué significa para contratar';
+
+  @override
+  String get cultureReportThrives => 'Quién encaja bien aquí';
+
+  @override
+  String get cultureReportAtRisk => 'A quién le podría costar más';
+
+  @override
+  String get cultureReportRisks => 'Para tener en cuenta';
+
+  @override
+  String get cultureReportMitigation => 'Qué hacer';
+
+  @override
+  String get cultureReportQuestions => 'Preguntas para la entrevista';
+
+  @override
+  String get cultureReportHonest => 'Cómo contárselo a los candidatos';
+
+  @override
+  String get cultureReportRecommendations => 'Próximos pasos';
+
+  @override
+  String get cultureReportOwner => 'Quién lo lidera';
+
+  @override
+  String get cultureReportDeadline => 'En';
+
+  @override
+  String get cultureReportSuccess => 'Sabrás que funcionó cuando';
+
+  @override
+  String get cultureReportSeal => 'Sello TaleX';
+
+  @override
+  String get cultureReportSealMet => 'Ya cumple';
+
+  @override
+  String get cultureReportSealPending => 'Le falta';
+
+  @override
+  String get cultureReportQuality => 'Sobre estas respuestas';
+
+  @override
+  String get cultureReportAlerts => 'Ten en cuenta';
+
+  @override
+  String get cultureReportSincerity => 'Sobre la sinceridad de las respuestas';
+
+  @override
+  String get cultureReportLimitations => 'Límites de este informe';
+
+  @override
+  String cultureReportRespondentsOf(int count, int needed) {
+    return '$count de $needed respuestas';
+  }
+
+  @override
+  String cultureReportCutoff(String date) {
+    return 'Corte: $date';
+  }
+
+  @override
+  String cultureReportPriority(int value) {
+    return 'Paso $value';
+  }
+
+  @override
+  String cultureReportAreaShare(String area, String staff, String answers) {
+    return '$area: $staff% de la plantilla · $answers% de las respuestas';
+  }
+
+  @override
+  String cultureReportSealValidity(int months) {
+    return 'Vigencia: $months meses';
+  }
+
+  @override
+  String get cultureReportIntro =>
+      'Así describe tu equipo la cultura que vive hoy. Úsalo para conversar y decidir mejor: el fit informa, la persona decide.';
+
+  @override
+  String get cultureReportDnaHelp =>
+      'El estilo que más se repite en las respuestas del equipo.';
+
+  @override
+  String get cultureReportStrengthStrong =>
+      'La mayoría la vive de la misma forma.';
+
+  @override
+  String get cultureReportStrengthMedium =>
+      'Hay matices: no todos la viven igual.';
+
+  @override
+  String get cultureReportStrengthWeak =>
+      'Cada persona o equipo la vive distinto.';
+
+  @override
+  String get cultureReportMirrorHelp =>
+      'Comparamos cómo describen la cultura los líderes y el resto del equipo.';
+
+  @override
+  String get cultureReportAgree => 'Coinciden';
+
+  @override
+  String get cultureReportDiffer => 'Lo ven distinto';
+
+  @override
+  String get cultureReportDifferMuch => 'Lo ven muy distinto';
+
+  @override
+  String get cultureReportLevelHigh => 'Se vive mucho';
+
+  @override
+  String get cultureReportLevelMid => 'Se vive';
+
+  @override
+  String get cultureReportLevelNeutral => 'Ni mucho ni poco';
+
+  @override
+  String get cultureReportLevelLow => 'Se vive poco';
+
+  @override
+  String get cultureReportLevelVeryLow => 'Casi no se vive';
+
+  @override
+  String get cultureReportSaidHelp =>
+      'Revisamos si los valores que declara la empresa se sienten en el día a día.';
+
+  @override
+  String get cultureReportVerdictLived => 'Se vive';
+
+  @override
+  String get cultureReportVerdictPartial => 'A medias';
+
+  @override
+  String get cultureReportVerdictWall => 'Solo en el papel';
+
+  @override
+  String get cultureReportOfferHelp => 'Según el equipo, más allá del sueldo.';
+
+  @override
+  String get cultureReportVoiceHelp =>
+      'Frases reales y anónimas de quienes respondieron.';
+
+  @override
+  String get cultureReportHiringHelp =>
+      'Úsalo como guía para la entrevista, no como filtro automático.';
+
+  @override
+  String get cultureReportImportant => 'Importante';
+
+  @override
+  String get cultureReportToReview => 'A revisar';
+
+  @override
+  String get cultureReportMinor => 'Menor';
+
+  @override
+  String get cultureReportSealHelp =>
+      'El sello confirma que la cultura está bien medida y es compartida. Sirve como referencia para contratar.';
+
+  @override
+  String get cultureReportSealValidated => 'Cultura validada';
+
+  @override
+  String get cultureReportSealInProgress => 'Sello en camino';
+
+  @override
+  String get cultureReportConditionAlignment => 'Líderes y equipo coinciden';
+
+  @override
+  String get cultureReportConfidenceHigh => 'Lectura sólida';
+
+  @override
+  String get cultureReportConfidenceMedium => 'Lectura parcial';
+
+  @override
+  String get cultureReportConfidenceLow => 'Lectura preliminar';
+
+  @override
+  String cultureReportVoiceShare(String pct) {
+    return '$pct% del equipo lo mencionó';
+  }
+
+  @override
+  String cultureReportPromiseLine(String need) {
+    return '$need: los líderes lo mencionan, pero el equipo todavía no lo siente.';
+  }
+
+  @override
+  String cultureReportTalexValue(String value) {
+    return 'Lo relacionamos con $value.';
+  }
+
+  @override
+  String cultureReportPointLived(String values) {
+    return 'Lo que más se vive: $values.';
+  }
+
+  @override
+  String cultureReportPointAlignment(int value) {
+    return 'Líderes y equipo coinciden en un $value%.';
+  }
+
+  @override
+  String cultureReportPointSample(int count, int needed) {
+    return 'Para el sello faltan respuestas: van $count de $needed del equipo.';
+  }
+
+  @override
+  String cultureReportGapLeadersMore(String value) {
+    return 'En $value hay una diferencia: los líderes sienten que se vive más de lo que el equipo percibe. Vale la pena hablarlo antes de usarlo para atraer talento.';
+  }
+
+  @override
+  String cultureReportGapTeamMore(String value) {
+    return 'En $value hay una diferencia: el equipo lo vive más de lo que los líderes creen. Es una fortaleza que vale la pena reconocer.';
+  }
+
+  @override
+  String cultureReportAnswersOf(int count, int needed) {
+    return 'Van $count de $needed respuestas del equipo.';
+  }
+
+  @override
+  String get cultureReportDownloadPdf => 'Descargar PDF';
+
+  @override
+  String get cultureReportDownloading => 'Preparando PDF…';
+
+  @override
+  String get cultureReportDownloadError =>
+      'No pudimos descargar el PDF. Intenta de nuevo en un momento.';
+
+  @override
+  String get cultureReportDownloaded => 'Listo: tu PDF se está descargando.';
 }

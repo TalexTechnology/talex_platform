@@ -40,12 +40,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Perfil de empresa'), findsOneWidget);
+    expect(find.text('PERFIL DE EMPRESA'), findsOneWidget);
     expect(find.text('Empresa de prueba'), findsOneWidget);
     expect(find.text('Funza · Cundinamarca · Colombia'), findsOneWidget);
     expect(find.text('Esta es una descripcion de prueba'), findsOneWidget);
-    expect(find.text('Visitar sitio web'), findsOneWidget);
-    expect(find.text('https://talex.com.co'), findsOneWidget);
+    expect(
+      find.text('Visitar sitio web · https://talex.com.co'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('placeholder website is not shown as a link', (tester) async {
@@ -68,6 +70,6 @@ void main() {
       ),
     );
 
-    expect(find.text('Visitar sitio web'), findsNothing);
+    expect(find.textContaining('Visitar sitio web'), findsNothing);
   });
 }

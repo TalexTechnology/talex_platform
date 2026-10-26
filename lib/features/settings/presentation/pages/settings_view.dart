@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
@@ -152,39 +153,14 @@ class _SettingsViewState extends State<SettingsView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  runSpacing: 18,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.l10n.settingsTitle,
-                          style: TextStyle(
-                            color: AppColors.ink,
-                            fontSize: compact ? 34 : 42,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -1.3,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.settingsSubtitle,
-                          style: const TextStyle(
-                            color: AppColors.subtitle,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
+                TalexPageHeader(
+                  eyebrow: context.l10n.settings,
+                  title: context.l10n.settingsTitle,
+                  subtitle: context.l10n.settingsSubtitle,
+                  actions: [
                     FilledButton.icon(
                       onPressed: _save,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryButton,
-                      ),
-                      icon: const Icon(Icons.save_outlined),
+                      icon: const Icon(Icons.check, size: 18),
                       label: Text(context.l10n.saveChanges),
                     ),
                   ],
@@ -197,6 +173,16 @@ class _SettingsViewState extends State<SettingsView> {
                   child: const Align(
                     alignment: Alignment.centerLeft,
                     child: LanguageSelector(),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SettingsSection(
+                  title: context.l10n.appearance,
+                  description: context.l10n.appearanceDescription,
+                  icon: Icons.contrast,
+                  child: const Align(
+                    alignment: Alignment.centerLeft,
+                    child: ThemeModePicker(),
                   ),
                 ),
                 const SizedBox(height: 24),

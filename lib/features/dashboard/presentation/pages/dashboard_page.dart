@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/assistant/presentation/assistant_host.dart';
 import 'package:talex_platform/features/assistant/presentation/assistant_text.dart';
 import 'package:talex_platform/features/assistant/presentation/brief/assistant_brief_builder.dart';
@@ -80,7 +81,7 @@ class _DashboardPageState extends State<DashboardPage> {
           );
           return Scaffold(
             key: _scaffoldKey,
-            backgroundColor: AppColors.dashboardBackground,
+            backgroundColor: AppColors.bg,
             drawer: desktop ? null : Drawer(width: 270, child: sidebar),
             body: Row(
               children: [
@@ -145,27 +146,29 @@ class _DashboardContent extends StatelessWidget {
           value: '32',
           caption: '↗ ${context.l10n.thisWeekChange}',
           icon: Icons.work_outline,
-          captionColor: AppColors.positive,
+          captionColor: AppColors.green,
         ),
         DashboardMetricCard(
           title: context.l10n.evaluatedCandidates,
           value: '18',
           caption: context.l10n.thisMonthChange,
           icon: Icons.mark_email_unread_outlined,
-          captionColor: AppColors.positive,
+          captionColor: AppColors.green,
+          tone: TalexTone.green,
         ),
         DashboardMetricCard(
           title: context.l10n.averageFitScore,
           value: '7',
           caption: context.l10n.stableTopRoles,
           icon: Icons.pending_actions_outlined,
+          tone: TalexTone.warning,
         ),
         DashboardMetricCard(
           title: context.l10n.hiringVelocity,
           value: '126',
           caption: '↗ ${context.l10n.daysFromQuarter}',
           icon: Icons.task_alt_outlined,
-          captionColor: AppColors.positive,
+          captionColor: AppColors.green,
         ),
       ];
       final matches = TopMatchesCard(
@@ -217,54 +220,23 @@ class _DashboardContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Wrap(
-              runSpacing: 18,
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.overview,
-                      style: TextStyle(
-                        color: AppColors.ink,
-                        fontSize: narrow ? 34 : 42,
-                        height: 1,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      context.l10n.overviewSubtitle,
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
+            TalexPageHeader(
+              eyebrow: context.l10n.dashboard,
+              title: context.l10n.overview,
+              subtitle: context.l10n.overviewSubtitle,
+              actions: [
+                OutlinedButton(
+                  onPressed: onEnablePerson,
+                  child: Text(context.l10n.generateReport),
                 ),
-                Wrap(
-                  spacing: 12,
-                  children: [
-                    OutlinedButton(
-                      onPressed: onEnablePerson,
-                      child: Text(context.l10n.generateReport),
-                    ),
-                    FilledButton.icon(
-                      onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryButton,
-                      ),
-                      icon: const Icon(Icons.add),
-                      label: Text(context.l10n.newRole),
-                    ),
-                  ],
+                FilledButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(context.l10n.newRole),
                 ),
               ],
             ),
-            const SizedBox(height: 34),
+            const SizedBox(height: 36),
             Wrap(
               spacing: 24,
               runSpacing: 24,

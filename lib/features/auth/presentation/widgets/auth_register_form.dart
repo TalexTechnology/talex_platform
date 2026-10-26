@@ -75,9 +75,10 @@ class AuthRegisterForm extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: AppColors.ink,
-            fontSize: 34,
+          style: TextStyle(
+            color: AppColors.text,
+            fontSize: 30,
+            height: 1.1,
             fontWeight: FontWeight.w700,
             letterSpacing: -1,
           ),
@@ -85,11 +86,15 @@ class AuthRegisterForm extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           subtitle,
-          style: const TextStyle(color: AppColors.subtitle, fontSize: 16),
+          style: TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 15.5,
+            height: 1.6,
+          ),
         ),
         const SizedBox(height: 28),
         _field(nameLabel, nameHint, nameController, validator: _required),
-        const SizedBox(height: 22),
+        const SizedBox(height: 18),
         _field(
           emailLabel,
           emailHint,
@@ -98,7 +103,7 @@ class AuthRegisterForm extends StatelessWidget {
           validator: (value) =>
               value == null || !value.contains('@') ? emailError : null,
         ),
-        const SizedBox(height: 22),
+        const SizedBox(height: 18),
         _field(
           pinLabel,
           pinHint,
@@ -107,7 +112,7 @@ class AuthRegisterForm extends StatelessWidget {
           validator: (value) =>
               (value?.trim().length ?? 0) != 6 ? pinHint : null,
         ),
-        const SizedBox(height: 22),
+        const SizedBox(height: 18),
         _field(
           passwordLabel,
           '••••••••',
@@ -115,7 +120,7 @@ class AuthRegisterForm extends StatelessWidget {
           obscureText: true,
           validator: (value) => (value?.length ?? 0) < 6 ? passwordError : null,
         ),
-        const SizedBox(height: 22),
+        const SizedBox(height: 18),
         _field(
           confirmPasswordLabel,
           '••••••••',
@@ -127,20 +132,20 @@ class AuthRegisterForm extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         SizedBox(
-          height: 44,
+          height: 48,
           child: FilledButton(
             onPressed: isLoading || isGoogleLoading ? null : onSubmit,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primaryButton,
-              disabledBackgroundColor: AppColors.primaryButton,
+              backgroundColor: AppColors.green,
+              disabledBackgroundColor: AppColors.green,
               shape: AppRadii.shape,
             ),
             child: isLoading
-                ? const SizedBox.square(
+                ? SizedBox.square(
                     dimension: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.textOnGreen,
                     ),
                   )
                 : Text(submitText),
@@ -149,19 +154,19 @@ class AuthRegisterForm extends StatelessWidget {
         const SizedBox(height: 24),
         Row(
           children: [
-            const Expanded(child: Divider(color: AppColors.divider)),
+            Expanded(child: Divider(color: AppColors.border)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 dividerText,
-                style: const TextStyle(
-                  color: AppColors.subtitle,
+                style: TextStyle(
+                  color: AppColors.textMuted,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const Expanded(child: Divider(color: AppColors.divider)),
+            Expanded(child: Divider(color: AppColors.border)),
           ],
         ),
         const SizedBox(height: 20),
@@ -179,12 +184,15 @@ class AuthRegisterForm extends StatelessWidget {
             Flexible(
               child: Text(
                 accountPrompt,
-                style: const TextStyle(color: AppColors.subtitle, fontSize: 15),
+                style: TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 15,
+                ),
               ),
             ),
             TextButton(
               onPressed: onLogin,
-              style: TextButton.styleFrom(foregroundColor: AppColors.accent),
+              style: TextButton.styleFrom(foregroundColor: AppColors.blue),
               child: Text(loginText),
             ),
           ],

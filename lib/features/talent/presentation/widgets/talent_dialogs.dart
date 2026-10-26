@@ -108,7 +108,6 @@ class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
               onChanged: (value) => _customArea = value,
               decoration: InputDecoration(
                 labelText: l10n.customAreaLabel,
-                border: const OutlineInputBorder(),
               ),
             ),
           ),
@@ -116,7 +115,7 @@ class _CreateVacancyDialogState extends State<_CreateVacancyDialog> {
           padding: const EdgeInsets.only(bottom: 12),
           child: Text(
             l10n.vacancyAreaHint,
-            style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
+            style: TextStyle(color: AppColors.textDimmer, fontSize: 13, height: 1.35),
           ),
         ),
         _input(l10n.description, _description, lines: 4),
@@ -232,7 +231,7 @@ class _CreateRespondentDialogState extends State<_CreateRespondentDialog> {
       children: [
         Text(
           l10n.respondentInviteHint,
-          style: const TextStyle(color: AppColors.muted, height: 1.4),
+          style: TextStyle(color: AppColors.textDimmer, height: 1.4),
         ),
         const SizedBox(height: 16),
         Padding(
@@ -243,7 +242,6 @@ class _CreateRespondentDialogState extends State<_CreateRespondentDialog> {
             alignment: Alignment.center,
             decoration: InputDecoration(
               labelText: l10n.vacancy,
-              border: const OutlineInputBorder(),
             ),
             items: vacancies
                 .map(
@@ -337,7 +335,6 @@ class _EditCandidateDialogState extends State<_EditCandidateDialog> {
               isExpanded: true,
               decoration: InputDecoration(
                 labelText: l10n.vacancy,
-                border: const OutlineInputBorder(),
               ),
               items: widget.vacancies
                   .map(
@@ -351,7 +348,7 @@ class _EditCandidateDialogState extends State<_EditCandidateDialog> {
           ),
         Text(
           '${l10n.emailAddress}: ${widget.candidate.email}',
-          style: const TextStyle(color: AppColors.muted),
+          style: TextStyle(color: AppColors.textDimmer),
         ),
       ],
     );
@@ -378,7 +375,10 @@ Future<void> showDeleteCandidateDialog(
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700),
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.danger,
+            foregroundColor: AppColors.bg,
+          ),
           onPressed: () {
             bloc.add(TalentCandidateDeleted(candidate.id));
             Navigator.pop(dialogContext);
@@ -480,7 +480,7 @@ class _InviteTeamDialogState extends State<_InviteTeamDialog> {
       children: [
         Text(
           l10n.inviteTeamSubtitle,
-          style: const TextStyle(color: AppColors.muted, height: 1.4),
+          style: TextStyle(color: AppColors.textDimmer, height: 1.4),
         ),
         const SizedBox(height: 16),
         _input(l10n.firstName, _first),
@@ -494,7 +494,6 @@ class _InviteTeamDialogState extends State<_InviteTeamDialog> {
             alignment: Alignment.center,
             decoration: InputDecoration(
               labelText: l10n.teamRole,
-              border: const OutlineInputBorder(),
             ),
             items: companyInviteRoles()
                 .map(
@@ -512,7 +511,7 @@ class _InviteTeamDialogState extends State<_InviteTeamDialog> {
         ),
         Text(
           l10n.teamRoleHint,
-          style: const TextStyle(color: AppColors.muted, fontSize: 13, height: 1.35),
+          style: TextStyle(color: AppColors.textDimmer, fontSize: 13, height: 1.35),
         ),
       ],
     );
@@ -578,10 +577,10 @@ class _FormDialog extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: AppColors.ink,
+                color: AppColors.text,
               ),
             ),
             const SizedBox(height: 18),
@@ -596,7 +595,6 @@ class _FormDialog extends StatelessWidget {
                 const Spacer(),
                 FilledButton(
                   onPressed: onSubmit,
-                  style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
                   child: Text(submitLabel ?? context.l10n.saveChanges),
                 ),
               ],
@@ -616,7 +614,6 @@ Widget _input(String label, TextEditingController controller, {int lines = 1}) =
         maxLines: lines,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
         ),
       ),
     );

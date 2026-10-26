@@ -71,8 +71,8 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                         children: [
                           Text(
                             context.l10n.enablePerson,
-                            style: const TextStyle(
-                              color: AppColors.ink,
+                            style: TextStyle(
+                              color: AppColors.text,
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
                             ),
@@ -80,7 +80,7 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                           const SizedBox(height: 6),
                           Text(
                             context.l10n.enablePersonSubtitle,
-                            style: const TextStyle(color: AppColors.subtitle),
+                            style: TextStyle(color: AppColors.textMuted),
                           ),
                         ],
                       ),
@@ -97,7 +97,6 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                   controller: _name,
                   decoration: InputDecoration(
                     hintText: context.l10n.personNameHint,
-                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) => value == null || value.trim().isEmpty
                       ? context.l10n.requiredField
@@ -110,7 +109,6 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: context.l10n.emailAddressHint,
-                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) => value == null || !value.contains('@')
                       ? context.l10n.validEmailAddressError
@@ -158,7 +156,6 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText: context.l10n.optionalMessageHint,
-                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 26),
@@ -166,9 +163,6 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
                   height: 46,
                   child: FilledButton.icon(
                     onPressed: _submit,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primaryButton,
-                    ),
                     icon: const Icon(Icons.send_outlined),
                     label: Text(context.l10n.sendInvitation),
                   ),
@@ -185,7 +179,7 @@ class _CreateInvitationDialogState extends State<CreateInvitationDialog> {
     padding: const EdgeInsets.only(bottom: 8),
     child: Text(
       text,
-      style: const TextStyle(color: AppColors.ink, fontWeight: FontWeight.w600),
+      style: TextStyle(color: AppColors.text, fontWeight: FontWeight.w600),
     ),
   );
 }

@@ -129,6 +129,7 @@ class CultureOrganizationGroup extends Equatable {
     this.name,
     this.sizeLabel,
     this.createdAt,
+    this.surveyRespondents = 0,
   });
 
   // Null en el grupo de leads sin empresa asignada.
@@ -136,6 +137,9 @@ class CultureOrganizationGroup extends Equatable {
   final String? name;
   final String? sizeLabel;
   final DateTime? createdAt;
+
+  /// Personas del equipo que respondieron la encuesta de cultura (anónima).
+  final int surveyRespondents;
   final CultureSummary summary;
   final List<CultureReportLead> leads;
 
@@ -163,6 +167,7 @@ class CultureOrganizationGroup extends Equatable {
       name: organization == null ? null : '${organization['name'] ?? ''}',
       sizeLabel: size.isEmpty ? null : size,
       createdAt: _date(organization?['created_at']),
+      surveyRespondents: _int(map['surveyRespondents']),
       summary: CultureSummary.fromMap(
         map['summary'] is Map
             ? Map<String, dynamic>.from(map['summary'] as Map)
@@ -173,7 +178,15 @@ class CultureOrganizationGroup extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, sizeLabel, createdAt, summary, leads];
+  List<Object?> get props => [
+    id,
+    name,
+    sizeLabel,
+    createdAt,
+    surveyRespondents,
+    summary,
+    leads,
+  ];
 }
 
 class CultureOrganizationReport extends Equatable {

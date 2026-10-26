@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/auth/user_role.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
@@ -97,7 +98,7 @@ class TalentDashboardView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AdminPageHeader(title: l10n.dashboard, subtitle: l10n.overviewSubtitle),
+            AdminPageHeader(eyebrow: context.l10n.companyEyebrow, title: l10n.dashboard, subtitle: l10n.overviewSubtitle),
             const SizedBox(height: 24),
             Wrap(
               spacing: 16,
@@ -131,7 +132,7 @@ class TalentDashboardView extends StatelessWidget {
               AdminPanel(
                 child: Text(
                   l10n.dashboardRecentEmpty,
-                  style: const TextStyle(color: AppColors.subtitle, height: 1.4),
+                  style: TextStyle(color: AppColors.textMuted, height: 1.4),
                 ),
               )
             else
@@ -193,6 +194,7 @@ class TalentVacanciesView extends StatelessWidget {
         child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.companyEyebrow,
             title: l10n.vacancy,
             subtitle: l10n.vacanciesSubtitle,
             actions: [
@@ -204,7 +206,6 @@ class TalentVacanciesView extends StatelessWidget {
                         state.companyId!,
                         company: state.snapshot.profile,
                       ),
-                style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
                 icon: const Icon(Icons.add),
                 label: Text(l10n.createVacancy),
               ),
@@ -242,10 +243,10 @@ class TalentVacanciesView extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 item.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.ink,
+                                  color: AppColors.text,
                                 ),
                               ),
                             ),
@@ -253,6 +254,9 @@ class TalentVacanciesView extends StatelessWidget {
                               item.status == VacancyStatus.active
                                   ? l10n.processStatusActive
                                   : l10n.processStatusClosed,
+                              tone: item.status == VacancyStatus.active
+                                  ? TalexTone.green
+                                  : TalexTone.neutral,
                             ),
                           ],
                         ),
@@ -260,22 +264,22 @@ class TalentVacanciesView extends StatelessWidget {
                           const SizedBox(height: 6),
                           Text(
                             areaLabel,
-                            style: const TextStyle(color: AppColors.subtitle),
+                            style: TextStyle(color: AppColors.textMuted),
                           ),
                         ],
                         if (item.description != null &&
                             item.description!.trim().isNotEmpty) ...[
                           const SizedBox(height: 12),
-                          Text(item.description!.trim()),
+                          Text(
+                            item.description!.trim(),
+                            style: TextStyle(
+                              color: AppColors.textMuted,
+                              height: 1.6,
+                            ),
+                          ),
                         ],
                         const SizedBox(height: 16),
-                        Text(
-                          l10n.vacancyInsights,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.ink,
-                          ),
-                        ),
+                        TalexEyebrow(l10n.vacancyInsights, color: AppColors.blue),
                         const SizedBox(height: 6),
                         Text(
                           related.isEmpty
@@ -313,6 +317,7 @@ class TalentCandidatesView extends StatelessWidget {
         child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.companyEyebrow,
             title: l10n.candidate,
             subtitle: l10n.candidatesSubtitle,
             actions: [
@@ -320,7 +325,6 @@ class TalentCandidatesView extends StatelessWidget {
                 onPressed: state.snapshot.vacancies.isEmpty
                     ? null
                     : () => showCreateRespondentDialog(context, state),
-                style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
                 icon: const Icon(Icons.add),
                 label: Text(l10n.createRespondent),
               ),
@@ -397,35 +401,52 @@ class TalentCandidatesView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AdminPanel(
-                  child: InkWell(
-                    onTap: () => context.read<TalentBloc>().add(
-                      TalentCandidateOpened(item.id),
-                    ),
-                    child: Padding(
+                  onTap: () => context.read<TalentBloc>().add(
+                    TalentCandidateOpened(item.id),
+                  ),
+                  child: Builder(
+                    builder: (context) => Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
+                        horizontal: 20,
+                        vertical: 16,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppColors.greenDim,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              name.isEmpty ? '?' : name[0].toUpperCase(),
+                              style: TextStyle(
+                                color: AppColors.green,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.ink,
+                                    color: AppColors.text,
                                     fontSize: 16,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   '${item.vacancyName} · ${processStatusLabel(context, item.processStatus)}',
-                                  style: const TextStyle(
-                                    color: AppColors.subtitle,
+                                  style: TextStyle(
+                                    color: AppColors.textMuted,
                                     height: 1.35,
                                   ),
                                 ),
@@ -442,9 +463,9 @@ class TalentCandidatesView extends StatelessWidget {
                                 children: [
                                   Text(
                                     l10n.affinityCompany,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
-                                      color: AppColors.muted,
+                                      color: AppColors.textDimmer,
                                     ),
                                   ),
                                   const SizedBox(width: 6),
@@ -452,6 +473,11 @@ class TalentCandidatesView extends StatelessWidget {
                                 ],
                               ),
                             ],
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.chevron_right,
+                            color: AppColors.textDimmer,
                           ),
                         ],
                       ),
@@ -482,7 +508,7 @@ class TalentReportsView extends StatelessWidget {
       child: ContentWidth(
         child: Column(
           children: [
-            AdminPageHeader(title: l10n.results, subtitle: l10n.resultsSubtitle),
+            AdminPageHeader(eyebrow: context.l10n.companyEyebrow, title: l10n.results, subtitle: l10n.resultsSubtitle),
             const SizedBox(height: 20),
             if (completed.isEmpty)
               AdminEmptyState(message: l10n.vacancyInsightsEmpty)
@@ -520,6 +546,7 @@ class TalentTeamView extends StatelessWidget {
         child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.companyEyebrow,
             title: l10n.team,
             subtitle: l10n.teamSubtitle,
             actions: [
@@ -531,7 +558,6 @@ class TalentTeamView extends StatelessWidget {
                         state.companyId!,
                         companyName: state.snapshot.profile?.name,
                       ),
-                style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
                 icon: const Icon(Icons.person_add_alt_1),
                 label: Text(l10n.inviteRecruiter),
               ),
@@ -619,6 +645,7 @@ class _TalentProfileViewState extends State<TalentProfileView> {
         child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.companyEyebrow,
             title: l10n.companyProfile,
             subtitle: l10n.companyProfileSubtitle,
           ),
@@ -652,7 +679,6 @@ class _TalentProfileViewState extends State<TalentProfileView> {
             alignment: Alignment.centerRight,
             child: FilledButton(
               onPressed: id == null ? null : _save,
-              style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
               child: Text(l10n.saveChanges),
             ),
           ),
@@ -700,7 +726,6 @@ class _TalentProfileViewState extends State<TalentProfileView> {
           maxLines: lines,
           decoration: InputDecoration(
             labelText: label,
-            border: const OutlineInputBorder(),
           ),
         ),
       );

@@ -172,8 +172,8 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           l10n.recoverPasswordSubtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.subtitle,
+          style: TextStyle(
+            color: AppColors.textMuted,
             height: 1.45,
             fontSize: 16,
           ),
@@ -196,16 +196,16 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         FilledButton(
           onPressed: _loading ? null : _requestPin,
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
+            backgroundColor: AppColors.green,
             minimumSize: const Size.fromHeight(48),
           ),
           child: _loading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: AppColors.textOnGreen,
                   ),
                 )
               : Text(l10n.recoverContinue),
@@ -221,8 +221,8 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           l10n.recoverPinSubtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.subtitle,
+          style: TextStyle(
+            color: AppColors.textMuted,
             height: 1.45,
             fontSize: 16,
           ),
@@ -231,9 +231,9 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           _email.text.trim(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.ink,
+            color: AppColors.text,
           ),
         ),
         const SizedBox(height: 24),
@@ -246,8 +246,8 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           l10n.recoverPinHint,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.muted,
+          style: TextStyle(
+            color: AppColors.textDimmer,
             fontSize: 13,
             height: 1.4,
           ),
@@ -258,16 +258,16 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
               ? null
               : _verifyPin,
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
+            backgroundColor: AppColors.green,
             minimumSize: const Size.fromHeight(48),
           ),
           child: _loading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: AppColors.textOnGreen,
                   ),
                 )
               : Text(l10n.recoverVerifyPin),
@@ -287,8 +287,8 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           l10n.mustChangePasswordSubtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.subtitle,
+          style: TextStyle(
+            color: AppColors.textMuted,
             height: 1.45,
             fontSize: 16,
           ),
@@ -319,16 +319,16 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         FilledButton(
           onPressed: _loading ? null : _complete,
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
+            backgroundColor: AppColors.green,
             minimumSize: const Size.fromHeight(48),
           ),
           child: _loading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: AppColors.textOnGreen,
                   ),
                 )
               : Text(l10n.recoverUpdatePassword),
@@ -341,7 +341,7 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Icon(
+        Icon(
           Icons.check_circle_outline,
           color: AppColors.brandGreen,
           size: 56,
@@ -350,8 +350,8 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         Text(
           l10n.recoverSuccessBody,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: AppColors.subtitle,
+          style: TextStyle(
+            color: AppColors.textMuted,
             height: 1.45,
             fontSize: 16,
           ),
@@ -360,7 +360,7 @@ class _RecoverAccessPageState extends State<RecoverAccessPage> {
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
+            backgroundColor: AppColors.green,
             minimumSize: const Size.fromHeight(48),
           ),
           child: Text(l10n.signIn),

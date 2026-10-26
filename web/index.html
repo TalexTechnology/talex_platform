@@ -15,6 +15,18 @@
 
   <title>TaleX</title>
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0B1528">
+  <!-- Fondo del tema guardado mientras carga Flutter (ThemeCubit guarda
+       'talex.theme'); la encuesta de cultura lo sobrescribe. -->
+  <style>html, body { background: #0B1528; } html.light, html.light body { background: #F5F7FB; }</style>
+  <script>
+    try {
+      if (localStorage.getItem('flutter.talex.theme') === '"light"') {
+        document.documentElement.classList.add('light');
+        document.querySelector('meta[name="theme-color"]').content = '#F5F7FB';
+      }
+    } catch (_) {}
+  </script>
 </head>
 <body>
   <script src="culture_survey_boot.js"></script>

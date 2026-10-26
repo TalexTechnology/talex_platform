@@ -17,6 +17,15 @@ final class CultureQuestionDataSource {
     await _rpc('list_culture_questions', {'p_include_inactive': true}),
   );
 
+  // Banco activo tal cual lo guarda el backend, para la vista previa de la
+  // encuesta (que necesita scale, items y fallback_options).
+  Future<Map<String, dynamic>> preview() async {
+    final rows = await _rpc('list_culture_questions');
+    return rows.firstOrNull is Map
+        ? Map<String, dynamic>.from(rows.first as Map)
+        : {'questions': rows};
+  }
+
   Future<void> create(CultureQuestion question) =>
       _rpc('create_culture_question', {'p_question': question.toMap()});
 

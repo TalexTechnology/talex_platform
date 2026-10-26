@@ -10,10 +10,10 @@ class PasswordRecoveryService {
   Future<Either<Failure, Unit>> requestPin({
     required String email,
     required String locale,
-  }) => _call(
-    'requestPasswordReset',
-    {'email': email.trim().toLowerCase(), 'locale': locale},
-  );
+  }) => _call('requestPasswordReset', {
+    'email': email.trim().toLowerCase(),
+    'locale': locale,
+  });
 
   Future<Either<Failure, String>> verifyPin({
     required String email,
@@ -77,7 +77,8 @@ class PasswordRecoveryService {
     if (message.contains('resetCooldown')) {
       return TalentErrorCodes.resetCooldown;
     }
-    if (message.contains('tooManyAttempts') || error.code == 'resource-exhausted') {
+    if (message.contains('tooManyAttempts') ||
+        error.code == 'resource-exhausted') {
       return TalentErrorCodes.resetTooManyAttempts;
     }
     if (message.contains('pinExpired') || message.contains('expired')) {

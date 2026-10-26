@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
-import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
@@ -48,38 +48,14 @@ class InvitationsView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        runSpacing: 18,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.l10n.invitationsTitle,
-                                style: TextStyle(
-                                  color: AppColors.ink,
-                                  fontSize: compact ? 34 : 42,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                context.l10n.invitationsSubtitle,
-                                style: const TextStyle(
-                                  color: AppColors.subtitle,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
+                      TalexPageHeader(
+                        eyebrow: context.l10n.roles,
+                        title: context.l10n.invitationsTitle,
+                        subtitle: context.l10n.invitationsSubtitle,
+                        actions: [
                           FilledButton.icon(
                             onPressed: onCreate,
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppColors.primaryButton,
-                            ),
-                            icon: const Icon(Icons.person_add_alt_1),
+                            icon: const Icon(Icons.person_add_alt_1, size: 18),
                             label: Text(context.l10n.enablePerson),
                           ),
                         ],
@@ -112,39 +88,36 @@ class _EmptyInvitations extends StatelessWidget {
   const _EmptyInvitations({required this.onCreate});
   final VoidCallback onCreate;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 70),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: AppColors.softBorder),
-      borderRadius: AppRadii.border,
-    ),
+  Widget build(BuildContext context) => TalexPanel(
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 64),
     child: Column(
       children: [
-        const Icon(
-          Icons.mark_email_unread_outlined,
-          size: 48,
-          color: AppColors.dashboardAccent,
-        ),
-        const SizedBox(height: 18),
+        const TalexIconBadge(Icons.mark_email_unread_outlined, size: 56),
+        const SizedBox(height: 20),
         Text(
           context.l10n.noInvitations,
-          style: const TextStyle(
-            color: AppColors.ink,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppColors.text,
             fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.4,
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          context.l10n.noInvitationsDescription,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: AppColors.subtitle),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
+          child: Text(
+            context.l10n.noInvitationsDescription,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.textMuted, height: 1.6),
+          ),
         ),
-        const SizedBox(height: 22),
-        FilledButton(
+        const SizedBox(height: 24),
+        FilledButton.icon(
           onPressed: onCreate,
-          child: Text(context.l10n.enablePerson),
+          icon: const Icon(Icons.add, size: 18),
+          label: Text(context.l10n.enablePerson),
         ),
       ],
     ),
@@ -168,13 +141,16 @@ class _InvitationCard extends StatelessWidget {
         invitation.status == InvitationStatus.cancelled ||
         invitation.status == InvitationStatus.completed;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    return Container(
+    final tone = switch (invitation.status) {
+      InvitationStatus.completed => TalexTone.green,
+      InvitationStatus.inProgress => TalexTone.blue,
+      InvitationStatus.pending => TalexTone.blue,
+      InvitationStatus.interrupted => TalexTone.warning,
+      InvitationStatus.expired => TalexTone.neutral,
+      InvitationStatus.cancelled => TalexTone.danger,
+    };
+    return TalexPanel(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFD1D1D6)),
-        borderRadius: AppRadii.border,
-      ),
       child: Wrap(
         runSpacing: 16,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -182,13 +158,13 @@ class _InvitationCard extends StatelessWidget {
           SizedBox(
             width: 52,
             child: CircleAvatar(
-              backgroundColor: const Color(0xFFF0EFFF),
+              backgroundColor: AppColors.greenDim,
               child: Text(
                 invitation.personName.isEmpty
                     ? '?'
                     : invitation.personName[0].toUpperCase(),
-                style: const TextStyle(
-                  color: AppColors.dashboardAccent,
+                style: TextStyle(
+                  color: AppColors.green,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -201,8 +177,8 @@ class _InvitationCard extends StatelessWidget {
               children: [
                 Text(
                   invitation.personName,
-                  style: const TextStyle(
-                    color: AppColors.ink,
+                  style: TextStyle(
+                    color: AppColors.text,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -210,7 +186,7 @@ class _InvitationCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   invitation.email,
-                  style: const TextStyle(color: AppColors.subtitle),
+                  style: TextStyle(color: AppColors.textMuted),
                 ),
               ],
             ),
@@ -222,8 +198,8 @@ class _InvitationCard extends StatelessWidget {
               children: [
                 Text(
                   invitation.assessmentName,
-                  style: const TextStyle(
-                    color: AppColors.ink,
+                  style: TextStyle(
+                    color: AppColors.text,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -232,29 +208,15 @@ class _InvitationCard extends StatelessWidget {
                   context.l10n.expiresOn(
                     DateFormat.yMMMd(locale).format(invitation.expiresAt),
                   ),
-                  style: const TextStyle(
-                    color: AppColors.subtitle,
+                  style: TextStyle(
+                    color: AppColors.textMuted,
                     fontSize: 13,
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0EFFF),
-              borderRadius: AppRadii.border,
-            ),
-            child: Text(
-              _status(context),
-              style: const TextStyle(
-                color: AppColors.dashboardAccent,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          TalexPill(_status(context), tone: tone),
           const SizedBox(width: 12),
           if (!disabled) ...[
             TextButton.icon(
@@ -267,7 +229,7 @@ class _InvitationCard extends StatelessWidget {
             IconButton(
               tooltip: context.l10n.cancelInvitation,
               onPressed: () => _confirmCancel(context),
-              icon: const Icon(Icons.block_outlined, color: Colors.redAccent),
+              icon: Icon(Icons.block_outlined, color: AppColors.danger),
             ),
           ],
         ],
@@ -288,6 +250,10 @@ class _InvitationCard extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.danger,
+              foregroundColor: AppColors.bg,
+            ),
             child: Text(context.l10n.cancelInvitation),
           ),
         ],

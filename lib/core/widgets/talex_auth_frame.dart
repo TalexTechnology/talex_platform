@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:talex_platform/core/constants/app_assets.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
-import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
+import 'package:talex_platform/core/widgets/talex_logo.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 
+// Marco de las pantallas de acceso secundarias: fondo noche con el brillo
+// del hero, logo arriba y el contenido en un panel elevado.
 class TalexAuthFrame extends StatelessWidget {
   const TalexAuthFrame({
     super.key,
     required this.title,
     required this.child,
-    this.maxWidth = 680,
+    this.maxWidth = 560,
     this.showBack = true,
     this.onBack,
+    this.eyebrow,
   });
 
   final String title;
@@ -19,100 +23,68 @@ class TalexAuthFrame extends StatelessWidget {
   final double maxWidth;
   final bool showBack;
   final VoidCallback? onBack;
+  final String? eyebrow;
 
   @override
   Widget build(BuildContext context) {
+    final canGoBack =
+        showBack && (onBack != null || Navigator.of(context).canPop());
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: Material(
-                color: Colors.white,
-                elevation: 12,
-                shadowColor: AppColors.ink.withValues(alpha: 0.12),
-                borderRadius: AppRadii.border,
-                clipBehavior: Clip.antiAlias,
+      body: TalexGlow(
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(8, 8, 16, 18),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppColors.ink, Color(0xFF0A1F40)],
+                    Row(
+                      children: [
+                        if (canGoBack)
+                          IconButton(
+                            onPressed:
+                                onBack ?? () => Navigator.of(context).pop(),
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).backButtonTooltip,
+                            icon: const Icon(Icons.arrow_back),
+                          )
+                        else
+                          const SizedBox(width: 48),
+                        const Expanded(
+                          child: Center(
+                            child: TalexLogo(width: 132, height: 40),
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              if (showBack &&
-                                  (onBack != null ||
-                                      Navigator.of(context).canPop()))
-                                IconButton(
-                                  onPressed:
-                                      onBack ??
-                                      () => Navigator.of(context).pop(),
-                                  icon: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              else
-                                const SizedBox(width: 48),
-                              Expanded(
-                                child: Image.asset(
-                                  AppAssets.talexBadgeDark,
-                                  height: 52,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const LanguageSelector(compact: true),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          const Row(
-                            children: [
-                              Expanded(
-                                child: ColoredBox(
-                                  color: AppColors.brandBlue,
-                                  child: SizedBox(height: 3),
-                                ),
-                              ),
-                              Expanded(
-                                child: ColoredBox(
-                                  color: AppColors.brandGreen,
-                                  child: SizedBox(height: 3),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        const LanguageSelector(compact: true),
+                        const SizedBox(width: 12),
+                        const ThemeToggleButton(size: 36),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(28, 28, 28, 28),
+                    const SizedBox(height: 28),
+                    TalexPanel(
+                      padding: const EdgeInsets.fromLTRB(32, 36, 32, 32),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          child,
+                          if (eyebrow != null) ...[
+                            TalexEyebrow(eyebrow!),
+                            const SizedBox(height: 12),
+                          ],
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: AppColors.text,
+                              fontSize: 28,
+                              height: 1.15,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.9,
+                            ),
+                          ),
                           const SizedBox(height: 24),
-                          Image.asset(AppAssets.talexMarca, fit: BoxFit.fitWidth),
+                          child,
                         ],
                       ),
                     ),

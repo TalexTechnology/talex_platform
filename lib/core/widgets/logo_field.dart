@@ -84,7 +84,6 @@ class _LogoFieldState extends State<LogoField> {
             onChanged: _onUrl,
             decoration: InputDecoration(
               labelText: l10n.pasteLogoUrl,
-              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 8),
@@ -94,15 +93,15 @@ class _LogoFieldState extends State<LogoField> {
             label: Text(l10n.selectLogoFile),
           ),
           const SizedBox(height: 8),
-          Text(l10n.logoPreview, style: const TextStyle(color: AppColors.muted)),
+          Text(l10n.logoPreview, style: TextStyle(color: AppColors.textDimmer)),
           const SizedBox(height: 8),
           Container(
             width: 96,
             height: 96,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: AppColors.borderStrong),
               borderRadius: AppRadii.border,
-              color: Colors.white,
+              color: AppColors.logoBackdrop,
             ),
             clipBehavior: Clip.antiAlias,
             child: _bytes != null
@@ -113,7 +112,7 @@ class _LogoFieldState extends State<LogoField> {
                     fit: BoxFit.contain,
                     errorBuilder: (_, _, _) => const Icon(Icons.broken_image_outlined),
                   )
-                : const Icon(Icons.apartment_outlined, color: AppColors.muted),
+                : Icon(Icons.apartment_outlined, color: AppColors.textDimmer),
           ),
         ],
       ),

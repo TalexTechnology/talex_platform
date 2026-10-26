@@ -1,26 +1,33 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
-import 'package:talex_platform/core/di/injection.dart';
-import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/utils/local_storage.dart';
 import 'package:talex_platform/core/utils/open_url.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
+import 'package:talex_platform/features/admin/data/datasources/culture_question_data_source.dart';
 import 'package:talex_platform/features/admin/data/datasources/culture_report_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_organization_report.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_culture_questions_view.dart';
+import 'package:talex_platform/features/admin/presentation/pages/admin_culture_responses_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
-// Abre en otra pestaña la encuesta real de [organizationId] en modo demo.
-void _openSurveyDemo(String organizationId) =>
-    openExternalUrl(CultureSurveyLink.demoUrl(organizationId, base: Uri.base));
+// Abre en otra pestaña el banco activo como si fuera la encuesta, sin empresa.
+// window.open va sin awaits de por medio para que el navegador no lo bloquee.
+void _openSurveyPreview(Map<String, dynamic> bank) {
+  writeLocalStorage(CultureSurveyLink.previewStorageKey, jsonEncode(bank));
+  openExternalUrl(CultureSurveyLink.previewUrl(base: Uri.base));
+}
 
 // Pestaña "Mi cultura": leads de la landing /micultura agrupados por empresa.
 class AdminMyCultureView extends StatefulWidget {
-  const AdminMyCultureView({super.key, this.source});
+  const AdminMyCultureView({super.key, this.source, this.questions});
 
   final CultureReportDataSource? source;
+  final CultureQuestionDataSource? questions;
 
   @override
   State<AdminMyCultureView> createState() => _AdminMyCultureViewState();
@@ -29,17 +36,50 @@ class AdminMyCultureView extends StatefulWidget {
 class _AdminMyCultureViewState extends State<AdminMyCultureView> {
   late final CultureReportDataSource _source =
       widget.source ?? CultureReportDataSource();
+  late final CultureQuestionDataSource _questions =
+      widget.questions ?? CultureQuestionDataSource();
   late Future<CultureOrganizationReport> _report = _source.load();
+  // Se precarga para abrir la pestaña de la vista previa sin esperar la red.
+  Map<String, dynamic>? _preview;
   var _query = '';
   var _showQuestions = false;
+  CultureOrganizationGroup? _selected;
 
-  void _reload() => setState(() => _report = _source.load());
+  @override
+  void initState() {
+    super.initState();
+    _loadPreview();
+  }
+
+  Future<void> _loadPreview() async {
+    try {
+      final preview = await _questions.preview();
+      if (mounted) setState(() => _preview = preview);
+    } catch (_) {
+      // Sin banco no hay vista previa; el botón queda deshabilitado.
+    }
+  }
+
+  void _reload() {
+    setState(() {
+      _report = _source.load();
+    });
+    _loadPreview();
+  }
 
   @override
   Widget build(BuildContext context) {
     if (_showQuestions) {
       return AdminCultureQuestionsView(
         onBack: () => setState(() => _showQuestions = false),
+      );
+    }
+    final selected = _selected;
+    if (selected != null) {
+      return AdminCultureResponsesView(
+        group: selected,
+        source: _source,
+        onBack: () => setState(() => _selected = null),
       );
     }
     final l10n = context.l10n;
@@ -49,11 +89,7 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
       builder: (context, snapshot) {
         final loading = snapshot.connectionState != ConnectionState.done;
         final report = snapshot.data;
-        // Los grupos llegan del más reciente al más antiguo.
-        final previewId = report?.organizations
-            .map((group) => group.id)
-            .whereType<String>()
-            .firstOrNull;
+        final preview = _preview;
         final Widget body;
         if (loading) {
           body = const Skeleton(
@@ -115,8 +151,6 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
                   hintText: l10n.adminMyCultureSearch,
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.white,
-                  border: const OutlineInputBorder(),
                   isDense: true,
                 ),
               ),
@@ -130,7 +164,10 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
                 for (final group in visible)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: _OrganizationCard(group: group),
+                    child: _OrganizationCard(
+                      group: group,
+                      onTap: () => setState(() => _selected = group),
+                    ),
                   ),
             ],
           );
@@ -141,35 +178,26 @@ class _AdminMyCultureViewState extends State<AdminMyCultureView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AdminPageHeader(
+                eyebrow: context.l10n.adminEyebrow,
                 title: l10n.adminSurveysMyCulture,
                 subtitle: l10n.adminMyCultureSubtitle,
                 actions: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      FilledButton.icon(
-                        onPressed: () => setState(() => _showQuestions = true),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primaryButton,
-                        ),
-                        icon: const Icon(Icons.quiz_outlined),
-                        label: Text(l10n.cultureQuestionsOpen),
-                      ),
-                      const SizedBox(height: 8),
-                      OutlinedButton.icon(
-                        onPressed: previewId == null
-                            ? null
-                            : () => _openSurveyDemo(previewId),
-                        icon: const Icon(Icons.play_circle_outline),
-                        label: Text(l10n.cultureSurveyPreview),
-                      ),
-                      const SizedBox(height: 8),
-                      OutlinedButton.icon(
-                        onPressed: loading ? null : _reload,
-                        icon: const Icon(Icons.refresh),
-                        label: Text(l10n.adminMyCultureRefresh),
-                      ),
-                    ],
+                  OutlinedButton.icon(
+                    onPressed: loading ? null : _reload,
+                    icon: const Icon(Icons.refresh, size: 18),
+                    label: Text(l10n.adminMyCultureRefresh),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: preview == null
+                        ? null
+                        : () => _openSurveyPreview(preview),
+                    icon: const Icon(Icons.play_circle_outline, size: 18),
+                    label: Text(l10n.cultureSurveyPreview),
+                  ),
+                  FilledButton.icon(
+                    onPressed: () => setState(() => _showQuestions = true),
+                    icon: const Icon(Icons.quiz_outlined, size: 18),
+                    label: Text(l10n.cultureQuestionsOpen),
                   ),
                 ],
               ),
@@ -200,8 +228,8 @@ class _Stat extends StatelessWidget {
           children: [
             Text(
               '$value',
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.text,
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
               ),
@@ -209,7 +237,7 @@ class _Stat extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(color: AppColors.subtitle, fontSize: 14),
+              style: TextStyle(color: AppColors.textMuted, fontSize: 14),
             ),
           ],
         ),
@@ -219,9 +247,10 @@ class _Stat extends StatelessWidget {
 }
 
 class _OrganizationCard extends StatelessWidget {
-  const _OrganizationCard({required this.group});
+  const _OrganizationCard({required this.group, required this.onTap});
 
   final CultureOrganizationGroup group;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -232,197 +261,53 @@ class _OrganizationCard extends StatelessWidget {
       if (group.sizeLabel != null)
         '${l10n.cultureLeadEmployees}: ${group.sizeLabel}',
       l10n.adminMyCultureLeadCount(summary.leadCount),
-      l10n.adminMyCultureRespondedCount(
-        summary.respondedCount,
-        summary.leadCount,
-      ),
       if (summary.lastLeadAt != null)
         '${l10n.adminMyCultureLastLead}: ${labels.date(summary.lastLeadAt!.toLocal())}',
     ];
-    // El Material transparente deja que el splash del ExpansionTile se pinte
-    // encima del fondo blanco del panel y no debajo.
     return AdminPanel(
-      child: Material(
-        color: Colors.transparent,
-        child: Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            shape: const Border(),
-            collapsedShape: const Border(),
-            tilePadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 6,
-            ),
-            childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-            expandedCrossAxisAlignment: CrossAxisAlignment.start,
-            title: Text(
-              group.unassigned
-                  ? l10n.adminMyCultureUnassigned
-                  : (group.name ?? ''),
-              style: const TextStyle(
-                color: AppColors.ink,
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-              ),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                details.join(' · '),
-                style: const TextStyle(color: AppColors.subtitle, fontSize: 14),
-              ),
-            ),
-            children: [
-              if (group.id != null) ...[
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    FilledButton.tonalIcon(
-                      onPressed: () => _openSurveyDemo(group.id!),
-                      icon: const Icon(Icons.play_circle_outline),
-                      label: Text(l10n.cultureSurveyDemo),
-                    ),
-                    TextButton.icon(
-                      onPressed: () async {
-                        final message = l10n.cultureSurveyDemoCopied;
-                        await Clipboard.setData(
-                          ClipboardData(
-                            text: CultureSurveyLink.demoUrl(
-                              group.id!,
-                              base: Uri.base,
-                            ),
-                          ),
-                        );
-                        getIt<NotificationService>().success(message);
-                      },
-                      icon: const Icon(Icons.link),
-                      label: Text(l10n.cultureSurveyDemoCopy),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-              ],
-              if (summary.perceivedCulture.isNotEmpty) ...[
-                _Label(l10n.cultureLeadTraits),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final trait in summary.perceivedCulture)
-                      AdminStatusChip(
-                        trait.pct == null
-                            ? trait.label
-                            : '${trait.label} · ${trait.pct!.round()}%',
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-              ],
-              if (summary.comments.isNotEmpty) ...[
-                _Label(l10n.adminMyCultureComments),
-                for (final comment in summary.comments)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Text(
-                      '“${comment.comment}”',
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
-                        fontSize: 14.5,
-                        height: 1.4,
-                      ),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    group.unassigned
+                        ? l10n.adminMyCultureUnassigned
+                        : (group.name ?? ''),
+                    style: TextStyle(
+                      color: AppColors.text,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      letterSpacing: -0.2,
                     ),
                   ),
-                const SizedBox(height: 10),
-              ],
-              _Label(l10n.adminMyCultureLeads),
-              for (final (index, item) in group.leads.indexed) ...[
-                if (index > 0)
-                  const Divider(height: 20, color: AppColors.divider),
-                _LeadRow(item: item),
-              ],
+                  const SizedBox(height: 6),
+                  Text(
+                    details.join(' · '),
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            if (!group.unassigned) ...[
+              const SizedBox(width: 16),
+              TalexPill(
+                l10n.cultureResponsesCount(group.surveyRespondents),
+                tone: group.surveyRespondents > 0
+                    ? TalexTone.green
+                    : TalexTone.neutral,
+                icon: Icons.lock_outline,
+              ),
             ],
-          ),
+            const SizedBox(width: 12),
+            Icon(Icons.chevron_right, color: AppColors.textDimmer),
+          ],
         ),
       ),
     );
   }
-}
-
-class _LeadRow extends StatelessWidget {
-  const _LeadRow({required this.item});
-
-  final CultureReportLead item;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final labels = AdminLabels(context);
-    final lead = item.lead;
-    final emailStatus = switch (item.emailStatus) {
-      'sent' => l10n.adminMyCultureEmailSent,
-      'skipped' => l10n.adminMyCultureEmailSkipped,
-      'failed' => l10n.adminMyCultureEmailFailed,
-      _ => null,
-    };
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                [?item.contactName, lead.email].join(' · '),
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                [
-                  lead.companyName,
-                  if (lead.employeeRange.isNotEmpty) lead.employeeRange,
-                  if (lead.perceivedCulture.isNotEmpty) lead.cultureTraitsLabel,
-                  labels.date(lead.createdAt.toLocal()),
-                  ?emailStatus,
-                ].join(' · '),
-                style: const TextStyle(
-                  color: AppColors.subtitle,
-                  fontSize: 13.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        AdminStatusChip(
-          item.responded
-              ? l10n.adminMyCultureRespondedBadge
-              : l10n.adminMyCulturePending,
-        ),
-      ],
-    );
-  }
-}
-
-class _Label extends StatelessWidget {
-  const _Label(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
-    child: Text(
-      text,
-      style: const TextStyle(
-        color: AppColors.muted,
-        fontSize: 12.5,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-  );
 }

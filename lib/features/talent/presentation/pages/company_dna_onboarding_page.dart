@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
+import 'package:talex_platform/core/widgets/talex_logo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
@@ -60,91 +63,119 @@ class _CompanyDnaOnboardingPageState extends State<CompanyDnaOnboardingPage> {
           final l10n = context.l10n;
           final reviewing = profile?.hasCompanyDna ?? false;
           return Scaffold(
-            backgroundColor: AppColors.background,
-            body: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: LanguageSelector(compact: true),
-                      ),
-                      Text(
-                        reviewing
-                            ? l10n.reviewCompanyDnaTitle
-                            : l10n.completeCompanyDnaTitle,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.ink,
+            body: TalexGlow(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 640),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 32,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Row(
+                          children: [
+                            TalexLogo(width: 120, height: 36),
+                            Spacer(),
+                            LanguageSelector(compact: true),
+                            SizedBox(width: 12),
+                            ThemeToggleButton(size: 36),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        reviewing
-                            ? l10n.reviewCompanyDnaSubtitle
-                            : l10n.completeCompanyDnaSubtitle,
-                      ),
-                      const SizedBox(height: 20),
-                      CompanyDnaFields(
-                        values: _values,
-                        culture: _culture,
-                        standout: _standout,
-                        catalog: state.snapshot.dnaCatalog,
-                        onValuesChanged: (value) => setState(() => _values = value),
-                        onCultureChanged: (value) => setState(() => _culture = value),
-                        onStandoutChanged: (value) => setState(() => _standout = value),
-                        onDeleteCustom: (type, label) => context.read<TalentBloc>().add(
-                          TalentDnaOptionDeleted(type: type, label: label),
+                        const SizedBox(height: 36),
+                        TalexEyebrow(l10n.companyEyebrow),
+                        const SizedBox(height: 14),
+                        Text(
+                          reviewing
+                              ? l10n.reviewCompanyDnaTitle
+                              : l10n.completeCompanyDnaTitle,
+                          style: TextStyle(
+                            fontSize: 34,
+                            height: 1.08,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -1.2,
+                            color: AppColors.text,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      FilledButton(
-                        onPressed: () {
-                          if (_values.isEmpty ||
-                              _culture.isEmpty ||
-                              _standout.isEmpty) {
-                            getIt<NotificationService>().error(l10n.dnaRequired);
-                            return;
-                          }
-                          final current = profile;
-                          context.read<TalentBloc>().add(
-                            TalentCompanyDnaConfirmed(
-                              CompanyProfile(
-                                id: widget.companyId,
-                                name: current?.name ?? '',
-                                nit: current?.nit,
-                                logoUrl: current?.logoUrl,
-                                sector: current?.sector,
-                                size: current?.size,
-                                city: current?.city,
-                                country: current?.country,
-                                region: current?.region,
-                                website: current?.website,
-                                description: current?.description,
-                                values: joinDnaList(_values),
-                                culture: joinDnaList(_culture),
-                                standoutPeople: joinDnaList(_standout),
-                                soughtCharacteristics:
-                                    current?.soughtCharacteristics,
-                                customValues: current?.customValues ?? const [],
-                                customCulture: current?.customCulture ?? const [],
-                                customStandout: current?.customStandout ?? const [],
-                                customAreas: current?.customAreas ?? const [],
+                        const SizedBox(height: 12),
+                        Text(
+                          reviewing
+                              ? l10n.reviewCompanyDnaSubtitle
+                              : l10n.completeCompanyDnaSubtitle,
+                          style: TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 16,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        CompanyDnaFields(
+                          values: _values,
+                          culture: _culture,
+                          standout: _standout,
+                          catalog: state.snapshot.dnaCatalog,
+                          onValuesChanged: (value) =>
+                              setState(() => _values = value),
+                          onCultureChanged: (value) =>
+                              setState(() => _culture = value),
+                          onStandoutChanged: (value) =>
+                              setState(() => _standout = value),
+                          onDeleteCustom: (type, label) =>
+                              context.read<TalentBloc>().add(
+                                TalentDnaOptionDeleted(
+                                  type: type,
+                                  label: label,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primaryButton,
                         ),
-                        child: Text(l10n.confirmCompanyDna),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        FilledButton(
+                          onPressed: () {
+                            if (_values.isEmpty ||
+                                _culture.isEmpty ||
+                                _standout.isEmpty) {
+                              getIt<NotificationService>().error(
+                                l10n.dnaRequired,
+                              );
+                              return;
+                            }
+                            final current = profile;
+                            context.read<TalentBloc>().add(
+                              TalentCompanyDnaConfirmed(
+                                CompanyProfile(
+                                  id: widget.companyId,
+                                  name: current?.name ?? '',
+                                  nit: current?.nit,
+                                  logoUrl: current?.logoUrl,
+                                  sector: current?.sector,
+                                  size: current?.size,
+                                  city: current?.city,
+                                  country: current?.country,
+                                  region: current?.region,
+                                  website: current?.website,
+                                  description: current?.description,
+                                  values: joinDnaList(_values),
+                                  culture: joinDnaList(_culture),
+                                  standoutPeople: joinDnaList(_standout),
+                                  soughtCharacteristics:
+                                      current?.soughtCharacteristics,
+                                  customValues:
+                                      current?.customValues ?? const [],
+                                  customCulture:
+                                      current?.customCulture ?? const [],
+                                  customStandout:
+                                      current?.customStandout ?? const [],
+                                  customAreas: current?.customAreas ?? const [],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text(l10n.confirmCompanyDna),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
