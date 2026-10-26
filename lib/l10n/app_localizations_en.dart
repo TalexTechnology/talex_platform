@@ -2457,4 +2457,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminQuestionsDeletedAll => 'All questions were deleted.';
+
+  @override
+  String get authBrandEyebrow => 'Cultural fit';
+
+  @override
+  String get authBrandTitleLead => 'Hire people who';
+
+  @override
+  String get authBrandTitleAccent => 'fit.';
+
+  @override
+  String get authBrandBody =>
+      'We measure the cultural fit between each candidate and your company, before you hire. Fit informs; people decide.';
+
+  @override
+  String get authBrandExample => 'Example';
+
+  @override
+  String get authBrandCompany => 'Company';
+
+  @override
+  String get authBrandCandidate => 'Candidate';
+
+  @override
+  String get authBrandDimCollaboration => 'Collaboration';
+
+  @override
+  String get authBrandDimAutonomy => 'Autonomy';
+
+  @override
+  String get authBrandDimStructure => 'Structure';
+
+  @override
+  String get authBrandDimInnovation => 'Innovation';
+
+  @override
+  String get authBrandAligned => 'Aligned';
+
+  @override
+  String get authBrandFriction => 'Friction';
+
+  @override
+  String get authSignInEyebrow => 'TaleX platform';
+
+  @override
+  String get adminEyebrow => 'TaleX admin';
+
+  @override
+  String get companyEyebrow => 'Company workspace';
+
+  @override
+  String get themeSwitchToLight => 'Switch to light theme';
+
+  @override
+  String get themeSwitchToDark => 'Switch to dark theme';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get appearanceDescription => 'Choose how TaleX looks on this device.';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 }

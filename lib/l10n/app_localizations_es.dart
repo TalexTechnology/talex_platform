@@ -2465,4 +2465,75 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminQuestionsDeletedAll => 'Se eliminaron todas las preguntas.';
+
+  @override
+  String get authBrandEyebrow => 'Fit cultural';
+
+  @override
+  String get authBrandTitleLead => 'Contrata personas que';
+
+  @override
+  String get authBrandTitleAccent => 'encajan.';
+
+  @override
+  String get authBrandBody =>
+      'Medimos el fit cultural entre cada candidato y tu empresa, antes de contratar. El fit informa; la persona decide.';
+
+  @override
+  String get authBrandExample => 'Ejemplo';
+
+  @override
+  String get authBrandCompany => 'Empresa';
+
+  @override
+  String get authBrandCandidate => 'Candidato';
+
+  @override
+  String get authBrandDimCollaboration => 'Colaboración';
+
+  @override
+  String get authBrandDimAutonomy => 'Autonomía';
+
+  @override
+  String get authBrandDimStructure => 'Estructura';
+
+  @override
+  String get authBrandDimInnovation => 'Innovación';
+
+  @override
+  String get authBrandAligned => 'Alineado';
+
+  @override
+  String get authBrandFriction => 'Fricción';
+
+  @override
+  String get authSignInEyebrow => 'Plataforma TaleX';
+
+  @override
+  String get adminEyebrow => 'Administración TaleX';
+
+  @override
+  String get companyEyebrow => 'Espacio de empresa';
+
+  @override
+  String get themeSwitchToLight => 'Cambiar a tema claro';
+
+  @override
+  String get themeSwitchToDark => 'Cambiar a tema oscuro';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get appearanceDescription =>
+      'Elige cómo se ve TaleX en este dispositivo.';
+
+  @override
+  String get themeSystem => 'Sistema';
+
+  @override
+  String get themeLight => 'Claro';
+
+  @override
+  String get themeDark => 'Oscuro';
 }

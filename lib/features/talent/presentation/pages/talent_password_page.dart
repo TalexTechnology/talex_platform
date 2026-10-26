@@ -65,8 +65,8 @@ class _TalentPasswordPageState extends State<TalentPasswordPage> {
             Text(
               l10n.mustChangePasswordSubtitle,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.subtitle,
+              style: TextStyle(
+                color: AppColors.textMuted,
                 height: 1.45,
                 fontSize: 16,
               ),
@@ -97,7 +97,7 @@ class _TalentPasswordPageState extends State<TalentPasswordPage> {
             FilledButton(
               onPressed: _submit,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primaryButton,
+                backgroundColor: AppColors.green,
                 minimumSize: const Size.fromHeight(48),
               ),
               child: Text(l10n.continueAction),

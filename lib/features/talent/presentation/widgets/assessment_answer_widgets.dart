@@ -6,7 +6,7 @@ import 'package:talex_platform/core/constants/app_colors.dart';
 // - [FrequencyAnswer]: 1 = nunca … 5 = siempre.
 // Cada opción lleva la clave `answer-<valor>` para poder ubicarla en tests.
 
-const _sideA = AppColors.brandBlue;
+const _sideA = LegacyColors.brandBlue;
 const _sideB = Color(0xFF5E9A1F);
 const _neutral = Color(0xFF9AA8B9);
 const _line = Color(0xFFDCE4EE);
@@ -99,7 +99,7 @@ class PairAnswer extends StatelessWidget {
                     key: const ValueKey('hint'),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: AppColors.muted,
+                      color: LegacyColors.muted,
                       fontSize: 14,
                       height: 1.4,
                     ),
@@ -118,7 +118,7 @@ class PairAnswer extends StatelessWidget {
                       labels[selected! - 1],
                       style: TextStyle(
                         color: selected == 3
-                            ? AppColors.subtitle
+                            ? LegacyColors.subtitle
                             : _sideColor(selected!),
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -214,7 +214,7 @@ class _SideCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       height: 1.45,
-                      color: AppColors.ink,
+                      color: LegacyColors.ink,
                     ),
                   ),
                 ),
@@ -424,11 +424,11 @@ class _FrequencyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foreground = selected ? Colors.white : AppColors.ink;
+    final foreground = selected ? Colors.white : LegacyColors.ink;
     final bars = _Bars(
       level: level,
       levels: levels,
-      color: selected ? Colors.white : AppColors.primaryButton,
+      color: selected ? Colors.white : LegacyColors.brandBlue,
     );
     final text = Text(
       label,
@@ -453,10 +453,10 @@ class _FrequencyTile extends StatelessWidget {
             height: horizontal ? 52 : 92,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: selected ? AppColors.primaryButton : Colors.white,
+              color: selected ? LegacyColors.brandBlue : Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: selected ? AppColors.primaryButton : _line,
+                color: selected ? LegacyColors.brandBlue : _line,
                 width: selected ? 2 : 1,
               ),
             ),

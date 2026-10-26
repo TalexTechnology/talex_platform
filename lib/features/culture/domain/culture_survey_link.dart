@@ -7,6 +7,15 @@ abstract final class CultureSurveyLink {
   static String demoUrl(String organizationId, {required Uri base}) =>
       '${base.origin}$path/${Uri.encodeComponent(organizationId)}?demo=1';
 
+  /// Clave de localStorage donde el admin deja el banco de preguntas activo
+  /// para [previewUrl]; debe coincidir con `culture_survey_boot.js`.
+  static const previewStorageKey = 'talex.cultureSurveyPreview';
+
+  /// Vista previa sin empresa: la encuesta se arma con el banco guardado en
+  /// [previewStorageKey] y las opciones por defecto de cada pregunta.
+  static String previewUrl({required Uri base}) =>
+      '${base.origin}$path/preview?demo=1';
+
   static String? organizationIdFromUri(Uri uri) {
     return _fromFragment(uri.fragment) ?? _fromPath(uri);
   }

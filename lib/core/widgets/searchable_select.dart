@@ -78,7 +78,7 @@ class SearchableSelect extends StatelessWidget {
                   )
                 : Icon(
                     Icons.expand_more,
-                    color: canOpen ? AppColors.dashboardAccent : AppColors.muted,
+                    color: canOpen ? AppColors.blue : AppColors.textDimmer,
                   ),
           ),
           child: ConstrainedBox(
@@ -88,7 +88,7 @@ class SearchableSelect extends StatelessWidget {
               child: Text(
                 value ?? '',
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.ink, fontSize: 16),
+                style: TextStyle(color: AppColors.text, fontSize: 16),
               ),
             ),
           ),
@@ -145,10 +145,10 @@ class _SearchableSelectDialogState extends State<_SearchableSelectDialog> {
                   Expanded(
                     child: Text(
                       widget.label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
-                        color: AppColors.ink,
+                        color: AppColors.text,
                       ),
                     ),
                   ),
@@ -184,13 +184,13 @@ class _SearchableSelectDialogState extends State<_SearchableSelectDialog> {
                         child: Text(
                           context.l10n.locationNoResults,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: AppColors.muted),
+                          style: TextStyle(color: AppColors.textDimmer),
                         ),
                       ),
                     for (final option in filtered)
                       ListTile(
                         selected: option == widget.value,
-                        selectedTileColor: const Color(0xFFF0EFFF),
+                        selectedTileColor: AppColors.greenDim,
                         title: Text(option),
                         onTap: () => Navigator.pop(context, option),
                       ),
@@ -271,9 +271,9 @@ class SearchableMultiSelect extends StatelessWidget {
           isEmpty: values.isEmpty,
           decoration: InputDecoration(
             labelText: label,
-            suffixIcon: const Icon(
+            suffixIcon: Icon(
               Icons.expand_more,
-              color: AppColors.dashboardAccent,
+              color: AppColors.blue,
             ),
           ),
           child: values.isEmpty
@@ -396,10 +396,10 @@ class _SearchableMultiSelectDialogState
                   Expanded(
                     child: Text(
                       widget.label,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
-                        color: AppColors.ink,
+                        color: AppColors.text,
                       ),
                     ),
                   ),
@@ -428,13 +428,13 @@ class _SearchableMultiSelectDialogState
                         child: Text(
                           context.l10n.locationNoResults,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: AppColors.muted),
+                          style: TextStyle(color: AppColors.textDimmer),
                         ),
                       ),
                     for (final option in filtered)
                       ListTile(
                         selected: _isSelected(option),
-                        selectedTileColor: const Color(0xFFF0EFFF),
+                        selectedTileColor: AppColors.greenDim,
                         title: Text(option),
                         trailing: widget.removableValues.contains(option)
                             ? IconButton(

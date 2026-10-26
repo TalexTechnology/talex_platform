@@ -5,6 +5,7 @@ import 'package:talex_platform/app/app.dart';
 import 'package:talex_platform/core/debug/debug_error_filter.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
+import 'package:talex_platform/core/theme/theme_cubit.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
 import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await configureDependencies();
   final localeCubit = getIt<LocaleCubit>();
   await localeCubit.load();
+  final themeCubit = getIt<ThemeCubit>()..load();
   final inviteToken = AssessmentInviteLink.tokenFromUri(Uri.base);
   final cultureOrganizationId = CultureSurveyLink.organizationIdFromUri(
     Uri.base,
@@ -26,6 +28,7 @@ Future<void> main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider.value(value: localeCubit),
+        BlocProvider.value(value: themeCubit),
         BlocProvider(
           create: (_) {
             final bloc = getIt<AuthBloc>();

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
@@ -118,6 +120,7 @@ class AdminDashboardView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: l10n.adminCommandCenter,
             subtitle: l10n.adminCommandSubtitle,
           ),
@@ -143,7 +146,8 @@ class AdminDashboardView extends StatelessWidget {
                   value: '${metrics.activeCompanies}',
                   caption: l10n.kpiActiveCompanies,
                   icon: Icons.verified_outlined,
-                  captionColor: AppColors.positive,
+                  captionColor: AppColors.green,
+                  tone: TalexTone.green,
                 ),
                 DashboardMetricCard(
                   title: l10n.kpiEvaluatedPeople,
@@ -156,13 +160,15 @@ class AdminDashboardView extends StatelessWidget {
                   value: '${metrics.completedEvaluations}',
                   caption: l10n.kpiCompletedEvaluations,
                   icon: Icons.task_alt_outlined,
-                  captionColor: AppColors.positive,
+                  captionColor: AppColors.green,
+                  tone: TalexTone.green,
                 ),
                 DashboardMetricCard(
                   title: l10n.kpiAffinities,
                   value: '${metrics.affinitiesDetected}',
                   caption: l10n.adminAffinity,
                   icon: Icons.hub_outlined,
+                  tone: TalexTone.green,
                 ),
                 DashboardMetricCard(
                   title: l10n.kpiPeriodSales,
@@ -181,6 +187,7 @@ class AdminDashboardView extends StatelessWidget {
                   value: '${metrics.companiesAtRisk}',
                   caption: l10n.alertRisk,
                   icon: Icons.warning_amber_outlined,
+                  tone: TalexTone.warning,
                 ),
               ];
               return Wrap(
@@ -239,14 +246,7 @@ class _ActivityPanel extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(24),
-            child: Text(
-              context.l10n.recentActivity,
-              style: const TextStyle(
-                color: AppColors.ink,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            child: TalexSectionTitle(context.l10n.recentActivity),
           ),
           const Divider(height: 1),
           if (state.activity.isEmpty)
@@ -254,7 +254,7 @@ class _ActivityPanel extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               child: Text(
                 context.l10n.noActivity,
-                style: const TextStyle(color: AppColors.subtitle),
+                style: TextStyle(color: AppColors.textMuted),
               ),
             )
           else
@@ -272,7 +272,7 @@ class _ActivityPanel extends StatelessWidget {
                         Icons.play_circle_outline,
                       ActivityKind.companyCreated => Icons.apartment_outlined,
                       _ => Icons.timeline_outlined,
-                    }, color: AppColors.dashboardAccent),
+                    }, color: AppColors.blue),
                     title: Text(item.entityName),
                     subtitle: Text(
                       [
@@ -306,14 +306,7 @@ class _AlertsPreview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(24),
-            child: Text(
-              context.l10n.adminAlerts,
-              style: const TextStyle(
-                color: AppColors.ink,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            child: TalexSectionTitle(context.l10n.adminAlerts),
           ),
           const Divider(height: 1),
           if (alerts.isEmpty)
@@ -350,14 +343,12 @@ class AdminCompaniesView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminCompanies,
             subtitle: context.l10n.adminCommandSubtitle,
             actions: [
               FilledButton.icon(
                 onPressed: () => showProvisionCompanyDialog(context),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.newCompany),
               ),
@@ -455,8 +446,8 @@ class _CompaniesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const headerStyle = TextStyle(
-      color: AppColors.muted,
+    final headerStyle = TextStyle(
+      color: AppColors.textDimmer,
       fontSize: 12.5,
       fontWeight: FontWeight.w600,
     );
@@ -479,7 +470,7 @@ class _CompaniesTable extends StatelessWidget {
                   ], const SizedBox.shrink()),
                 ),
                 for (final company in companies) ...[
-                  const Divider(height: 1, color: AppColors.divider),
+                  Divider(height: 1, color: AppColors.border),
                   _CompanyTableRow(company: company),
                 ],
               ],
@@ -516,12 +507,12 @@ class _CompanyTableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final labels = AdminLabels(context);
     final subtitle = _companySubtitle(company);
-    const value = TextStyle(color: AppColors.ink, fontSize: 14.5);
+    final value = TextStyle(color: AppColors.text, fontSize: 14.5);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _openCompany(context, company),
-        hoverColor: const Color(0xFFF5F8FC),
+        hoverColor: AppColors.surface,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 12, 12, 12),
           child: _companyRow([
@@ -537,8 +528,8 @@ class _CompanyTableRow extends StatelessWidget {
                         company.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.ink,
+                        style: TextStyle(
+                          color: AppColors.text,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -549,8 +540,8 @@ class _CompanyTableRow extends StatelessWidget {
                           subtitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.muted,
+                          style: TextStyle(
+                            color: AppColors.textDimmer,
                             fontSize: 13,
                           ),
                         ),
@@ -566,7 +557,7 @@ class _CompanyTableRow extends StatelessWidget {
             Text('${company.affinitiesDetected}', style: value),
             Text(
               labels.date(company.lastActivityAt ?? company.createdAt),
-              style: const TextStyle(color: AppColors.subtitle, fontSize: 14),
+              style: TextStyle(color: AppColors.textMuted, fontSize: 14),
             ),
           ], _CompanyOverflowMenu(company)),
         ),
@@ -592,7 +583,7 @@ class _CompletionCell extends StatelessWidget {
         children: [
           Text(
             '$completed / $invited',
-            style: const TextStyle(color: AppColors.ink, fontSize: 14.5),
+            style: TextStyle(color: AppColors.text, fontSize: 14.5),
           ),
           const SizedBox(height: 6),
           ClipRRect(
@@ -600,8 +591,8 @@ class _CompletionCell extends StatelessWidget {
             child: LinearProgressIndicator(
               value: invited == 0 ? 0 : (completed / invited).clamp(0.0, 1.0),
               minHeight: 4,
-              backgroundColor: const Color(0xFFE9EAEE),
-              color: AppColors.positive,
+              backgroundColor: AppColors.surface2,
+              color: AppColors.green,
             ),
           ),
         ],
@@ -616,13 +607,15 @@ class _CompanyStatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (foreground, background) = switch (status) {
-      CompanyStatus.active => (const Color(0xFF3B6D11), const Color(0xFFEFF7E6)),
-      CompanyStatus.onboarding => (AppColors.brandBlue, const Color(0xFFE8F2FC)),
-      CompanyStatus.inactive => (const Color(0xFF5F6168), const Color(0xFFF0F0F2)),
-      CompanyStatus.atRisk => (const Color(0xFF9A5B00), const Color(0xFFFFF4E0)),
-      CompanyStatus.suspended => (const Color(0xFFB42318), const Color(0xFFFDECEA)),
+    final tone = switch (status) {
+      CompanyStatus.active => TalexTone.green,
+      CompanyStatus.onboarding => TalexTone.blue,
+      CompanyStatus.inactive => TalexTone.neutral,
+      CompanyStatus.atRisk => TalexTone.warning,
+      CompanyStatus.suspended => TalexTone.danger,
     };
+    final foreground = tone.color;
+    final background = tone.background;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -668,7 +661,7 @@ class _CompanyCard extends StatelessWidget {
     final l10n = context.l10n;
     final labels = AdminLabels(context);
     final subtitle = _companySubtitle(company);
-    const meta = TextStyle(color: AppColors.subtitle, fontSize: 13.5);
+    final meta = TextStyle(color: AppColors.textMuted, fontSize: 13.5);
     return AdminPanel(
       child: Material(
         color: Colors.transparent,
@@ -690,8 +683,8 @@ class _CompanyCard extends StatelessWidget {
                         children: [
                           Text(
                             company.name,
-                            style: const TextStyle(
-                              color: AppColors.ink,
+                            style: TextStyle(
+                              color: AppColors.text,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -699,8 +692,8 @@ class _CompanyCard extends StatelessWidget {
                           if (subtitle.isNotEmpty)
                             Text(
                               subtitle,
-                              style: const TextStyle(
-                                color: AppColors.muted,
+                              style: TextStyle(
+                                color: AppColors.textDimmer,
                                 fontSize: 13,
                               ),
                             ),
@@ -734,7 +727,7 @@ class _CompanyCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   '${l10n.lastActivity}: ${labels.date(company.lastActivityAt ?? company.createdAt)}',
-                  style: const TextStyle(color: AppColors.muted, fontSize: 13),
+                  style: TextStyle(color: AppColors.textDimmer, fontSize: 13),
                 ),
               ],
             ),
@@ -771,7 +764,7 @@ class _CompaniesSkeleton extends StatelessWidget {
               ], const SizedBox.shrink()),
             ),
             for (var index = 0; index < 6; index++) ...[
-              const Divider(height: 1, color: AppColors.divider),
+              Divider(height: 1, color: AppColors.border),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
                 child: _companyRow(const [
@@ -834,15 +827,13 @@ class AdminCompanyDetailView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: company.name,
             subtitle:
                 '${labels.companyStatus(company.status)} · ${context.l10n.joinedAt} ${labels.date(company.createdAt)}',
             actions: [
               FilledButton.icon(
                 onPressed: () => showAdminEditCompany(context, company),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.edit_outlined),
                 label: Text(context.l10n.editCompany),
               ),
@@ -891,14 +882,7 @@ class AdminCompanyDetailView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            context.l10n.adminProcesses,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink,
-            ),
-          ),
+          TalexSectionTitle(context.l10n.adminProcesses),
           const SizedBox(height: 12),
           if (detail.processes.isEmpty)
             AdminEmptyState(message: context.l10n.noProcesses)
@@ -918,14 +902,7 @@ class AdminCompanyDetailView extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 24),
-          Text(
-            context.l10n.adminPeople,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink,
-            ),
-          ),
+          TalexSectionTitle(context.l10n.adminPeople),
           const SizedBox(height: 12),
           if (detail.people.isEmpty)
             AdminEmptyState(message: context.l10n.noPeople)
@@ -944,14 +921,7 @@ class AdminCompanyDetailView extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 24),
-          Text(
-            context.l10n.recentActivity,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink,
-            ),
-          ),
+          TalexSectionTitle(context.l10n.recentActivity),
           const SizedBox(height: 12),
           if (detail.activity.isEmpty)
             AdminEmptyState(message: context.l10n.noActivity)
@@ -973,15 +943,8 @@ class _Stat extends StatelessWidget {
   const _Stat(this.label, this.value);
   final String label, value;
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 240,
-    child: DashboardMetricCard(
-      title: label,
-      value: value,
-      caption: '',
-      icon: Icons.insights_outlined,
-    ),
-  );
+  Widget build(BuildContext context) =>
+      TalexStat(label: label, value: value, width: 220);
 }
 
 class AdminProcessesView extends StatelessWidget {
@@ -994,6 +957,7 @@ class AdminProcessesView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminProcesses,
             subtitle: context.l10n.adminCommandSubtitle,
             actions: [
@@ -1005,9 +969,6 @@ class AdminProcessesView extends StatelessWidget {
                   if (!context.mounted) return;
                   await showAdminCreateProcess(context, companies);
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.newProcess),
               ),
@@ -1065,6 +1026,7 @@ class AdminPeopleView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminPeople,
             subtitle: context.l10n.noPeople,
           ),
@@ -1113,6 +1075,7 @@ class AdminAffinityView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminAffinity,
             subtitle: context.l10n.adminCommandSubtitle,
           ),
@@ -1156,6 +1119,7 @@ class AdminPipelineView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminCommercial,
             subtitle: context.l10n.adminCommandSubtitle,
             actions: [
@@ -1167,9 +1131,6 @@ class AdminPipelineView extends StatelessWidget {
                   if (!context.mounted) return;
                   await showAdminCreateDeal(context, companies);
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.newDeal),
               ),
@@ -1221,6 +1182,7 @@ class AdminCultureLeadsView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: l10n.adminCultureLeads,
             subtitle: l10n.adminCultureLeadsSubtitle,
           ),
@@ -1302,8 +1264,8 @@ class _CultureLeadCard extends StatelessWidget {
                       children: [
                         Text(
                           lead.companyName,
-                          style: const TextStyle(
-                            color: AppColors.ink,
+                          style: TextStyle(
+                            color: AppColors.text,
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                           ),
@@ -1316,8 +1278,8 @@ class _CultureLeadCard extends StatelessWidget {
                             if (lead.email.isNotEmpty) lead.email,
                             labels.date(lead.createdAt),
                           ].join(' · '),
-                          style: const TextStyle(
-                            color: AppColors.subtitle,
+                          style: TextStyle(
+                            color: AppColors.textMuted,
                             fontSize: 15,
                           ),
                         ),
@@ -1345,8 +1307,8 @@ class _CultureLeadCard extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   l10n.cultureLeadTraits,
-                  style: const TextStyle(
-                    color: AppColors.muted,
+                  style: TextStyle(
+                    color: AppColors.textDimmer,
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1365,8 +1327,8 @@ class _CultureLeadCard extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   '${l10n.cultureLeadComment}: $comment',
-                  style: const TextStyle(
-                    color: AppColors.subtitle,
+                  style: TextStyle(
+                    color: AppColors.textMuted,
                     fontSize: 14.5,
                     height: 1.4,
                   ),
@@ -1376,8 +1338,8 @@ class _CultureLeadCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   '${l10n.cultureLeadUtm}: $utm',
-                  style: const TextStyle(
-                    color: AppColors.muted,
+                  style: TextStyle(
+                    color: AppColors.textDimmer,
                     fontSize: 13,
                   ),
                 ),
@@ -1438,6 +1400,7 @@ class AdminSalesView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminSales,
             subtitle: context.l10n.adminCommandSubtitle,
             actions: [
@@ -1449,9 +1412,6 @@ class AdminSalesView extends StatelessWidget {
                   if (!context.mounted) return;
                   await showAdminCreateSale(context, companies);
                 },
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.newSale),
               ),
@@ -1512,6 +1472,7 @@ class AdminAnalyticsView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminAnalytics,
             subtitle: context.l10n.adminCommandSubtitle,
           ),
@@ -1563,14 +1524,7 @@ class AdminAnalyticsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    context.l10n.activityByDay,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.ink,
-                    ),
-                  ),
+                  TalexSectionTitle(context.l10n.activityByDay),
                   const SizedBox(height: 16),
                   AdminBarChart(points: analytics.daily),
                 ],
@@ -1593,6 +1547,7 @@ class AdminAlertsView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminAlerts,
             subtitle: context.l10n.adminCommandSubtitle,
           ),
@@ -1647,6 +1602,7 @@ class _AdminXebecViewState extends State<AdminXebecView> {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminXebec,
             subtitle: context.l10n.xebecSubtitle,
           ),
@@ -1661,7 +1617,7 @@ class _AdminXebecViewState extends State<AdminXebecView> {
                       padding: const EdgeInsets.only(bottom: 24),
                       child: Text(
                         context.l10n.xebecEmpty,
-                        style: const TextStyle(color: AppColors.subtitle),
+                        style: TextStyle(color: AppColors.textMuted),
                       ),
                     )
                   else
@@ -1676,8 +1632,8 @@ class _AdminXebecViewState extends State<AdminXebecView> {
                           constraints: const BoxConstraints(maxWidth: 640),
                           decoration: BoxDecoration(
                             color: item.fromXebec
-                                ? const Color(0xFFF0EFFF)
-                                : const Color(0xFFF4F2F3),
+                                ? AppColors.blueDim
+                                : AppColors.surface2,
                             borderRadius: AppRadii.border,
                           ),
                           child: Text(item.text),
@@ -1691,7 +1647,6 @@ class _AdminXebecViewState extends State<AdminXebecView> {
                           controller: _controller,
                           decoration: InputDecoration(
                             hintText: context.l10n.xebecPlaceholder,
-                            border: const OutlineInputBorder(),
                           ),
                           onSubmitted: (value) {
                             if (value.trim().isEmpty) return;
@@ -1710,9 +1665,6 @@ class _AdminXebecViewState extends State<AdminXebecView> {
                           context.read<AdminBloc>().add(AdminXebecAsked(value));
                           _controller.clear();
                         },
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primaryButton,
-                        ),
                         child: Text(context.l10n.askXebec),
                       ),
                     ],
@@ -1736,8 +1688,19 @@ class AdminSettingsView extends StatelessWidget {
       child: Column(
         children: [
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: context.l10n.adminSettings,
             subtitle: context.l10n.adminSettingsSubtitle,
+          ),
+          const SizedBox(height: 24),
+          SettingsSection(
+            title: context.l10n.appearance,
+            description: context.l10n.appearanceDescription,
+            icon: Icons.contrast,
+            child: const Align(
+              alignment: Alignment.centerLeft,
+              child: ThemeModePicker(),
+            ),
           ),
           const SizedBox(height: 24),
           SettingsSection(
@@ -1807,15 +1770,15 @@ class _RoleSelector extends StatelessWidget {
       position: PopupMenuPosition.under,
       offset: const Offset(0, 6),
       elevation: 10,
-      shadowColor: const Color(0x33071326),
-      color: Colors.white,
+      shadowColor: AppColors.shadow,
+      color: AppColors.bgOverlay,
       surfaceTintColor: Colors.transparent,
       padding: EdgeInsets.zero,
       menuPadding: const EdgeInsets.all(6),
       constraints: const BoxConstraints(minWidth: 300, maxWidth: 320),
       shape: RoundedRectangleBorder(
         borderRadius: AppRadii.border,
-        side: const BorderSide(color: AppColors.softBorder),
+        side: BorderSide(color: AppColors.border),
       ),
       onSelected: (value) {
         if (value != role) onChanged(value);
@@ -1832,16 +1795,16 @@ class _RoleSelector extends StatelessWidget {
                   height: 34,
                   decoration: BoxDecoration(
                     color: value == role
-                        ? AppColors.fieldFill
-                        : const Color(0xFFF4F4F6),
+                        ? AppColors.greenDim
+                        : AppColors.surface2,
                     borderRadius: BorderRadius.circular(9),
                   ),
                   child: Icon(
                     icon,
                     size: 18,
                     color: value == role
-                        ? AppColors.dashboardAccent
-                        : AppColors.subtitle,
+                        ? AppColors.green
+                        : AppColors.textMuted,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1851,8 +1814,8 @@ class _RoleSelector extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: AppColors.ink,
+                        style: TextStyle(
+                          color: AppColors.text,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -1860,8 +1823,8 @@ class _RoleSelector extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         help,
-                        style: const TextStyle(
-                          color: AppColors.muted,
+                        style: TextStyle(
+                          color: AppColors.textDimmer,
                           fontSize: 12.5,
                           height: 1.3,
                         ),
@@ -1874,7 +1837,7 @@ class _RoleSelector extends StatelessWidget {
                   Icons.check,
                   size: 18,
                   color: value == role
-                      ? AppColors.dashboardAccent
+                      ? AppColors.green
                       : Colors.transparent,
                 ),
               ],
@@ -1885,10 +1848,12 @@ class _RoleSelector extends StatelessWidget {
         height: 36,
         padding: const EdgeInsets.only(left: 10, right: 6),
         decoration: BoxDecoration(
-          color: elevated ? AppColors.fieldFill : Colors.white,
+          color: elevated ? AppColors.greenDim : AppColors.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: elevated ? AppColors.fieldBorder : AppColors.softBorder,
+            color: elevated
+                ? AppColors.green.withValues(alpha: 0.35)
+                : AppColors.border,
           ),
         ),
         child: Row(
@@ -1897,22 +1862,22 @@ class _RoleSelector extends StatelessWidget {
             Icon(
               current?.$2 ?? Icons.badge_outlined,
               size: 16,
-              color: elevated ? AppColors.dashboardAccent : AppColors.subtitle,
+              color: elevated ? AppColors.green : AppColors.textMuted,
             ),
             const SizedBox(width: 7),
             Text(
               current?.$3 ?? role,
               style: TextStyle(
-                color: elevated ? AppColors.dashboardAccent : AppColors.ink,
+                color: elevated ? AppColors.green : AppColors.text,
                 fontSize: 13.5,
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.keyboard_arrow_down_rounded,
               size: 18,
-              color: AppColors.muted,
+              color: AppColors.textDimmer,
             ),
           ],
         ),
@@ -2004,7 +1969,7 @@ class _FilterChip extends StatelessWidget {
     label: Text(label),
     selected: selected,
     onSelected: (_) => onTap(),
-    selectedColor: const Color(0xFFEAE8EB),
+    showCheckmark: false,
   );
 }
 
@@ -2057,6 +2022,7 @@ class _AdminPersonDetailViewState extends State<AdminPersonDetailView> {
           ),
           const SizedBox(height: 8),
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: person.displayName,
             subtitle: '${person.companyName} · ${person.processName}',
           ),
@@ -2143,7 +2109,7 @@ class AdminProcessDetailView extends StatelessWidget {
             label: Text(context.l10n.backToProcesses),
           ),
           const SizedBox(height: 8),
-          AdminPageHeader(title: process.name, subtitle: process.companyName),
+          AdminPageHeader(eyebrow: context.l10n.adminEyebrow, title: process.name, subtitle: process.companyName),
           const SizedBox(height: 20),
           Wrap(
             spacing: 16,
@@ -2160,14 +2126,7 @@ class AdminProcessDetailView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          Text(
-            context.l10n.adminPeople,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: AppColors.ink,
-            ),
-          ),
+          TalexSectionTitle(context.l10n.adminPeople),
           const SizedBox(height: 12),
           if (people.isEmpty)
             AdminEmptyState(message: context.l10n.noPeople)

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talex_platform/core/data/http_remote_database.dart';
 import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
+import 'package:talex_platform/core/theme/theme_cubit.dart';
 import 'package:talex_platform/core/location/location_catalog.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/features/admin/data/datasources/admin_data_source.dart';
@@ -51,6 +52,7 @@ Future<void> configureDependencies() async {
   getIt
     ..registerLazySingleton(() => prefs)
     ..registerLazySingleton(() => LocaleCubit(getIt()))
+    ..registerLazySingleton(() => ThemeCubit(getIt()))
     ..registerLazySingleton(NotificationService.new)
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => FirebaseFirestore.instance)

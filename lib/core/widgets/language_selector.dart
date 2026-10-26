@@ -19,7 +19,7 @@ class LanguageSelector extends StatelessWidget {
           selected: current == 'es',
           onTap: () => context.read<LocaleCubit>().setLanguageCode('es'),
         ),
-        const Text(' | ', style: TextStyle(color: AppColors.muted)),
+        Text(' | ', style: TextStyle(color: AppColors.textDimmer)),
         _LangChip(
           label: compact ? 'EN' : context.l10n.english,
           selected: current == 'en',
@@ -48,7 +48,7 @@ class _LangChip extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: selected ? AppColors.ink : AppColors.muted,
+          color: selected ? AppColors.text : AppColors.textDimmer,
           fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
           fontSize: 13,
         ),

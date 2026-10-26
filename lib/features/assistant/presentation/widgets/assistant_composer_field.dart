@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:flutter/services.dart';
 import 'package:talex_platform/features/assistant/presentation/assistant_style.dart';
 import 'package:talex_platform/features/assistant/presentation/assistant_text.dart';
@@ -92,19 +93,19 @@ class AssistantComposerFieldState extends State<AssistantComposerField> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: AssistantStyle.line,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: AssistantStyle.line,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
-                        borderSide: const BorderSide(
+                        borderSide: BorderSide(
                           color: AssistantStyle.blue,
                           width: 1.4,
                         ),
@@ -159,9 +160,9 @@ class _SendButton extends StatelessWidget {
     final background = !enabled
         ? AssistantStyle.line
         : busy
-        ? Colors.white
-        : AssistantStyle.blue;
-    final foreground = busy ? AssistantStyle.ink : Colors.white;
+        ? AssistantStyle.wash
+        : AssistantStyle.green;
+    final foreground = busy ? AssistantStyle.ink : AppColors.textOnGreen;
     return Tooltip(
       message: tooltip,
       child: Material(

@@ -4639,6 +4639,144 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Se eliminaron todas las preguntas.'**
   String get adminQuestionsDeletedAll;
+
+  /// No description provided for @authBrandEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Fit cultural'**
+  String get authBrandEyebrow;
+
+  /// No description provided for @authBrandTitleLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Contrata personas que'**
+  String get authBrandTitleLead;
+
+  /// No description provided for @authBrandTitleAccent.
+  ///
+  /// In es, this message translates to:
+  /// **'encajan.'**
+  String get authBrandTitleAccent;
+
+  /// No description provided for @authBrandBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Medimos el fit cultural entre cada candidato y tu empresa, antes de contratar. El fit informa; la persona decide.'**
+  String get authBrandBody;
+
+  /// No description provided for @authBrandExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejemplo'**
+  String get authBrandExample;
+
+  /// No description provided for @authBrandCompany.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresa'**
+  String get authBrandCompany;
+
+  /// No description provided for @authBrandCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Candidato'**
+  String get authBrandCandidate;
+
+  /// No description provided for @authBrandDimCollaboration.
+  ///
+  /// In es, this message translates to:
+  /// **'Colaboración'**
+  String get authBrandDimCollaboration;
+
+  /// No description provided for @authBrandDimAutonomy.
+  ///
+  /// In es, this message translates to:
+  /// **'Autonomía'**
+  String get authBrandDimAutonomy;
+
+  /// No description provided for @authBrandDimStructure.
+  ///
+  /// In es, this message translates to:
+  /// **'Estructura'**
+  String get authBrandDimStructure;
+
+  /// No description provided for @authBrandDimInnovation.
+  ///
+  /// In es, this message translates to:
+  /// **'Innovación'**
+  String get authBrandDimInnovation;
+
+  /// No description provided for @authBrandAligned.
+  ///
+  /// In es, this message translates to:
+  /// **'Alineado'**
+  String get authBrandAligned;
+
+  /// No description provided for @authBrandFriction.
+  ///
+  /// In es, this message translates to:
+  /// **'Fricción'**
+  String get authBrandFriction;
+
+  /// No description provided for @authSignInEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Plataforma TaleX'**
+  String get authSignInEyebrow;
+
+  /// No description provided for @adminEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Administración TaleX'**
+  String get adminEyebrow;
+
+  /// No description provided for @companyEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Espacio de empresa'**
+  String get companyEyebrow;
+
+  /// No description provided for @themeSwitchToLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar a tema claro'**
+  String get themeSwitchToLight;
+
+  /// No description provided for @themeSwitchToDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar a tema oscuro'**
+  String get themeSwitchToDark;
+
+  /// No description provided for @appearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearance;
+
+  /// No description provided for @appearanceDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo se ve TaleX en este dispositivo.'**
+  String get appearanceDescription;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeDark;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
+import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/utils/open_url.dart';
@@ -186,9 +187,6 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                   children: [
                     FilledButton.icon(
                       onPressed: _busy ? null : () => _importCsv(all),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryButton,
-                      ),
                       icon: const Icon(Icons.upload_file_outlined),
                       label: Text(
                         _isCulture
@@ -242,7 +240,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                     children: [
                       for (final (index, question) in visible.indexed) ...[
                         if (index > 0)
-                          const Divider(height: 1, color: AppColors.divider),
+                          Divider(height: 1, color: AppColors.border),
                         _QuestionTile(
                           question: question,
                           compact: compact,
@@ -290,6 +288,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AdminPageHeader(
+                eyebrow: context.l10n.adminEyebrow,
                 title: _isCulture
                     ? l10n.adminCultureSurvey
                     : l10n.adminQuestions,
@@ -301,7 +300,7 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                     TextButton.icon(
                       onPressed: _busy ? null : () => _deleteAll(all.length),
                       style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFFB42318),
+                        foregroundColor: AppColors.danger,
                       ),
                       icon: const Icon(Icons.delete_sweep_outlined),
                       label: Text(l10n.adminQuestionsDeleteAll),
@@ -342,9 +341,6 @@ class _AdminQuestionsViewState extends State<AdminQuestionsView> {
                             (!widget.hideUploadWhenFilled || all.isNotEmpty)
                         ? () => _edit(all)
                         : null,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primaryButton,
-                    ),
                     icon: const Icon(Icons.add),
                     label: Text(l10n.adminQuestionsNew),
                   ),
@@ -374,19 +370,19 @@ class _ProgressOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AbsorbPointer(
     child: ColoredBox(
-      color: const Color(0xB3FBF9FA),
+      color: AppColors.scrim,
       child: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.softBorder),
-            boxShadow: const [
+            color: AppColors.bgOverlay,
+            borderRadius: AppRadii.border,
+            border: Border.all(color: AppColors.borderStrong),
+            boxShadow: [
               BoxShadow(
-                color: Color(0x1F071326),
-                blurRadius: 24,
-                offset: Offset(0, 8),
+                color: AppColors.shadow,
+                blurRadius: 32,
+                offset: Offset(0, 12),
               ),
             ],
           ),
@@ -401,8 +397,8 @@ class _ProgressOverlay extends StatelessWidget {
               const SizedBox(width: 14),
               Text(
                 message,
-                style: const TextStyle(
-                  color: AppColors.ink,
+                style: TextStyle(
+                  color: AppColors.text,
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
@@ -444,8 +440,6 @@ class _Filters extends StatelessWidget {
             hintText: l10n.adminQuestionsSearch,
             prefixIcon: const Icon(Icons.search),
             filled: true,
-            fillColor: Colors.white,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 12),
@@ -467,7 +461,7 @@ class _Filters extends StatelessWidget {
                 all.where((item) => item.active).length,
                 all.length,
               ),
-              style: const TextStyle(color: AppColors.muted, fontSize: 13),
+              style: TextStyle(color: AppColors.textDimmer, fontSize: 13),
             ),
           ],
         ),
@@ -502,7 +496,7 @@ class _QuestionsSkeleton extends StatelessWidget {
               children: [
                 for (var index = 0; index < 6; index++) ...[
                   if (index > 0)
-                    const Divider(height: 1, color: AppColors.divider),
+                    Divider(height: 1, color: AppColors.border),
                   const Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
@@ -558,7 +552,7 @@ class _QuestionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const meta = TextStyle(color: AppColors.muted, fontSize: 13);
+    final meta = TextStyle(color: AppColors.textDimmer, fontSize: 13);
     final limit = question.timeLimitSeconds;
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -575,8 +569,8 @@ class _QuestionTile extends StatelessWidget {
               question.isPair && question.dimensionB.isNotEmpty
                   ? '${question.dimensionA} / ${question.dimensionB}'
                   : question.dimensionA,
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.text,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -584,10 +578,10 @@ class _QuestionTile extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.timer_outlined,
                   size: 15,
-                  color: AppColors.muted,
+                  color: AppColors.textDimmer,
                 ),
                 const SizedBox(width: 3),
                 Text(
@@ -601,8 +595,8 @@ class _QuestionTile extends StatelessWidget {
             if (!question.active)
               Text(
                 l10n.adminQuestionsInactive,
-                style: const TextStyle(
-                  color: Color(0xFFB42318),
+                style: TextStyle(
+                  color: AppColors.danger,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -681,14 +675,14 @@ class _QuestionTile extends StatelessWidget {
         if (letter != null)
           TextSpan(
             text: '$letter  ',
-            style: const TextStyle(
-              color: AppColors.dashboardAccent,
+            style: TextStyle(
+              color: AppColors.blue,
               fontWeight: FontWeight.w700,
             ),
           ),
         TextSpan(text: text),
       ],
     ),
-    style: const TextStyle(color: AppColors.ink, fontSize: 15, height: 1.35),
+    style: TextStyle(color: AppColors.text, fontSize: 15, height: 1.35),
   );
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:talex_platform/core/constants/app_assets.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
-import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/di/injection.dart';
+import 'package:talex_platform/core/theme/talex_theme.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
 import 'package:talex_platform/core/widgets/content_width.dart';
 import 'package:talex_platform/core/widgets/language_selector.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
+import 'package:talex_platform/core/widgets/talex_logo.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/talent/domain/entities/talent_entities.dart';
 import 'package:talex_platform/features/talent/presentation/bloc/talent_bloc.dart';
@@ -50,12 +52,14 @@ class RespondentShell extends StatelessWidget {
   }
 
   Widget _scaffold(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.dashboardBackground,
     appBar: AppBar(
-      backgroundColor: AppColors.background,
-      title: Image.asset(AppAssets.talexLogoHorizontal, height: 28),
+      toolbarHeight: 64,
+      title: const TalexLogo(width: 110, height: 32),
       actions: [
         const LanguageSelector(compact: true),
+        const SizedBox(width: 12),
+        const ThemeToggleButton(size: 36),
+        const SizedBox(width: 4),
         TextButton(
           onPressed: demo != null
               ? onDemoSignOut
@@ -192,109 +196,118 @@ class _RespondentSurveyViewState extends State<RespondentSurveyView> {
       );
     }
 
-    return ContentWidth(
-      maxWidth: 720,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.questionProgress(_index + 1, ids.length),
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.subtitle),
-            ),
-            const SizedBox(height: 12),
-            LinearProgressIndicator(value: (_index + 1) / ids.length),
-            const SizedBox(height: 24),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      assessmentInstruction(l10n, item),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        height: 1.4,
-                        color: AppColors.ink,
-                      ),
+    // El formulario de preguntas conserva su diseño claro original.
+    return Theme(
+      data: talexLegacyTheme(),
+      child: ColoredBox(
+        color: LegacyColors.background,
+        child: ContentWidth(
+          maxWidth: 720,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.questionProgress(_index + 1, ids.length),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: LegacyColors.subtitle),
+                ),
+                const SizedBox(height: 12),
+                LinearProgressIndicator(value: (_index + 1) / ids.length),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          assessmentInstruction(l10n, item),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            height: 1.4,
+                            color: LegacyColors.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        if (item.isPair)
+                          PairAnswer(
+                            statementA: item.statementA.of(languageCode),
+                            statementB: item.statementB!.of(languageCode),
+                            labels: labels,
+                            selected: selected,
+                            onSelected: pick,
+                            hint: l10n.assessmentPairScaleHint,
+                          )
+                        else ...[
+                          _StatementCard(
+                            text: item.statementA.of(languageCode),
+                          ),
+                          const SizedBox(height: 16),
+                          FrequencyAnswer(
+                            labels: labels,
+                            selected: selected,
+                            onSelected: pick,
+                          ),
+                        ],
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    if (item.isPair)
-                      PairAnswer(
-                        statementA: item.statementA.of(languageCode),
-                        statementB: item.statementB!.of(languageCode),
-                        labels: labels,
-                        selected: selected,
-                        onSelected: pick,
-                        hint: l10n.assessmentPairScaleHint,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    OutlinedButton(
+                      onPressed: _index == 0
+                          ? null
+                          : () => setState(() => _index -= 1),
+                      child: Text(l10n.goBack),
+                    ),
+                    const Spacer(),
+                    if (_index == ids.length - 1)
+                      FilledButton(
+                        onPressed: complete && !_finishing
+                            ? () {
+                                if (_isDemo) {
+                                  setState(() => _demoFinished = true);
+                                  return;
+                                }
+                                setState(() => _finishing = true);
+                                context.read<TalentBloc>().add(
+                                  TalentEvaluationCompleted(
+                                    session.candidate.id,
+                                    locale: Localizations.localeOf(
+                                      context,
+                                    ).languageCode,
+                                  ),
+                                );
+                              }
+                            : null,
+                        child: _finishing
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(l10n.finish),
                       )
-                    else ...[
-                      _StatementCard(text: item.statementA.of(languageCode)),
-                      const SizedBox(height: 16),
-                      FrequencyAnswer(
-                        labels: labels,
-                        selected: selected,
-                        onSelected: pick,
+                    else
+                      FilledButton(
+                        onPressed: selected == null
+                            ? null
+                            : () => setState(() => _index += 1),
+                        child: Text(l10n.next),
                       ),
-                    ],
                   ],
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                OutlinedButton(
-                  onPressed: _index == 0
-                      ? null
-                      : () => setState(() => _index -= 1),
-                  child: Text(l10n.goBack),
-                ),
-                const Spacer(),
-                if (_index == ids.length - 1)
-                  FilledButton(
-                    onPressed: complete && !_finishing
-                        ? () {
-                            if (_isDemo) {
-                              setState(() => _demoFinished = true);
-                              return;
-                            }
-                            setState(() => _finishing = true);
-                            context.read<TalentBloc>().add(
-                              TalentEvaluationCompleted(
-                                session.candidate.id,
-                                locale: Localizations.localeOf(
-                                  context,
-                                ).languageCode,
-                              ),
-                            );
-                          }
-                        : null,
-                    child: _finishing
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(l10n.finish),
-                  )
-                else
-                  FilledButton(
-                    onPressed: selected == null
-                        ? null
-                        : () => setState(() => _index += 1),
-                    child: Text(l10n.next),
-                  ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -316,7 +329,11 @@ class _StatementCard extends StatelessWidget {
     child: Text(
       text,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 16, height: 1.45, color: AppColors.ink),
+      style: const TextStyle(
+        fontSize: 16,
+        height: 1.45,
+        color: LegacyColors.ink,
+      ),
     ),
   );
 }
@@ -345,9 +362,6 @@ class _LandingViewState extends State<_LandingView> {
           actions: [
             FilledButton(
               onPressed: () => Navigator.pop(context),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primaryButton,
-              ),
               child: Text(l10n.respondentWelcomeAction),
             ),
           ],
@@ -367,123 +381,147 @@ class _LandingViewState extends State<_LandingView> {
     final company = session.company;
     final kind = session.candidate.assessmentKind;
     final total = AssessmentCatalog.allIds.length;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(32),
-      child: ContentWidth(
-        maxWidth: 720,
-        child: Column(
-          children: [
-            Text(
-              l10n.respondentHello(name.split(' ').first),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: AppColors.ink,
+    return TalexGlow(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 48),
+        child: ContentWidth(
+          maxWidth: 680,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TalexEyebrow(l10n.assessmentKindAffinity),
+              const SizedBox(height: 16),
+              Text(
+                l10n.respondentHello(name.split(' ').first),
+                style: TextStyle(
+                  fontSize: 44,
+                  height: 1.02,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -2,
+                  color: AppColors.text,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: AppRadii.border,
-                border: Border.all(color: const Color(0xFFD1D1D6)),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    l10n.assessmentKindLabel,
-                    style: const TextStyle(color: AppColors.muted),
-                  ),
-                  const SizedBox(height: 8),
-                  Chip(label: Text(l10n.assessmentKindAffinity)),
-                  const SizedBox(height: 20),
-                  if (company != null) ...[
-                    Text(
-                      l10n.sentByCompany,
-                      style: const TextStyle(color: AppColors.muted),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      company.name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.ink,
-                      ),
-                    ),
-                    if (company.description?.trim().isNotEmpty == true) ...[
-                      const SizedBox(height: 8),
+              const SizedBox(height: 32),
+              TalexPanel(
+                padding: const EdgeInsets.all(28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (company != null) ...[
                       Text(
-                        company.description!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          height: 1.45,
-                          color: AppColors.subtitle,
+                        l10n.sentByCompany,
+                        style: TextStyle(
+                          color: AppColors.textDimmer,
+                          fontSize: 13,
                         ),
                       ),
-                    ],
-                    const SizedBox(height: 16),
-                  ],
-                  Text(
-                    session.candidate.vacancyName,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.respondentLikertHint,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(height: 1.45, color: AppColors.ink),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.respondentDuration,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(height: 1.45, color: AppColors.ink),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.respondentQuestionCount(total),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(height: 1.45, color: AppColors.ink),
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () {
-                      if (kind != AssessmentKind.affinity) {
-                        context.read<TalentBloc>().add(
-                          TalentAssessmentKindSelected(
-                            candidateId: session.candidate.id,
-                            kind: AssessmentKind.affinity,
+                      const SizedBox(height: 6),
+                      Text(
+                        company.name,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.6,
+                          color: AppColors.text,
+                        ),
+                      ),
+                      if (company.description?.trim().isNotEmpty == true) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          company.description!,
+                          style: TextStyle(
+                            height: 1.65,
+                            color: AppColors.textMuted,
                           ),
-                        );
-                      }
-                      onStart();
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primaryButton,
-                      minimumSize: const Size.fromHeight(48),
+                        ),
+                      ],
+                      const SizedBox(height: 20),
+                    ],
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        TalexPill(
+                          session.candidate.vacancyName,
+                          icon: Icons.work_outline,
+                        ),
+                        TalexPill(
+                          l10n.respondentQuestionCount(total),
+                          tone: TalexTone.neutral,
+                          icon: Icons.format_list_numbered,
+                        ),
+                      ],
                     ),
-                    child: Text(l10n.startAssessment),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    const TalexDivider(),
+                    const SizedBox(height: 24),
+                    _InfoLine(
+                      icon: Icons.tune,
+                      text: l10n.respondentLikertHint,
+                    ),
+                    const SizedBox(height: 14),
+                    _InfoLine(
+                      icon: Icons.schedule_outlined,
+                      text: l10n.respondentDuration,
+                    ),
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      height: 50,
+                      child: FilledButton(
+                        onPressed: () {
+                          if (kind != AssessmentKind.affinity) {
+                            context.read<TalentBloc>().add(
+                              TalentAssessmentKindSelected(
+                                candidateId: session.candidate.id,
+                                kind: AssessmentKind.affinity,
+                              ),
+                            );
+                          }
+                          onStart();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(l10n.startAssessment),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.arrow_forward, size: 18),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 28),
-            Image.asset(AppAssets.talexMarca, fit: BoxFit.fitWidth),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class _InfoLine extends StatelessWidget {
+  const _InfoLine({required this.icon, required this.text});
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      TalexIconBadge(icon, size: 32),
+      const SizedBox(width: 14),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(
+            text,
+            style: TextStyle(height: 1.55, color: AppColors.textMuted),
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 class _FinishedView extends StatelessWidget {
@@ -497,55 +535,66 @@ class _FinishedView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final requested = session.candidate.resultRequested;
-    return ContentWidth(
-      maxWidth: 640,
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              l10n.assessmentFinishedTitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: AppColors.ink,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.assessmentFinishedBody,
-              textAlign: TextAlign.center,
-              style: const TextStyle(height: 1.45, color: AppColors.subtitle),
-            ),
-            const SizedBox(height: 24),
-            if (requested)
-              Text(
-                l10n.surveyResultRequested,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  height: 1.4,
-                  color: AppColors.ink,
-                ),
-              )
-            else
-              FilledButton(
-                onPressed:
-                    onRequestResult ??
-                    () => context.read<TalentBloc>().add(
-                      TalentSurveyResultRequested(session.candidate.id),
+    return TalexGlow(
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ContentWidth(
+            maxWidth: 560,
+            child: TalexPanel(
+              padding: const EdgeInsets.fromLTRB(32, 40, 32, 32),
+              child: Column(
+                children: [
+                  const TalexIconBadge(
+                    Icons.check,
+                    tone: TalexTone.green,
+                    size: 64,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.assessmentFinishedTitle,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      height: 1.1,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -1,
+                      color: AppColors.text,
                     ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                  minimumSize: const Size.fromHeight(48),
-                ),
-                child: Text(l10n.surveyResultRequest),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    l10n.assessmentFinishedBody,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      height: 1.65,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  if (requested)
+                    TalexPill(
+                      l10n.surveyResultRequested,
+                      tone: TalexTone.green,
+                      icon: Icons.mark_email_read_outlined,
+                    )
+                  else
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        onPressed:
+                            onRequestResult ??
+                            () => context.read<TalentBloc>().add(
+                              TalentSurveyResultRequested(session.candidate.id),
+                            ),
+                        child: Text(l10n.surveyResultRequest),
+                      ),
+                    ),
+                ],
               ),
-            const SizedBox(height: 28),
-            Image.asset(AppAssets.talexMarca, fit: BoxFit.fitWidth),
-          ],
+            ),
+          ),
         ),
       ),
     );

@@ -11,9 +11,7 @@ final class AuthRepositoryImpl implements AuthRepository {
 
   final AuthRemoteDataSource _source;
 
-  Future<Either<Failure, T>> _guard<T>(
-    Future<T> Function() action,
-  ) async {
+  Future<Either<Failure, T>> _guard<T>(Future<T> Function() action) async {
     try {
       return Right(await action());
     } on ServerException catch (error) {
@@ -35,24 +33,17 @@ final class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, AuthUser>> signIn({
     required String email,
     required String password,
-  }) =>
-      _guard(
-        () async =>
-            (await _source.signIn(
-              email: email,
-              password: password,
-            ))
-                .toEntity(),
-      );
+  }) => _guard(
+    () async =>
+        (await _source.signIn(email: email, password: password)).toEntity(),
+  );
 
   @override
   Future<Either<Failure, AuthUser>> signInWithCustomToken({
     required String token,
-  }) =>
-      _guard(
-        () async =>
-            (await _source.signInWithCustomToken(token)).toEntity(),
-      );
+  }) => _guard(
+    () async => (await _source.signInWithCustomToken(token)).toEntity(),
+  );
 
   @override
   Future<Either<Failure, AuthUser>> signInWithGoogle() =>
@@ -64,29 +55,26 @@ final class AuthRepositoryImpl implements AuthRepository {
     required String password,
     String? displayName,
     String? companyName,
-  }) =>
-      _guard(
-        () async =>
-            (await _source.signUp(
-              email: email,
-              password: password,
-              displayName: displayName,
-              companyName: companyName,
-            ))
-                .toEntity(),
-      );
+  }) => _guard(
+    () async => (await _source.signUp(
+      email: email,
+      password: password,
+      displayName: displayName,
+      companyName: companyName,
+    )).toEntity(),
+  );
 
   @override
   Future<Either<Failure, Unit>> signOut() => _guard(() async {
-        await _source.signOut();
-        return unit;
-      });
+    await _source.signOut();
+    return unit;
+  });
 
   @override
   Future<Either<Failure, Unit>> discardCurrentUser() => _guard(() async {
-        await _source.discardCurrentUser();
-        return unit;
-      });
+    await _source.discardCurrentUser();
+    return unit;
+  });
 
   @override
   Future<Either<Failure, Unit>> sendPasswordResetEmail(String email) =>

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
 
 enum AppNotificationType { success, error, info }
@@ -51,14 +52,11 @@ class _CornerNotification extends StatelessWidget {
   Widget build(BuildContext context) {
     final (color, icon) = switch (type) {
       AppNotificationType.success => (
-        const Color(0xFF18794E),
+        AppColors.good,
         Icons.check_circle_outline,
       ),
-      AppNotificationType.error => (
-        const Color(0xFFB42318),
-        Icons.error_outline,
-      ),
-      AppNotificationType.info => (const Color(0xFF1E2A3D), Icons.info_outline),
+      AppNotificationType.error => (AppColors.danger, Icons.error_outline),
+      AppNotificationType.info => (AppColors.blue, Icons.info_outline),
     };
     return Material(
       color: Colors.transparent,
@@ -75,13 +73,14 @@ class _CornerNotification extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 400),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: color,
+                color: AppColors.bgOverlay,
                 borderRadius: AppRadii.border,
-                boxShadow: const [
+                border: Border.all(color: color.withValues(alpha: 0.45)),
+                boxShadow: [
                   BoxShadow(
-                    color: Color(0x33000000),
-                    blurRadius: 18,
-                    offset: Offset(0, 6),
+                    color: AppColors.shadow,
+                    blurRadius: 32,
+                    offset: Offset(0, 12),
                   ),
                 ],
               ),
@@ -93,15 +92,15 @@ class _CornerNotification extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(icon, color: Colors.white, size: 21),
+                    Icon(icon, color: color, size: 20),
                     const SizedBox(width: 10),
                     Flexible(
                       child: Text(
                         message,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColors.text,
                           fontSize: 14,
-                          height: 1.3,
+                          height: 1.45,
                         ),
                       ),
                     ),

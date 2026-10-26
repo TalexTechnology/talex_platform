@@ -81,8 +81,8 @@ class _AssistantMessageTileState extends State<AssistantMessageTile>
           maxWidth: math.min(520, MediaQuery.sizeOf(context).width * 0.82),
         ),
         child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: AssistantStyle.blue,
+          decoration: BoxDecoration(
+            color: AssistantStyle.bubble,
             borderRadius: AssistantStyle.userRadius,
           ),
           child: Padding(

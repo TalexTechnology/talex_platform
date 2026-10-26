@@ -49,7 +49,7 @@ class AssistantMarkdownView extends StatelessWidget {
       MdQuote(:final spans) => Container(
         margin: EdgeInsets.only(bottom: bottom),
         padding: const EdgeInsets.only(left: 12),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
             left: BorderSide(color: AssistantStyle.green, width: 3),
           ),
@@ -62,7 +62,7 @@ class AssistantMarkdownView extends StatelessWidget {
       ),
       MdRule() => Padding(
         padding: EdgeInsets.only(bottom: bottom),
-        child: const Divider(height: 1, color: AssistantStyle.line),
+        child: Divider(height: 1, color: AssistantStyle.line),
       ),
       MdListBlock(:final ordered, :final items) => Padding(
         padding: EdgeInsets.only(bottom: bottom),
@@ -113,7 +113,7 @@ class _CodeBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const style = TextStyle(
+    final style = TextStyle(
       fontFamily: 'monospace',
       fontFamilyFallback: ['Consolas', 'Courier New'],
       fontSize: 13,
@@ -174,7 +174,7 @@ class _TableBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const cellStyle = AssistantStyle.body;
+    final cellStyle = AssistantStyle.body;
     final width = math.max(header.length, 1);
     final body = [header, for (final row in rows) _pad(row, width)];
     final height = body.fold<double>(0, (sum, row) {
@@ -204,7 +204,7 @@ class _TableBlock extends StatelessWidget {
                   for (var column = 0; column < width; column++)
                     column: const IntrinsicColumnWidth(),
                 },
-                border: const TableBorder(
+                border: TableBorder(
                   horizontalInside: BorderSide(color: AssistantStyle.line),
                   bottom: BorderSide(color: AssistantStyle.line),
                 ),
@@ -212,7 +212,7 @@ class _TableBlock extends StatelessWidget {
                   for (var rowIndex = 0; rowIndex < body.length; rowIndex++)
                     TableRow(
                       decoration: rowIndex == 0
-                          ? const BoxDecoration(color: AssistantStyle.wash)
+                          ? BoxDecoration(color: AssistantStyle.wash)
                           : null,
                       children: [
                         for (final cell in body[rowIndex])
