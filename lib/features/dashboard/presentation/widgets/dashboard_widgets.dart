@@ -159,7 +159,7 @@ class DashboardTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     height: 68,
-    padding: const EdgeInsets.symmetric(horizontal: 24),
+    padding: const EdgeInsets.fromLTRB(24, 0, 16, 0),
     decoration: BoxDecoration(
       color: AppColors.bg,
       border: Border(bottom: BorderSide(color: AppColors.border)),
@@ -195,9 +195,9 @@ class DashboardTopBar extends StatelessWidget {
         const Spacer(),
         const SizedBox(width: 16),
         ?trailing,
-        const SizedBox(width: 10),
+        const SizedBox(width: 16),
         const ThemeToggleButton(),
-        const SizedBox(width: 2),
+        const SizedBox(width: 8),
         IconButton(
           onPressed: onNotifications,
           icon: const Icon(Icons.notifications_none),
@@ -232,18 +232,22 @@ class DashboardTopBar extends StatelessWidget {
         //   ),
         //   const SizedBox(width: 6),
         // ],
+        const SizedBox(width: 8),
+        // Con child (no icon) el menú no agrega relleno: el avatar queda
+        // alineado con el borde derecho de la barra.
         PopupMenuButton<void>(
           tooltip: signOutLabel,
-          offset: const Offset(0, 48),
-          icon: Container(
-            width: 34,
-            height: 34,
+          offset: const Offset(0, 52),
+          padding: EdgeInsets.zero,
+          child: Container(
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: AppColors.blueDim,
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.borderStrong),
             ),
-            child: Icon(Icons.person, size: 18, color: AppColors.blue),
+            child: Icon(Icons.person, size: 20, color: AppColors.blue),
           ),
           itemBuilder: (_) => [
             PopupMenuItem(

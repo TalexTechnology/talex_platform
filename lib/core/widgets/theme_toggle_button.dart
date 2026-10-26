@@ -36,6 +36,9 @@ class ThemeToggleButton extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Builder(
             builder: (context) => InkWell(
+              // La captura de pantalla empieza al presionar, no al soltar.
+              onTapDown: (_) => TalexThemeSwitcher.of(context).prepare(),
+              onTapCancel: () => TalexThemeSwitcher.of(context).cancelPrepare(),
               onTap: () => TalexThemeSwitcher.of(
                 context,
               ).toggle(origin: themeOriginOf(context)),
