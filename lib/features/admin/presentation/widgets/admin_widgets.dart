@@ -81,8 +81,9 @@ class AdminLabels {
   String money(double value) =>
       NumberFormat.simpleCurrency(name: 'USD', decimalDigits: 0).format(value);
 
-  String date(DateTime value) =>
-      DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(value);
+  String date(DateTime value) => DateFormat.yMMMd(
+    Localizations.localeOf(context).toLanguageTag(),
+  ).format(value);
 }
 
 class AdminPageHeader extends StatelessWidget {
@@ -139,7 +140,11 @@ class AdminEmptyState extends StatelessWidget {
 }
 
 class AdminErrorState extends StatelessWidget {
-  const AdminErrorState({super.key, required this.message, required this.onRetry});
+  const AdminErrorState({
+    super.key,
+    required this.message,
+    required this.onRetry,
+  });
   final String message;
   final VoidCallback onRetry;
   @override
@@ -400,7 +405,11 @@ class CompanyLogoView extends StatelessWidget {
       padding: EdgeInsets.all(src.isEmpty ? 0 : size * 0.1),
       clipBehavior: Clip.antiAlias,
       child: src.isEmpty
-          ? Icon(Icons.apartment_outlined, color: AppColors.textDimmer, size: size * 0.4)
+          ? Icon(
+              Icons.apartment_outlined,
+              color: AppColors.textDimmer,
+              size: size * 0.4,
+            )
           : Image.network(
               src,
               fit: BoxFit.contain,
@@ -473,10 +482,7 @@ class CompanyIdentityCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text(
                     description,
-                    style: TextStyle(
-                      height: 1.7,
-                      color: AppColors.textMuted,
-                    ),
+                    style: TextStyle(height: 1.7, color: AppColors.textMuted),
                   ),
                 ],
                 if (website != null) ...[

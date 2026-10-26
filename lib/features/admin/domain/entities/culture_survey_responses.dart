@@ -1,19 +1,19 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 
-// Respuestas anónimas de la encuesta de cultura de una empresa
-// (rpc culture_survey_responses). No hay datos de quién respondió: cada
-// respuesta es solo el mapa código de pregunta → valor, en orden aleatorio.
+// Respuestas de la encuesta de cultura de una empresa
+// (GET /api/cultura/{id}/respuestas).
+//
+// Son anónimas: al leerlas se descartan el id de sesión y la fecha, y el orden
+// se baraja. De cada persona solo queda su grupo (líder o empleado) y el mapa
+// código de pregunta → valor.
 
 class CultureChoice extends Equatable {
   const CultureChoice({required this.id, required this.label});
 
   final String id;
   final String label;
-
-  factory CultureChoice.fromMap(Map<String, dynamic> map) => CultureChoice(
-    id: '${map['id'] ?? ''}',
-    label: '${map['label'] ?? map['id'] ?? ''}',
-  );
 
   @override
   List<Object?> get props => [id, label];
@@ -25,7 +25,6 @@ class CultureSurveyQuestion extends Equatable {
     required this.statement,
     required this.format,
     this.name,
-    this.sectionTitle,
     this.options = const [],
     this.items = const [],
     this.scale = const [],
@@ -35,24 +34,12 @@ class CultureSurveyQuestion extends Equatable {
   final String statement;
   final String format;
   final String? name;
-  final String? sectionTitle;
   final List<CultureChoice> options;
   final List<CultureChoice> items;
   final List<CultureChoice> scale;
 
-  factory CultureSurveyQuestion.fromMap(Map<String, dynamic> map) =>
-      CultureSurveyQuestion(
-        code: '${map['code'] ?? ''}',
-        statement: '${map['statement'] ?? ''}',
-        format: '${map['format'] ?? ''}',
-        name: _text(map['name']),
-        sectionTitle: _text(map['sectionTitle']),
-        options: _choices(map['options']),
-        items: _choices(map['items']),
-        scale: _choices(map['scale']),
-      );
-
-  /// Etiqueta legible de una opción o ítem; si ya no existe, el id.
+  /// Etiqueta legible de una opción, ítem o punto de escala; si no se
+  /// conoce, el id.
   String labelOf(String id) {
     for (final choice in [...options, ...items, ...scale]) {
       if (choice.id == id) return choice.label;
@@ -62,6 +49,20 @@ class CultureSurveyQuestion extends Equatable {
 
   @override
   List<Object?> get props => [code, statement, format, options, items, scale];
+}
+
+/// Respuesta anónima de una persona.
+class CultureResponse extends Equatable {
+  const CultureResponse({required this.answers, this.group});
+
+  /// "lider" o "empleado", según cómo se describió la persona.
+  final String? group;
+
+  /// Código de pregunta → valor tal como se guardó.
+  final Map<String, Map<String, dynamic>> answers;
+
+  @override
+  List<Object?> get props => [group, answers];
 }
 
 /// Conteo de una opción dentro de una pregunta.
@@ -79,36 +80,66 @@ class CultureSurveyResponses extends Equatable {
   const CultureSurveyResponses({
     required this.questions,
     required this.responses,
-    this.title,
   });
 
-  final String? title;
-  final List<CultureSurveyQuestion> questions;
+  static const leaders = 'lider';
+  static const employees = 'empleado';
 
-  /// Una entrada por persona: código de pregunta → valor tal como se guardó.
-  final List<Map<String, dynamic>> responses;
+  final List<CultureSurveyQuestion> questions;
+  final List<CultureResponse> responses;
 
   int get respondentCount => responses.length;
 
-  factory CultureSurveyResponses.fromMap(Map<String, dynamic> map) =>
-      CultureSurveyResponses(
-        title: _text(map['title']),
-        questions: [
-          for (final item in _list(map['questions']))
-            CultureSurveyQuestion.fromMap(item),
-        ],
-        responses: [
-          for (final item in _list(map['responses']))
-            item['answers'] is Map
-                ? Map<String, dynamic>.from(item['answers'] as Map)
-                : const <String, dynamic>{},
-        ],
+  int countOf(String group) =>
+      responses.where((response) => response.group == group).length;
+
+  /// Solo las respuestas de [group] (o todas si es null).
+  CultureSurveyResponses only(String? group) => group == null
+      ? this
+      : CultureSurveyResponses(
+          questions: questions,
+          responses: [
+            for (final response in responses)
+              if (response.group == group) response,
+          ],
+        );
+
+  factory CultureSurveyResponses.fromApi(
+    Map<String, dynamic> map, {
+    Random? random,
+  }) {
+    final builders = <String, _QuestionBuilder>{};
+    final responses = <CultureResponse>[];
+    for (final person in _list(map['respondentes'])) {
+      final answers = <String, Map<String, dynamic>>{};
+      for (final item in _list(person['respuestas'])) {
+        final code = '${item['code'] ?? ''}';
+        if (code.isEmpty) continue;
+        final builder = builders.putIfAbsent(
+          code,
+          () => _QuestionBuilder(item),
+        );
+        final value = item['value'] is Map
+            ? Map<String, dynamic>.from(item['value'] as Map)
+            : <String, dynamic>{};
+        builder.learn(value, '${item['lectura'] ?? ''}');
+        answers[code] = value;
+      }
+      final group = '${person['grupo'] ?? ''}'.trim();
+      responses.add(
+        CultureResponse(answers: answers, group: group.isEmpty ? null : group),
       );
+    }
+    // El orden de llegada no debe delatar a nadie.
+    responses.shuffle(random ?? Random.secure());
+    return CultureSurveyResponses(
+      questions: [for (final builder in builders.values) builder.build()],
+      responses: responses,
+    );
+  }
 
   List<Map<String, dynamic>> _answersTo(CultureSurveyQuestion question) => [
-    for (final response in responses)
-      if (response[question.code] is Map)
-        Map<String, dynamic>.from(response[question.code] as Map),
+    for (final response in responses) ?response.answers[question.code],
   ];
 
   int answeredCount(CultureSurveyQuestion question) =>
@@ -141,21 +172,14 @@ class CultureSurveyResponses extends Equatable {
   /// punto de la escala.
   List<(String, List<CultureTally>)> coherence(CultureSurveyQuestion question) {
     final answers = _answersTo(question);
-    final itemIds = question.items.isNotEmpty
-        ? [for (final item in question.items) item.id]
-        : {
-            for (final answer in answers)
-              if (answer['ratings'] is Map)
-                ...(answer['ratings'] as Map).keys.map((key) => '$key'),
-          }.toList();
     return [
-      for (final id in itemIds)
+      for (final item in question.items)
         (
-          question.labelOf(id),
+          item.label,
           _tally(question, [
             for (final answer in answers)
               if (answer['ratings'] is Map)
-                '${(answer['ratings'] as Map)[id] ?? ''}',
+                '${(answer['ratings'] as Map)[item.id] ?? ''}',
           ], order: question.scale),
         ),
     ];
@@ -167,16 +191,9 @@ class CultureSurveyResponses extends Equatable {
     int countIn(String key, String id) => answers
         .where((a) => a[key] is List && (a[key] as List).contains(id))
         .length;
-    final ids = question.options.isNotEmpty
-        ? [for (final option in question.options) option.id]
-        : {
-            for (final a in answers)
-              for (final key in const ['yes', 'no'])
-                if (a[key] is List) ...(a[key] as List).map((id) => '$id'),
-          }.toList();
     return [
-      for (final id in ids)
-        (question.labelOf(id), countIn('yes', id), countIn('no', id)),
+      for (final option in question.options)
+        (option.label, countIn('yes', option.id), countIn('no', option.id)),
     ]..sort((a, b) => (b.$2 - b.$3).compareTo(a.$2 - a.$3));
   }
 
@@ -188,13 +205,9 @@ class CultureSurveyResponses extends Equatable {
   ];
 
   /// Resumen en texto de la respuesta de una persona a una pregunta.
-  String describe(
-    CultureSurveyQuestion question,
-    Map<String, dynamic> response,
-  ) {
-    final raw = response[question.code];
-    if (raw is! Map) return '';
-    final answer = Map<String, dynamic>.from(raw);
+  String describe(CultureSurveyQuestion question, CultureResponse response) {
+    final answer = response.answers[question.code];
+    if (answer == null) return '';
     String labels(Object? ids) =>
         ids is List ? ids.map((id) => question.labelOf('$id')).join(', ') : '';
     return switch (question.format) {
@@ -229,11 +242,9 @@ class CultureSurveyResponses extends Equatable {
       if (id.isEmpty) continue;
       counts[id] = (counts[id] ?? 0) + 1;
     }
-    final base =
-        order ?? (question.options.isNotEmpty ? question.options : null);
-    if (base != null) {
-      // Todas las opciones, incluso las que nadie eligió, en su orden.
-      final ids = [for (final choice in base) choice.id];
+    if (order != null && order.isNotEmpty) {
+      // Toda la escala, incluso los puntos que nadie eligió, en su orden.
+      final ids = [for (final choice in order) choice.id];
       for (final id in counts.keys) {
         if (!ids.contains(id)) ids.add(id);
       }
@@ -249,7 +260,115 @@ class CultureSurveyResponses extends Equatable {
   }
 
   @override
-  List<Object?> get props => [title, questions, responses];
+  List<Object?> get props => [questions, responses];
+}
+
+// Arma una pregunta a partir de las respuestas. El API no manda el catálogo de
+// opciones, así que las etiquetas se aprenden de la "lectura" de cada
+// respuesta: en más/menos probable y sí/no, la dimensión entre paréntesis.
+class _QuestionBuilder {
+  _QuestionBuilder(Map<String, dynamic> item)
+    : code = '${item['code']}',
+      name = _text(item['name']),
+      statement = '${item['statement'] ?? ''}',
+      format = '${item['format'] ?? ''}';
+
+  final String code;
+  final String? name;
+  final String statement;
+  final String format;
+  final _options = <String, String>{};
+  final _items = <String, String>{};
+  final _scale = <String, String>{};
+
+  static const _scaleOrder = ['vive', 'medias', 'pared'];
+  static final _parenthetical = RegExp(r'\(([^()]*)\)');
+
+  void learn(Map<String, dynamic> value, String reading) {
+    switch (format) {
+      case 'single':
+        final id = '${value['value'] ?? ''}';
+        if (id.isNotEmpty && reading.isNotEmpty) _options[id] = reading;
+      case 'most_least':
+        final parts = reading.split('Menos probable:');
+        _learnLast('${value['most'] ?? ''}', parts.first);
+        if (parts.length > 1) {
+          _learnLast(
+            '${value['least'] ?? ''}',
+            parts[1].split('Pronóstico').first,
+          );
+        }
+      case 'pick_yes_no':
+        final parts = reading.split('No espere:');
+        _learnAll(value['yes'], parts.first);
+        if (parts.length > 1) _learnAll(value['no'], parts[1]);
+      case 'value_coherence':
+        for (final item in _list(value['items'])) {
+          final id = '${item['id'] ?? ''}';
+          if (id.isNotEmpty) _items[id] = '${item['label'] ?? id}';
+        }
+        final ratings = value['ratings'] is Map
+            ? Map<String, dynamic>.from(value['ratings'] as Map)
+            : const <String, dynamic>{};
+        for (final pair in reading.split(';')) {
+          final split = pair.indexOf(':');
+          if (split < 0) continue;
+          final label = pair.substring(0, split).trim();
+          final scaleLabel = pair.substring(split + 1).trim();
+          final itemId = _items.entries
+              .where((entry) => entry.value == label)
+              .map((entry) => entry.key)
+              .firstOrNull;
+          final scaleId = itemId == null ? null : ratings[itemId];
+          if (scaleId != null) _scale['$scaleId'] = scaleLabel;
+        }
+    }
+  }
+
+  void _learnLast(String id, String text) {
+    final matches = _parenthetical.allMatches(text).toList();
+    if (id.isEmpty || matches.isEmpty) return;
+    _options[id] = matches.last.group(1)!.trim();
+  }
+
+  void _learnAll(Object? ids, String text) {
+    if (ids is! List) return;
+    final labels = [
+      for (final match in _parenthetical.allMatches(text)) match.group(1)!,
+    ];
+    for (final (index, id) in ids.indexed) {
+      if (index < labels.length) _options['$id'] = labels[index].trim();
+    }
+  }
+
+  CultureSurveyQuestion build() {
+    final scaleIds = _scale.keys.toList()
+      ..sort((a, b) {
+        int rank(String id) {
+          final index = _scaleOrder.indexOf(id);
+          return index < 0 ? _scaleOrder.length : index;
+        }
+
+        return rank(a).compareTo(rank(b));
+      });
+    return CultureSurveyQuestion(
+      code: code,
+      name: name,
+      statement: statement,
+      format: format,
+      options: [
+        for (final entry in _options.entries)
+          CultureChoice(id: entry.key, label: entry.value),
+      ],
+      items: [
+        for (final entry in _items.entries)
+          CultureChoice(id: entry.key, label: entry.value),
+      ],
+      scale: [
+        for (final id in scaleIds) CultureChoice(id: id, label: _scale[id]!),
+      ],
+    );
+  }
 }
 
 String? _text(Object? value) {
@@ -261,8 +380,4 @@ List<Map<String, dynamic>> _list(Object? value) => [
   if (value is List)
     for (final item in value)
       if (item is Map) Map<String, dynamic>.from(item),
-];
-
-List<CultureChoice> _choices(Object? value) => [
-  for (final item in _list(value)) CultureChoice.fromMap(item),
 ];

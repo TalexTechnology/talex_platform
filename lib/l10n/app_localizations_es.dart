@@ -2609,4 +2609,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String cultureResponsesForecast(String value) {
     return 'Pronóstico promedio: $value%';
   }
+
+  @override
+  String get cultureResponsesAll => 'Todos';
+
+  @override
+  String get cultureResponsesLeaders => 'Líderes';
+
+  @override
+  String get cultureResponsesEmployees => 'Empleados';
+
+  @override
+  String get cultureResponsesLeader => 'Líder';
+
+  @override
+  String get cultureResponsesEmployee => 'Empleado';
 }

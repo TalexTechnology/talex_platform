@@ -137,9 +137,7 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     }
     final doc = await _firestore.collection('users').doc(user.uid).get();
     if (doc.data()?['role'] != 'superadmin') {
-      throw const ServerException(
-        'Esta sección está reservada a SuperAdmin.',
-      );
+      throw const ServerException('Esta sección está reservada a SuperAdmin.');
     }
   }
 
@@ -174,7 +172,8 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       activeProcesses: (data['activeProcesses'] as num?)?.toInt() ?? 0,
       invitedPeople: (data['invitedPeople'] as num?)?.toInt() ?? 0,
       startedEvaluations: (data['startedEvaluations'] as num?)?.toInt() ?? 0,
-      completedEvaluations: (data['completedEvaluations'] as num?)?.toInt() ?? 0,
+      completedEvaluations:
+          (data['completedEvaluations'] as num?)?.toInt() ?? 0,
       affinitiesDetected: (data['affinitiesDetected'] as num?)?.toInt() ?? 0,
       plan: data['plan'] as String?,
       contractValue: (data['contractValue'] as num?)?.toDouble(),
@@ -205,7 +204,8 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       closedAt: data['closedAt'] == null ? null : _date(data['closedAt']),
       invitedPeople: (data['invitedPeople'] as num?)?.toInt() ?? 0,
       startedEvaluations: (data['startedEvaluations'] as num?)?.toInt() ?? 0,
-      completedEvaluations: (data['completedEvaluations'] as num?)?.toInt() ?? 0,
+      completedEvaluations:
+          (data['completedEvaluations'] as num?)?.toInt() ?? 0,
       affinitiesDetected: (data['affinitiesDetected'] as num?)?.toInt() ?? 0,
     );
   }
@@ -216,7 +216,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     required Iterable<PersonEvaluation> people,
   }) {
     final companyPeople = people.where((item) => item.companyId == company.id);
-    final companyProcesses = processes.where((item) => item.companyId == company.id);
+    final companyProcesses = processes.where(
+      (item) => item.companyId == company.id,
+    );
     return Company(
       id: company.id,
       name: company.name,
@@ -383,8 +385,8 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       status: completed
           ? EvaluationStatus.completed
           : statusName == 'inProgress'
-              ? EvaluationStatus.inProgress
-              : EvaluationStatus.invited,
+          ? EvaluationStatus.inProgress
+          : EvaluationStatus.invited,
       updatedAt: _date(data['updatedAt'] ?? data['createdAt'], DateTime.now()),
       affinityScore: switch (affinity) {
         'high' => 85,
@@ -424,9 +426,10 @@ final class FirebaseAdminDataSource implements AdminDataSource {
           kind: doc.data()['evaluationCompleted'] == true
               ? ActivityKind.evaluationCompleted
               : doc.data()['processStatus'] == 'inProgress'
-                  ? ActivityKind.evaluationStarted
-                  : ActivityKind.respondentInvited,
-          entityName: ((doc.data()['displayName'] as String?)?.trim().isNotEmpty ==
+              ? ActivityKind.evaluationStarted
+              : ActivityKind.respondentInvited,
+          entityName:
+              ((doc.data()['displayName'] as String?)?.trim().isNotEmpty ==
                   true)
               ? doc.data()['displayName'] as String
               : ((doc.data()['email'] as String?) ?? 'Encuestado'),
@@ -460,11 +463,7 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       'actorId': _auth.currentUser?.uid,
     };
     await _activity.add(payload);
-    await _audit.add({
-      ...payload,
-      'action': kind.name,
-      'result': 'ok',
-    });
+    await _audit.add({...payload, 'action': kind.name, 'result': 'ok'});
     if (companyId != null) {
       await _companies.doc(companyId).set({
         'lastActivityAt': FieldValue.serverTimestamp(),
@@ -473,7 +472,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
   }
 
   Future<void> _refreshCompanyCounters(String companyId) async {
-    final processes = await _processes.where('companyId', isEqualTo: companyId).get();
+    final processes = await _processes
+        .where('companyId', isEqualTo: companyId)
+        .get();
     final people = await _people.where('companyId', isEqualTo: companyId).get();
     final mappedProcesses = processes.docs.map(_process);
     final mappedPeople = people.docs.map(_person);
@@ -520,7 +521,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     final vacanciesSnap = await _vacancies.limit(200).get();
     final candidatesSnap = await _candidates.limit(400).get();
     final vacancyProcesses = vacanciesSnap.docs
-        .map((doc) => _processFromVacancy(doc, companyNames, candidatesSnap.docs))
+        .map(
+          (doc) => _processFromVacancy(doc, companyNames, candidatesSnap.docs),
+        )
         .toList();
     final candidatePeople = candidatesSnap.docs
         .map((doc) => _personFromCandidate(doc, companyNames))
@@ -568,7 +571,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       completedEvaluations: mergedPeople
           .where((item) => item.status == EvaluationStatus.completed)
           .length,
-      affinitiesDetected: mergedPeople.where((item) => item.affinityScore != null).length,
+      affinitiesDetected: mergedPeople
+          .where((item) => item.affinityScore != null)
+          .length,
       periodSales: periodSales,
       mrr: mrr,
       companiesAtRisk: companies
@@ -595,7 +600,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
           .length,
       completedEvaluations: metrics.completedEvaluations,
       affinitiesDetected: metrics.affinitiesDetected,
-      decisions: mergedPeople.where((item) => item.affinityScore != null).length,
+      decisions: mergedPeople
+          .where((item) => item.affinityScore != null)
+          .length,
     );
     return AdminDashboardData(
       metrics: metrics,
@@ -615,32 +622,27 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     String query = '',
     CompanyStatus? status,
     bool archivedOnly = false,
-  }) =>
-      _guard(() async {
-        final snapshot = await _companies.limit(200).get();
-        final raw = snapshot.docs.map(_company).toList();
-        final names = {for (final item in raw) item.id: item.name};
-        final vacancies = await _vacancies.limit(300).get();
-        final candidates = await _candidates.limit(400).get();
-        final processes = vacancies.docs
-            .map((doc) => _processFromVacancy(doc, names, candidates.docs))
-            .toList();
-        final people = candidates.docs
-            .map((doc) => _personFromCandidate(doc, names))
-            .toList();
-        return filterCompanies(
-          raw.map(
-            (item) => _decorateCompany(
-              item,
-              processes: processes,
-              people: people,
-            ),
-          ),
-          query: query,
-          status: status,
-          archivedOnly: archivedOnly,
-        );
-      });
+  }) => _guard(() async {
+    final snapshot = await _companies.limit(200).get();
+    final raw = snapshot.docs.map(_company).toList();
+    final names = {for (final item in raw) item.id: item.name};
+    final vacancies = await _vacancies.limit(300).get();
+    final candidates = await _candidates.limit(400).get();
+    final processes = vacancies.docs
+        .map((doc) => _processFromVacancy(doc, names, candidates.docs))
+        .toList();
+    final people = candidates.docs
+        .map((doc) => _personFromCandidate(doc, names))
+        .toList();
+    return filterCompanies(
+      raw.map(
+        (item) => _decorateCompany(item, processes: processes, people: people),
+      ),
+      query: query,
+      status: status,
+      archivedOnly: archivedOnly,
+    );
+  });
 
   @override
   Future<CompanyDetail> getCompany(String id) => _guard(() async {
@@ -652,20 +654,26 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     final processes = await _processes.where('companyId', isEqualTo: id).get();
     final people = await _people.where('companyId', isEqualTo: id).get();
     final vacancies = await _vacancies.where('companyId', isEqualTo: id).get();
-    final candidates = await _candidates.where('companyId', isEqualTo: id).get();
+    final candidates = await _candidates
+        .where('companyId', isEqualTo: id)
+        .get();
     final companyNames = {id: company.name};
     final vacancyProcesses = vacancies.docs
         .map((item) => _processFromVacancy(item, companyNames, candidates.docs))
         .toList();
     final mappedProcesses = [
-      ...processes.docs.map((item) => _process(item, companyName: company.name)),
+      ...processes.docs.map(
+        (item) => _process(item, companyName: company.name),
+      ),
       ...vacancyProcesses.where(
         (item) => processes.docs.every((doc) => doc.id != item.id),
       ),
     ];
     final mappedPeople = [
       ...people.docs.map(_person),
-      ...candidates.docs.map((item) => _personFromCandidate(item, companyNames)),
+      ...candidates.docs.map(
+        (item) => _personFromCandidate(item, companyNames),
+      ),
     ];
     final events = [
       ..._activityFromVacancies(vacancies.docs, companyNames),
@@ -748,7 +756,10 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     };
     Query<Map<String, dynamic>> candidatesQuery = _candidates;
     if (companyId != null && companyId.isNotEmpty) {
-      candidatesQuery = candidatesQuery.where('companyId', isEqualTo: companyId);
+      candidatesQuery = candidatesQuery.where(
+        'companyId',
+        isEqualTo: companyId,
+      );
     }
     final candidates = await candidatesQuery.limit(400).get();
     items = [
@@ -791,7 +802,12 @@ final class FirebaseAdminDataSource implements AdminDataSource {
               unknown++;
           }
         }
-        return AffinitySummary(high: high, medium: medium, low: low, unknown: unknown);
+        return AffinitySummary(
+          high: high,
+          medium: medium,
+          low: low,
+          unknown: unknown,
+        );
       });
 
   @override
@@ -832,7 +848,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     final snapshot = await _sales.limit(400).get();
     final all = snapshot.docs.map(_sale).toList();
     final period = all
-        .where((item) => !item.soldAt.isBefore(from) && !item.soldAt.isAfter(to))
+        .where(
+          (item) => !item.soldAt.isBefore(from) && !item.soldAt.isAfter(to),
+        )
         .toList();
     final previousFrom = from.subtract(to.difference(from));
     final previous = all
@@ -841,7 +859,10 @@ final class FirebaseAdminDataSource implements AdminDataSource {
               !item.soldAt.isBefore(previousFrom) && item.soldAt.isBefore(from),
         )
         .fold<double>(0, (acc, item) => acc + item.amount);
-    final periodTotal = period.fold<double>(0, (acc, item) => acc + item.amount);
+    final periodTotal = period.fold<double>(
+      0,
+      (acc, item) => acc + item.amount,
+    );
     final companies = period.map((item) => item.companyId).toSet().length;
     return (
       SalesSummary(
@@ -849,8 +870,12 @@ final class FirebaseAdminDataSource implements AdminDataSource {
         cumulativeTotal: all.fold<double>(0, (acc, item) => acc + item.amount),
         newCustomers: companies,
         averageTicket: period.isEmpty ? 0 : periodTotal / period.length,
-        mrr: all.where((item) => item.recurring).fold<double>(0, (acc, item) => acc + item.amount),
-        growth: previous == 0 ? (periodTotal == 0 ? 0 : 1) : (periodTotal - previous) / previous,
+        mrr: all
+            .where((item) => item.recurring)
+            .fold<double>(0, (acc, item) => acc + item.amount),
+        growth: previous == 0
+            ? (periodTotal == 0 ? 0 : 1)
+            : (periodTotal - previous) / previous,
       ),
       period..sort((a, b) => b.soldAt.compareTo(a.soldAt)),
     );
@@ -868,13 +893,19 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     final daily = <DateTime, int>{};
     for (final event in (await _activity.limit(500).get()).docs.map(_event)) {
       if (!inRange(event.createdAt)) continue;
-      final day = DateTime(event.createdAt.year, event.createdAt.month, event.createdAt.day);
+      final day = DateTime(
+        event.createdAt.year,
+        event.createdAt.month,
+        event.createdAt.day,
+      );
       daily[day] = (daily[day] ?? 0) + 1;
     }
     final days = daily.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
     return AnalyticsSnapshot(
       newCompanies: companies.where((item) => inRange(item.createdAt)).length,
-      activeCompanies: companies.where((item) => item.status == CompanyStatus.active).length,
+      activeCompanies: companies
+          .where((item) => item.status == CompanyStatus.active)
+          .length,
       evaluatedPeople: people
           .where(
             (item) =>
@@ -892,8 +923,12 @@ final class FirebaseAdminDataSource implements AdminDataSource {
       completedEvaluations: people
           .where((item) => item.status == EvaluationStatus.completed)
           .length,
-      affinitiesDetected: people.where((item) => item.affinityScore != null).length,
-      processesCreated: processes.where((item) => inRange(item.createdAt)).length,
+      affinitiesDetected: people
+          .where((item) => item.affinityScore != null)
+          .length,
+      processesCreated: processes
+          .where((item) => inRange(item.createdAt))
+          .length,
       processesClosed: processes
           .where((item) => item.closedAt != null && inRange(item.closedAt!))
           .length,
@@ -920,7 +955,8 @@ final class FirebaseAdminDataSource implements AdminDataSource {
           if (doc.data()['status'] == 'pending' || doc.data()['status'] == null)
             () {
               final data = doc.data();
-              final person = '${data['displayName'] ?? data['email'] ?? doc.id}';
+              final person =
+                  '${data['displayName'] ?? data['email'] ?? doc.id}';
               final company = data['companyName'] as String?;
               final vacancy = data['vacancyName'] as String?;
               final requestedAt = data['requestedAt'];
@@ -1050,14 +1086,16 @@ final class FirebaseAdminDataSource implements AdminDataSource {
     });
     await _processes.doc(processId).set({
       'invitedPeople': FieldValue.increment(1),
-      if (status != EvaluationStatus.invited && status != EvaluationStatus.abandoned)
+      if (status != EvaluationStatus.invited &&
+          status != EvaluationStatus.abandoned)
         'startedEvaluations': FieldValue.increment(1),
       if (status == EvaluationStatus.completed)
         'completedEvaluations': FieldValue.increment(1),
       if (affinityScore != null) 'affinitiesDetected': FieldValue.increment(1),
     }, SetOptions(merge: true));
     await _refreshCompanyCounters(companyId);
-    if (status == EvaluationStatus.started || status == EvaluationStatus.inProgress) {
+    if (status == EvaluationStatus.started ||
+        status == EvaluationStatus.inProgress) {
       await _log(
         kind: ActivityKind.evaluationStarted,
         entityName: displayName.trim(),
@@ -1144,26 +1182,24 @@ final class FirebaseAdminDataSource implements AdminDataSource {
   });
 
   @override
-  Future<void> updateUserRole({
-    required String userId,
-    required String role,
-  }) => _guard(() async {
-    if (role != 'user' && role != 'superadmin') {
-      throw const ServerException('Rol no permitido.');
-    }
-    await _firestore.collection('users').doc(userId).set({
-      'role': role,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-    await _audit.add({
-      'action': 'updateUserRole',
-      'entityName': userId,
-      'context': role,
-      'actorId': _auth.currentUser?.uid,
-      'createdAt': FieldValue.serverTimestamp(),
-      'result': 'ok',
-    });
-  });
+  Future<void> updateUserRole({required String userId, required String role}) =>
+      _guard(() async {
+        if (role != 'user' && role != 'superadmin') {
+          throw const ServerException('Rol no permitido.');
+        }
+        await _firestore.collection('users').doc(userId).set({
+          'role': role,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+        await _audit.add({
+          'action': 'updateUserRole',
+          'entityName': userId,
+          'context': role,
+          'actorId': _auth.currentUser?.uid,
+          'createdAt': FieldValue.serverTimestamp(),
+          'result': 'ok',
+        });
+      });
 
   @override
   Future<void> applyCompanyLifecycle({
@@ -1254,7 +1290,9 @@ final class FirebaseAdminDataSource implements AdminDataSource {
               SettableMetadata(contentType: logoContentType ?? 'image/png'),
             )
             .timeout(const Duration(seconds: 15));
-        logoUrl = await ref.getDownloadURL().timeout(const Duration(seconds: 8));
+        logoUrl = await ref.getDownloadURL().timeout(
+          const Duration(seconds: 8),
+        );
       } catch (_) {}
     }
     await _companies.doc(company.id).set({
@@ -1298,17 +1336,25 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     return AdminDashboardData(
       metrics: AdminMetrics(
         totalCompanies: visible.length,
-        activeCompanies: visible.where((item) => item.status == CompanyStatus.active).length,
+        activeCompanies: visible
+            .where((item) => item.status == CompanyStatus.active)
+            .length,
         evaluatedPeople: people
             .where((item) => item.status != EvaluationStatus.invited)
             .length,
         completedEvaluations: people
             .where((item) => item.status == EvaluationStatus.completed)
             .length,
-        affinitiesDetected: people.where((item) => item.affinityScore != null).length,
+        affinitiesDetected: people
+            .where((item) => item.affinityScore != null)
+            .length,
         periodSales: sales.fold<double>(0, (acc, item) => acc + item.amount),
-        mrr: sales.where((item) => item.recurring).fold<double>(0, (acc, item) => acc + item.amount),
-        companiesAtRisk: visible.where((item) => item.status == CompanyStatus.atRisk).length,
+        mrr: sales
+            .where((item) => item.recurring)
+            .fold<double>(0, (acc, item) => acc + item.amount),
+        companiesAtRisk: visible
+            .where((item) => item.status == CompanyStatus.atRisk)
+            .length,
       ),
       funnel: AdminFunnel(
         companies: visible.length,
@@ -1320,7 +1366,9 @@ final class InMemoryAdminDataSource implements AdminDataSource {
         completedEvaluations: people
             .where((item) => item.status == EvaluationStatus.completed)
             .length,
-        affinitiesDetected: people.where((item) => item.affinityScore != null).length,
+        affinitiesDetected: people
+            .where((item) => item.affinityScore != null)
+            .length,
         decisions: people.where((item) => item.affinityScore != null).length,
       ),
       activity: activity.reversed.toList(),
@@ -1369,7 +1417,8 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     if (companyId != null) {
       items = items.where((item) => item.companyId == companyId).toList();
     }
-    if (status != null) items = items.where((item) => item.status == status).toList();
+    if (status != null)
+      items = items.where((item) => item.status == status).toList();
     return items;
   }
 
@@ -1383,10 +1432,14 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     if (companyId != null) {
       items = items.where((item) => item.companyId == companyId).toList();
     }
-    if (status != null) items = items.where((item) => item.status == status).toList();
+    if (status != null)
+      items = items.where((item) => item.status == status).toList();
     if (query.trim().isNotEmpty) {
       items = items
-          .where((item) => item.displayName.toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (item) =>
+                item.displayName.toLowerCase().contains(query.toLowerCase()),
+          )
           .toList();
     }
     return items;
@@ -1406,7 +1459,8 @@ final class InMemoryAdminDataSource implements AdminDataSource {
   @override
   Future<List<Deal>> getDeals({String query = '', DealStage? stage}) async {
     var items = [...deals];
-    if (stage != null) items = items.where((item) => item.stage == stage).toList();
+    if (stage != null)
+      items = items.where((item) => item.stage == stage).toList();
     return items;
   }
 
@@ -1452,16 +1506,23 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     required DateTime to,
   }) async {
     final period = sales
-        .where((item) => !item.soldAt.isBefore(from) && !item.soldAt.isAfter(to))
+        .where(
+          (item) => !item.soldAt.isBefore(from) && !item.soldAt.isAfter(to),
+        )
         .toList();
     final total = period.fold<double>(0, (acc, item) => acc + item.amount);
     return (
       SalesSummary(
         periodTotal: total,
-        cumulativeTotal: sales.fold<double>(0, (acc, item) => acc + item.amount),
+        cumulativeTotal: sales.fold<double>(
+          0,
+          (acc, item) => acc + item.amount,
+        ),
         newCustomers: period.map((item) => item.companyId).toSet().length,
         averageTicket: period.isEmpty ? 0 : total / period.length,
-        mrr: sales.where((item) => item.recurring).fold<double>(0, (acc, item) => acc + item.amount),
+        mrr: sales
+            .where((item) => item.recurring)
+            .fold<double>(0, (acc, item) => acc + item.amount),
       ),
       period,
     );
@@ -1472,14 +1533,26 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     required DateTime from,
     required DateTime to,
   }) async => AnalyticsSnapshot(
-    newCompanies: companies.where((item) => !item.createdAt.isBefore(from)).length,
-    activeCompanies: companies.where((item) => item.status == CompanyStatus.active).length,
+    newCompanies: companies
+        .where((item) => !item.createdAt.isBefore(from))
+        .length,
+    activeCompanies: companies
+        .where((item) => item.status == CompanyStatus.active)
+        .length,
     evaluatedPeople: people.length,
-    startedEvaluations: people.where((item) => item.status != EvaluationStatus.invited).length,
-    completedEvaluations: people.where((item) => item.status == EvaluationStatus.completed).length,
-    affinitiesDetected: people.where((item) => item.affinityScore != null).length,
+    startedEvaluations: people
+        .where((item) => item.status != EvaluationStatus.invited)
+        .length,
+    completedEvaluations: people
+        .where((item) => item.status == EvaluationStatus.completed)
+        .length,
+    affinitiesDetected: people
+        .where((item) => item.affinityScore != null)
+        .length,
     processesCreated: processes.length,
-    processesClosed: processes.where((item) => item.status == ProcessStatus.closed).length,
+    processesClosed: processes
+        .where((item) => item.status == ProcessStatus.closed)
+        .length,
   );
 
   @override

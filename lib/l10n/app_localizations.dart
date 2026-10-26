@@ -4891,6 +4891,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Pronóstico promedio: {value}%'**
   String cultureResponsesForecast(String value);
+
+  /// No description provided for @cultureResponsesAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get cultureResponsesAll;
+
+  /// No description provided for @cultureResponsesLeaders.
+  ///
+  /// In es, this message translates to:
+  /// **'Líderes'**
+  String get cultureResponsesLeaders;
+
+  /// No description provided for @cultureResponsesEmployees.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleados'**
+  String get cultureResponsesEmployees;
+
+  /// No description provided for @cultureResponsesLeader.
+  ///
+  /// In es, this message translates to:
+  /// **'Líder'**
+  String get cultureResponsesLeader;
+
+  /// No description provided for @cultureResponsesEmployee.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleado'**
+  String get cultureResponsesEmployee;
 }
 
 class _AppLocalizationsDelegate

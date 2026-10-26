@@ -2600,4 +2600,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String cultureResponsesForecast(String value) {
     return 'Average forecast: $value%';
   }
+
+  @override
+  String get cultureResponsesAll => 'Everyone';
+
+  @override
+  String get cultureResponsesLeaders => 'Leaders';
+
+  @override
+  String get cultureResponsesEmployees => 'Employees';
+
+  @override
+  String get cultureResponsesLeader => 'Leader';
+
+  @override
+  String get cultureResponsesEmployee => 'Employee';
 }

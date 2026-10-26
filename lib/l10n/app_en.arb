@@ -827,5 +827,10 @@
   "cultureResponsesCount": "{count, plural, =1{1 anonymous answer} other{{count} anonymous answers}}",
   "cultureResponsesPerson": "Answer {index}",
   "cultureResponsesAnswered": "{count} of {total} answered",
-  "cultureResponsesForecast": "Average forecast: {value}%"
+  "cultureResponsesForecast": "Average forecast: {value}%",
+  "cultureResponsesAll": "Everyone",
+  "cultureResponsesLeaders": "Leaders",
+  "cultureResponsesEmployees": "Employees",
+  "cultureResponsesLeader": "Leader",
+  "cultureResponsesEmployee": "Employee"
 }

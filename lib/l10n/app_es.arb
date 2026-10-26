@@ -846,5 +846,10 @@
   "cultureResponsesAnswered": "{count} de {total} respondieron",
   "@cultureResponsesAnswered": {"placeholders": {"count": {"type": "int"}, "total": {"type": "int"}}},
   "cultureResponsesForecast": "Pronóstico promedio: {value}%",
-  "@cultureResponsesForecast": {"placeholders": {"value": {"type": "String"}}}
+  "@cultureResponsesForecast": {"placeholders": {"value": {"type": "String"}}},
+  "cultureResponsesAll": "Todos",
+  "cultureResponsesLeaders": "Líderes",
+  "cultureResponsesEmployees": "Empleados",
+  "cultureResponsesLeader": "Líder",
+  "cultureResponsesEmployee": "Empleado"
 }

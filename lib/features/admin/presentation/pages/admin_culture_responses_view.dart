@@ -33,6 +33,8 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
   // El grupo sin empresa asignada no tiene encuesta: solo leads.
   late Future<CultureSurveyResponses>? _responses = _load();
   var _byPerson = false;
+  // null = todos; si no, CultureSurveyResponses.leaders o .employees.
+  String? _group;
 
   Future<CultureSurveyResponses>? _load() {
     final id = widget.group.id;
@@ -110,8 +112,9 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
     );
   }
 
-  Widget _content(BuildContext context, CultureSurveyResponses data) {
+  Widget _content(BuildContext context, CultureSurveyResponses all) {
     final l10n = context.l10n;
+    final data = all.only(_group);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -121,48 +124,87 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
           children: [
             TalexStat(
               label: l10n.cultureResponsesRespondents,
-              value: '${data.respondentCount}',
+              value: '${all.respondentCount}',
               icon: Icons.groups_outlined,
               tone: TalexTone.green,
-              width: 220,
+              width: 200,
+            ),
+            TalexStat(
+              label: l10n.cultureResponsesLeaders,
+              value: '${all.countOf(CultureSurveyResponses.leaders)}',
+              icon: Icons.workspace_premium_outlined,
+              width: 200,
+            ),
+            TalexStat(
+              label: l10n.cultureResponsesEmployees,
+              value: '${all.countOf(CultureSurveyResponses.employees)}',
+              icon: Icons.badge_outlined,
+              width: 200,
             ),
             TalexStat(
               label: l10n.cultureResponsesQuestions,
-              value: '${data.questions.length}',
+              value: '${all.questions.length}',
               icon: Icons.quiz_outlined,
-              width: 220,
+              tone: TalexTone.neutral,
+              width: 200,
             ),
           ],
         ),
         const SizedBox(height: 16),
         _AnonymityNote(text: l10n.cultureResponsesAnonymous),
         const SizedBox(height: 24),
-        if (data.respondentCount == 0)
+        if (all.respondentCount == 0)
           AdminEmptyState(
             message: l10n.cultureResponsesEmpty,
             icon: Icons.hourglass_empty,
           )
         else ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SegmentedButton<bool>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(
-                  value: false,
-                  icon: const Icon(Icons.bar_chart, size: 18),
-                  label: Text(l10n.cultureResponsesSummary),
-                ),
-                ButtonSegment(
-                  value: true,
-                  icon: const Icon(Icons.person_outline, size: 18),
-                  label: Text(l10n.cultureResponsesIndividual),
-                ),
-              ],
-              selected: {_byPerson},
-              onSelectionChanged: (value) =>
-                  setState(() => _byPerson = value.first),
-            ),
+          Wrap(
+            spacing: 16,
+            runSpacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              SegmentedButton<bool>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: false,
+                    icon: const Icon(Icons.bar_chart, size: 18),
+                    label: Text(l10n.cultureResponsesSummary),
+                  ),
+                  ButtonSegment(
+                    value: true,
+                    icon: const Icon(Icons.person_outline, size: 18),
+                    label: Text(l10n.cultureResponsesIndividual),
+                  ),
+                ],
+                selected: {_byPerson},
+                onSelectionChanged: (value) =>
+                    setState(() => _byPerson = value.first),
+              ),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final (value, label) in [
+                    (null, l10n.cultureResponsesAll),
+                    (
+                      CultureSurveyResponses.leaders,
+                      l10n.cultureResponsesLeaders,
+                    ),
+                    (
+                      CultureSurveyResponses.employees,
+                      l10n.cultureResponsesEmployees,
+                    ),
+                  ])
+                    ChoiceChip(
+                      label: Text(label),
+                      selected: _group == value,
+                      showCheckmark: false,
+                      onSelected: (_) => setState(() => _group = value),
+                    ),
+                ],
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           if (_byPerson)
@@ -240,7 +282,7 @@ class _QuestionCard extends StatelessWidget {
               TalexEyebrow(
                 [
                   '$number',
-                  if (question.sectionTitle != null) question.sectionTitle!,
+                  if (question.name != null) question.name!,
                 ].join(' · '),
               ),
               const Spacer(),
@@ -621,7 +663,7 @@ class _PersonCard extends StatelessWidget {
 
   final int index;
   final CultureSurveyResponses data;
-  final Map<String, dynamic> response;
+  final CultureResponse response;
 
   @override
   Widget build(BuildContext context) {
@@ -642,7 +684,18 @@ class _PersonCard extends StatelessWidget {
                 size: 34,
               ),
               const SizedBox(width: 12),
-              TalexSectionTitle(context.l10n.cultureResponsesPerson(index)),
+              Expanded(
+                child: TalexSectionTitle(
+                  context.l10n.cultureResponsesPerson(index),
+                ),
+              ),
+              if (response.group != null)
+                TalexPill(
+                  response.group == CultureSurveyResponses.leaders
+                      ? context.l10n.cultureResponsesLeader
+                      : context.l10n.cultureResponsesEmployee,
+                  tone: TalexTone.neutral,
+                ),
             ],
           ),
           const SizedBox(height: 16),
