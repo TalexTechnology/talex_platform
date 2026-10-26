@@ -2527,4 +2527,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeDark => 'Dark';
+
+  @override
+  String get cultureResponsesBack => 'Back to My culture';
+
+  @override
+  String get cultureResponsesAnonymous =>
+      'Anonymous answers: we don\'t store who answered and the order is random.';
+
+  @override
+  String get cultureResponsesSummary => 'Summary';
+
+  @override
+  String get cultureResponsesIndividual => 'By person';
+
+  @override
+  String get cultureResponsesEmpty =>
+      'Nobody on this team has answered the survey yet.';
+
+  @override
+  String get cultureResponsesError => 'We couldn\'t load the answers.';
+
+  @override
+  String get cultureResponsesMost => 'Most likely';
+
+  @override
+  String get cultureResponsesLeast => 'Least likely';
+
+  @override
+  String get cultureResponsesYes => 'Yes';
+
+  @override
+  String get cultureResponsesNo => 'No';
+
+  @override
+  String get cultureResponsesNoAnswers => 'Nobody answered this question.';
+
+  @override
+  String get cultureResponsesLead => 'Landing lead';
+
+  @override
+  String get cultureResponsesRespondents => 'Answers';
+
+  @override
+  String get cultureResponsesQuestions => 'Questions';
+
+  @override
+  String get cultureResponsesSurveyLink => 'Open the company survey';
+
+  @override
+  String cultureResponsesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count anonymous answers',
+      one: '1 anonymous answer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String cultureResponsesPerson(int index) {
+    return 'Answer $index';
+  }
+
+  @override
+  String cultureResponsesAnswered(int count, int total) {
+    return '$count of $total answered';
+  }
+
+  @override
+  String cultureResponsesForecast(String value) {
+    return 'Average forecast: $value%';
+  }
 }

@@ -4777,6 +4777,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Oscuro'**
   String get themeDark;
+
+  /// No description provided for @cultureResponsesBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Mi cultura'**
+  String get cultureResponsesBack;
+
+  /// No description provided for @cultureResponsesAnonymous.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuestas anónimas: no se guarda quién respondió y el orden es aleatorio.'**
+  String get cultureResponsesAnonymous;
+
+  /// No description provided for @cultureResponsesSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen'**
+  String get cultureResponsesSummary;
+
+  /// No description provided for @cultureResponsesIndividual.
+  ///
+  /// In es, this message translates to:
+  /// **'Por persona'**
+  String get cultureResponsesIndividual;
+
+  /// No description provided for @cultureResponsesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún nadie del equipo ha respondido la encuesta de esta empresa.'**
+  String get cultureResponsesEmpty;
+
+  /// No description provided for @cultureResponsesError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las respuestas.'**
+  String get cultureResponsesError;
+
+  /// No description provided for @cultureResponsesMost.
+  ///
+  /// In es, this message translates to:
+  /// **'Más probable'**
+  String get cultureResponsesMost;
+
+  /// No description provided for @cultureResponsesLeast.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos probable'**
+  String get cultureResponsesLeast;
+
+  /// No description provided for @cultureResponsesYes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí'**
+  String get cultureResponsesYes;
+
+  /// No description provided for @cultureResponsesNo.
+  ///
+  /// In es, this message translates to:
+  /// **'No'**
+  String get cultureResponsesNo;
+
+  /// No description provided for @cultureResponsesNoAnswers.
+  ///
+  /// In es, this message translates to:
+  /// **'Nadie respondió esta pregunta.'**
+  String get cultureResponsesNoAnswers;
+
+  /// No description provided for @cultureResponsesLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Lead de la landing'**
+  String get cultureResponsesLead;
+
+  /// No description provided for @cultureResponsesRespondents.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuestas'**
+  String get cultureResponsesRespondents;
+
+  /// No description provided for @cultureResponsesQuestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas'**
+  String get cultureResponsesQuestions;
+
+  /// No description provided for @cultureResponsesSurveyLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir encuesta de la empresa'**
+  String get cultureResponsesSurveyLink;
+
+  /// No description provided for @cultureResponsesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 respuesta anónima} other{{count} respuestas anónimas}}'**
+  String cultureResponsesCount(int count);
+
+  /// No description provided for @cultureResponsesPerson.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuesta {index}'**
+  String cultureResponsesPerson(int index);
+
+  /// No description provided for @cultureResponsesAnswered.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} de {total} respondieron'**
+  String cultureResponsesAnswered(int count, int total);
+
+  /// No description provided for @cultureResponsesForecast.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronóstico promedio: {value}%'**
+  String cultureResponsesForecast(String value);
 }
 
 class _AppLocalizationsDelegate
