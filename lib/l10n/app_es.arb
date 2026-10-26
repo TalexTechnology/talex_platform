@@ -953,5 +953,9 @@
   "cultureReportGapTeamMore": "En {value} hay una diferencia: el equipo lo vive más de lo que los líderes creen. Es una fortaleza que vale la pena reconocer.",
   "@cultureReportGapTeamMore": {"placeholders": {"value": {"type": "String"}}},
   "cultureReportAnswersOf": "Van {count} de {needed} respuestas del equipo.",
-  "@cultureReportAnswersOf": {"placeholders": {"count": {"type": "int"}, "needed": {"type": "int"}}}
+  "@cultureReportAnswersOf": {"placeholders": {"count": {"type": "int"}, "needed": {"type": "int"}}},
+  "cultureReportDownloadPdf": "Descargar PDF",
+  "cultureReportDownloading": "Preparando PDF…",
+  "cultureReportDownloadError": "No pudimos descargar el PDF. Intenta de nuevo en un momento.",
+  "cultureReportDownloaded": "Listo: tu PDF se está descargando."
 }

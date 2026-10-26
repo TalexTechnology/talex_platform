@@ -2919,4 +2919,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String cultureReportAnswersOf(int count, int needed) {
     return '$count of $needed team answers so far.';
   }
+
+  @override
+  String get cultureReportDownloadPdf => 'Download PDF';
+
+  @override
+  String get cultureReportDownloading => 'Preparing PDF…';
+
+  @override
+  String get cultureReportDownloadError =>
+      'We couldn\'t download the PDF. Please try again in a moment.';
+
+  @override
+  String get cultureReportDownloaded => 'Done: your PDF is downloading.';
 }

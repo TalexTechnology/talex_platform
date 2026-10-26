@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
+import 'package:talex_platform/core/di/injection.dart';
+import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/services/pdf_saver.dart';
 import 'package:talex_platform/core/widgets/skeleton.dart';
 import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/admin/data/datasources/culture_report_data_source.dart';
@@ -36,9 +39,42 @@ class _AdminCultureReportViewState extends State<AdminCultureReportView> {
     widget.organizationId,
   );
 
+  var _downloading = false;
+
   void _reload() => setState(() {
     _report = widget.source.report(widget.organizationId);
   });
+
+  Future<void> _downloadPdf() async {
+    final l10n = context.l10n;
+    final notifications = getIt<NotificationService>();
+    setState(() => _downloading = true);
+    try {
+      final pdf = await widget.source.reportPdf(widget.organizationId);
+      savePdfBytes(pdf.bytes, pdf.filename ?? _fallbackFilename());
+      notifications.success(l10n.cultureReportDownloaded);
+    } catch (_) {
+      notifications.error(l10n.cultureReportDownloadError);
+    } finally {
+      if (mounted) setState(() => _downloading = false);
+    }
+  }
+
+  // Si el servidor no expone su nombre de archivo: informe-cultura-<empresa>-<fecha>.pdf
+  String _fallbackFilename() {
+    final slug = widget.organizationName
+        .toLowerCase()
+        .replaceAll(RegExp(r'[áàä]'), 'a')
+        .replaceAll(RegExp(r'[éèë]'), 'e')
+        .replaceAll(RegExp(r'[íìï]'), 'i')
+        .replaceAll(RegExp(r'[óòö]'), 'o')
+        .replaceAll(RegExp(r'[úùü]'), 'u')
+        .replaceAll('ñ', 'n')
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'^-+|-+$'), '');
+    final date = DateTime.now().toIso8601String().substring(0, 10);
+    return 'informe-cultura-${slug.isEmpty ? 'empresa' : slug}-$date.pdf';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +130,26 @@ class _AdminCultureReportViewState extends State<AdminCultureReportView> {
               return CultureReportBody(
                 report: report,
                 fallbackName: widget.organizationName,
+                actions: [
+                  if (report.hasReport)
+                    FilledButton.icon(
+                      onPressed: _downloading ? null : _downloadPdf,
+                      icon: _downloading
+                          ? SizedBox.square(
+                              dimension: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.textDimmer,
+                              ),
+                            )
+                          : const Icon(Icons.download_outlined, size: 18),
+                      label: Text(
+                        _downloading
+                            ? l10n.cultureReportDownloading
+                            : l10n.cultureReportDownloadPdf,
+                      ),
+                    ),
+                ],
               );
             },
           ),
@@ -108,10 +164,12 @@ class CultureReportBody extends StatelessWidget {
     super.key,
     required this.report,
     required this.fallbackName,
+    this.actions = const [],
   });
 
   final CultureReport report;
   final String fallbackName;
+  final List<Widget> actions;
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +181,7 @@ class CultureReportBody extends StatelessWidget {
       eyebrow: l10n.cultureReportTitle,
       title: name,
       subtitle: l10n.cultureReportIntro,
+      actions: actions,
     );
     if (!report.hasReport) {
       return Column(
@@ -179,14 +238,14 @@ class CultureReportBody extends StatelessWidget {
 
 // Sello TaleX desactivado por ahora; descomentar para mostrarlo.
 // bool _sealValidated(String status) =>
-    // status == 'validada' || status == 'validado';
+// status == 'validada' || status == 'validado';
 
 // String _sealLabel(BuildContext context, String status) => _sealValidated(status)
-    // ? context.l10n.cultureReportSealValidated
-    // : context.l10n.cultureReportSealInProgress;
+// ? context.l10n.cultureReportSealValidated
+// : context.l10n.cultureReportSealInProgress;
 
 // TalexTone _sealTone(String status) =>
-    // _sealValidated(status) ? TalexTone.green : TalexTone.blue;
+// _sealValidated(status) ? TalexTone.green : TalexTone.blue;
 
 (String, TalexTone) _confidence(BuildContext context, String level) {
   final l10n = context.l10n;
@@ -230,9 +289,9 @@ String _levelWords(BuildContext context, double value) {
 
 // Sello TaleX desactivado por ahora; descomentar para mostrarlo.
 // String _conditionWords(BuildContext context, String code) => switch (code) {
-  // 'alineacion_lideres_empleados' =>
-    // context.l10n.cultureReportConditionAlignment,
-  // _ => humanizeReportCode(plainReportText(code)),
+// 'alineacion_lideres_empleados' =>
+// context.l10n.cultureReportConditionAlignment,
+// _ => humanizeReportCode(plainReportText(code)),
 // };
 
 // ── Piezas comunes ─────────────────────────────────────────────────────────
@@ -505,12 +564,12 @@ class _Executive extends StatelessWidget {
       if (report.cultureStrengthLevel.isNotEmpty) _strength(context),
       // Sello TaleX desactivado por ahora; descomentar para mostrarlo.
       // if (!_sealValidated(report.sealStatus) &&
-          // report.requiredSample > 0 &&
-          // report.employeeAnswers < report.requiredSample)
-        // l10n.cultureReportPointSample(
-          // report.employeeAnswers,
-          // report.requiredSample,
-        // ),
+      // report.requiredSample > 0 &&
+      // report.employeeAnswers < report.requiredSample)
+      // l10n.cultureReportPointSample(
+      // report.employeeAnswers,
+      // report.requiredSample,
+      // ),
     ];
     return points.isEmpty ? report.keyPoints : points;
   }
@@ -560,9 +619,9 @@ class _Executive extends StatelessWidget {
             children: [
               // Sello TaleX desactivado por ahora; descomentar para mostrarlo.
               // TalexPill(
-                // _sealLabel(context, report.sealStatus),
-                // tone: _sealTone(report.sealStatus),
-                // icon: Icons.verified_outlined,
+              // _sealLabel(context, report.sealStatus),
+              // tone: _sealTone(report.sealStatus),
+              // icon: Icons.verified_outlined,
               // ),
               if (report.confidence.isNotEmpty)
                 TalexPill(confidence, tone: confidenceTone),
@@ -1306,52 +1365,52 @@ class _Recommendations extends StatelessWidget {
 
 // Sello TaleX desactivado por ahora; descomentar para mostrarlo.
 // class _Seal extends StatelessWidget {
-  // const _Seal({required this.report});
-  // final CultureReport report;
+// const _Seal({required this.report});
+// final CultureReport report;
 
-  // @override
-  // Widget build(BuildContext context) {
-    // final l10n = context.l10n;
-    // return _Block(
-      // title: l10n.cultureReportSeal,
-      // help: l10n.cultureReportSealHelp,
-      // trailing: TalexPill(
-        // _sealLabel(context, report.sealStatus),
-        // tone: _sealTone(report.sealStatus),
-        // icon: Icons.verified_outlined,
-      // ),
-      // children: [
-        // if (report.sealText.isNotEmpty) _Paragraph(report.sealText),
-        // if (report.sealMonths != null && _sealValidated(report.sealStatus)) ...[
-          // const SizedBox(height: 6),
-          // Text(
-            // l10n.cultureReportSealValidity(report.sealMonths!),
-            // style: TextStyle(color: AppColors.textDimmer, fontSize: 12.5),
-          // ),
-        // ],
-        // if (report.sealMet.isNotEmpty) ...[
-          // const SizedBox(height: 18),
-          // _Label(l10n.cultureReportSealMet),
-          // for (final item in report.sealMet)
-            // _Bullet(
-              // _conditionWords(context, item),
-              // icon: Icons.check,
-              // color: AppColors.good,
-            // ),
-        // ],
-        // if (report.sealPending.isNotEmpty) ...[
-          // const SizedBox(height: 10),
-          // _Label(l10n.cultureReportSealPending),
-          // for (final item in report.sealPending)
-            // _Bullet(
-              // _conditionWords(context, item),
-              // icon: Icons.schedule,
-              // color: AppColors.blue,
-            // ),
-        // ],
-      // ],
-    // );
-  // }
+// @override
+// Widget build(BuildContext context) {
+// final l10n = context.l10n;
+// return _Block(
+// title: l10n.cultureReportSeal,
+// help: l10n.cultureReportSealHelp,
+// trailing: TalexPill(
+// _sealLabel(context, report.sealStatus),
+// tone: _sealTone(report.sealStatus),
+// icon: Icons.verified_outlined,
+// ),
+// children: [
+// if (report.sealText.isNotEmpty) _Paragraph(report.sealText),
+// if (report.sealMonths != null && _sealValidated(report.sealStatus)) ...[
+// const SizedBox(height: 6),
+// Text(
+// l10n.cultureReportSealValidity(report.sealMonths!),
+// style: TextStyle(color: AppColors.textDimmer, fontSize: 12.5),
+// ),
+// ],
+// if (report.sealMet.isNotEmpty) ...[
+// const SizedBox(height: 18),
+// _Label(l10n.cultureReportSealMet),
+// for (final item in report.sealMet)
+// _Bullet(
+// _conditionWords(context, item),
+// icon: Icons.check,
+// color: AppColors.good,
+// ),
+// ],
+// if (report.sealPending.isNotEmpty) ...[
+// const SizedBox(height: 10),
+// _Label(l10n.cultureReportSealPending),
+// for (final item in report.sealPending)
+// _Bullet(
+// _conditionWords(context, item),
+// icon: Icons.schedule,
+// color: AppColors.blue,
+// ),
+// ],
+// ],
+// );
+// }
 // }
 
 class _Quality extends StatelessWidget {

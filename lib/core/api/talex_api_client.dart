@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,39 @@ class TalexApiClient {
     return send('POST', '/v1/rpc/$name', body: params ?? {});
   }
 
+  /// Descarga un archivo (PDF, CSV...) con la sesión actual. Devuelve los
+  /// bytes y el nombre que propone el servidor, si lo expone por CORS.
+  Future<({Uint8List bytes, String? filename})> download(String path) async {
+    final token = await _auth.currentUser?.getIdToken();
+    if (token == null || token.isEmpty) {
+      throw const ServerException(TalentErrorCodes.needSignIn);
+    }
+    final response = await _http.get(
+      Uri.parse('$_baseUrl$path'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode >= 400) {
+      Object? decoded;
+      try {
+        decoded = jsonDecode(response.body);
+      } on FormatException {
+        decoded = null;
+      }
+      final code = decoded is Map ? '${decoded['code'] ?? ''}' : '';
+      throw ServerException(code.isEmpty ? TalentErrorCodes.unexpected : code);
+    }
+    final disposition = response.headers['content-disposition'] ?? '';
+    final name = RegExp(
+      r'filename\*?=(?:UTF-8'
+      ')?"?([^";]+)"?',
+      caseSensitive: false,
+    ).firstMatch(disposition)?.group(1);
+    return (
+      bytes: response.bodyBytes,
+      filename: name == null ? null : Uri.decodeComponent(name.trim()),
+    );
+  }
+
   Future<List<dynamic>> send(
     String method,
     String path, {
@@ -47,9 +81,7 @@ class TalexApiClient {
     }
     final streamed = await _http.send(request);
     final response = await http.Response.fromStream(streamed);
-    final decoded = response.body.isEmpty
-        ? null
-        : jsonDecode(response.body);
+    final decoded = response.body.isEmpty ? null : jsonDecode(response.body);
     if (response.statusCode >= 400) {
       final code = decoded is Map ? '${decoded['code'] ?? ''}' : '';
       final detail = decoded is Map ? '${decoded['message'] ?? ''}'.trim() : '';

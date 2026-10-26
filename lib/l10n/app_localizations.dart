@@ -5449,6 +5449,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Van {count} de {needed} respuestas del equipo.'**
   String cultureReportAnswersOf(int count, int needed);
+
+  /// No description provided for @cultureReportDownloadPdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar PDF'**
+  String get cultureReportDownloadPdf;
+
+  /// No description provided for @cultureReportDownloading.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando PDF…'**
+  String get cultureReportDownloading;
+
+  /// No description provided for @cultureReportDownloadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos descargar el PDF. Intenta de nuevo en un momento.'**
+  String get cultureReportDownloadError;
+
+  /// No description provided for @cultureReportDownloaded.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo: tu PDF se está descargando.'**
+  String get cultureReportDownloaded;
 }
 
 class _AppLocalizationsDelegate

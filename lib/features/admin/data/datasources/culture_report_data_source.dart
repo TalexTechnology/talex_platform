@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:talex_platform/core/api/talex_api_client.dart';
 import 'package:talex_platform/core/data/http_remote_database.dart';
 import 'package:talex_platform/core/data/remote_database.dart';
@@ -45,4 +47,11 @@ final class CultureReportDataSource {
       payload is Map ? Map<String, dynamic>.from(payload) : const {},
     );
   }
+
+  /// PDF del informe de cultura, tal como lo genera el backend.
+  Future<({Uint8List bytes, String? filename})> reportPdf(
+    String organizationId,
+  ) => _api.download(
+    '/api/cultura/${Uri.encodeComponent(organizationId)}/informe.pdf',
+  );
 }

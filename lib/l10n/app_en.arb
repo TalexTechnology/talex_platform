@@ -920,5 +920,9 @@
   "cultureReportPointSample": "More answers are needed for the seal: {count} of {needed} from the team so far.",
   "cultureReportGapLeadersMore": "On {value} there's a gap: leaders feel it's lived more than the team does. Worth talking about before using it to attract talent.",
   "cultureReportGapTeamMore": "On {value} there's a gap: the team lives it more than leaders think. It's a strength worth recognizing.",
-  "cultureReportAnswersOf": "{count} of {needed} team answers so far."
+  "cultureReportAnswersOf": "{count} of {needed} team answers so far.",
+  "cultureReportDownloadPdf": "Download PDF",
+  "cultureReportDownloading": "Preparing PDF…",
+  "cultureReportDownloadError": "We couldn't download the PDF. Please try again in a moment.",
+  "cultureReportDownloaded": "Done: your PDF is downloading."
 }
