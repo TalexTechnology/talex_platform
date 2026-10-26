@@ -2615,4 +2615,308 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cultureResponsesEmployee => 'Employee';
+
+  @override
+  String get cultureReportGenerate => 'Generate report';
+
+  @override
+  String get cultureReportBack => 'Back to answers';
+
+  @override
+  String get cultureReportTitle => 'Culture report';
+
+  @override
+  String get cultureReportError => 'We couldn\'t generate the report.';
+
+  @override
+  String get cultureReportPending =>
+      'The report isn\'t ready yet: the team needs more answers before the culture can be analyzed.';
+
+  @override
+  String get cultureReportCoverage => 'Coverage';
+
+  @override
+  String get cultureReportKeyPoints => 'The key takeaways';
+
+  @override
+  String get cultureReportTruth => 'Something worth talking about';
+
+  @override
+  String get cultureReportSummary => 'In a nutshell';
+
+  @override
+  String get cultureReportDna => 'The culture today';
+
+  @override
+  String get cultureReportDominant => 'What\'s lived the most';
+
+  @override
+  String get cultureReportWeak => 'What\'s lived the least';
+
+  @override
+  String get cultureReportStrength => 'How shared it is';
+
+  @override
+  String get cultureReportMirror =>
+      'Do leaders and the team see the same thing?';
+
+  @override
+  String get cultureReportAlignment => 'How much they agree';
+
+  @override
+  String get cultureReportBlindSpots => 'Where leadership sees it differently';
+
+  @override
+  String get cultureReportSaid => 'What\'s said vs. what\'s lived';
+
+  @override
+  String get cultureReportCoherence => 'Match';
+
+  @override
+  String get cultureReportOffer => 'What working here really offers';
+
+  @override
+  String get cultureReportOffered => 'What you do find';
+
+  @override
+  String get cultureReportNotOffered => 'What isn\'t there yet';
+
+  @override
+  String get cultureReportPromises => 'Careful what you promise';
+
+  @override
+  String get cultureReportVoice => 'In the team\'s words';
+
+  @override
+  String get cultureReportDoingWell => 'People who do well here…';
+
+  @override
+  String get cultureReportDoingBadly => 'People who find it harder here…';
+
+  @override
+  String get cultureReportHiring => 'What it means for hiring';
+
+  @override
+  String get cultureReportThrives => 'Who fits well here';
+
+  @override
+  String get cultureReportAtRisk => 'Who might find it harder';
+
+  @override
+  String get cultureReportRisks => 'Worth keeping in mind';
+
+  @override
+  String get cultureReportMitigation => 'What to do';
+
+  @override
+  String get cultureReportQuestions => 'Interview questions';
+
+  @override
+  String get cultureReportHonest => 'How to tell candidates';
+
+  @override
+  String get cultureReportRecommendations => 'Next steps';
+
+  @override
+  String get cultureReportOwner => 'Who leads it';
+
+  @override
+  String get cultureReportDeadline => 'Within';
+
+  @override
+  String get cultureReportSuccess => 'You\'ll know it worked when';
+
+  @override
+  String get cultureReportSeal => 'TaleX seal';
+
+  @override
+  String get cultureReportSealMet => 'Already met';
+
+  @override
+  String get cultureReportSealPending => 'Still missing';
+
+  @override
+  String get cultureReportQuality => 'About these answers';
+
+  @override
+  String get cultureReportAlerts => 'Keep in mind';
+
+  @override
+  String get cultureReportSincerity => 'About how candid the answers are';
+
+  @override
+  String get cultureReportLimitations => 'Limits of this report';
+
+  @override
+  String cultureReportRespondentsOf(int count, int needed) {
+    return '$count of $needed answers';
+  }
+
+  @override
+  String cultureReportCutoff(String date) {
+    return 'Cut-off: $date';
+  }
+
+  @override
+  String cultureReportPriority(int value) {
+    return 'Step $value';
+  }
+
+  @override
+  String cultureReportAreaShare(String area, String staff, String answers) {
+    return '$area: $staff% of staff · $answers% of answers';
+  }
+
+  @override
+  String cultureReportSealValidity(int months) {
+    return 'Valid for $months months';
+  }
+
+  @override
+  String get cultureReportIntro =>
+      'This is how your team describes the culture it lives today. Use it to talk and decide better: fit informs, people decide.';
+
+  @override
+  String get cultureReportDnaHelp =>
+      'The style that shows up most in the team\'s answers.';
+
+  @override
+  String get cultureReportStrengthStrong => 'Most people live it the same way.';
+
+  @override
+  String get cultureReportStrengthMedium =>
+      'There are nuances: not everyone lives it the same way.';
+
+  @override
+  String get cultureReportStrengthWeak =>
+      'Each person or team lives it differently.';
+
+  @override
+  String get cultureReportMirrorHelp =>
+      'We compare how leaders and the rest of the team describe the culture.';
+
+  @override
+  String get cultureReportAgree => 'They agree';
+
+  @override
+  String get cultureReportDiffer => 'They see it differently';
+
+  @override
+  String get cultureReportDifferMuch => 'They see it very differently';
+
+  @override
+  String get cultureReportLevelHigh => 'Lived a lot';
+
+  @override
+  String get cultureReportLevelMid => 'Lived';
+
+  @override
+  String get cultureReportLevelNeutral => 'Neither a lot nor a little';
+
+  @override
+  String get cultureReportLevelLow => 'Lived a little';
+
+  @override
+  String get cultureReportLevelVeryLow => 'Barely lived';
+
+  @override
+  String get cultureReportSaidHelp =>
+      'We check whether the company\'s stated values show up day to day.';
+
+  @override
+  String get cultureReportVerdictLived => 'Lived';
+
+  @override
+  String get cultureReportVerdictPartial => 'Partly';
+
+  @override
+  String get cultureReportVerdictWall => 'Only on paper';
+
+  @override
+  String get cultureReportOfferHelp =>
+      'According to the team, beyond the salary.';
+
+  @override
+  String get cultureReportVoiceHelp =>
+      'Real, anonymous phrases from the people who answered.';
+
+  @override
+  String get cultureReportHiringHelp =>
+      'Use it as an interview guide, not as an automatic filter.';
+
+  @override
+  String get cultureReportImportant => 'Important';
+
+  @override
+  String get cultureReportToReview => 'Worth reviewing';
+
+  @override
+  String get cultureReportMinor => 'Minor';
+
+  @override
+  String get cultureReportSealHelp =>
+      'The seal confirms the culture is well measured and shared. It works as a hiring reference.';
+
+  @override
+  String get cultureReportSealValidated => 'Validated culture';
+
+  @override
+  String get cultureReportSealInProgress => 'Seal on its way';
+
+  @override
+  String get cultureReportConditionAlignment => 'Leaders and team agree';
+
+  @override
+  String get cultureReportConfidenceHigh => 'Solid reading';
+
+  @override
+  String get cultureReportConfidenceMedium => 'Partial reading';
+
+  @override
+  String get cultureReportConfidenceLow => 'Early reading';
+
+  @override
+  String cultureReportVoiceShare(String pct) {
+    return '$pct% of the team mentioned it';
+  }
+
+  @override
+  String cultureReportPromiseLine(String need) {
+    return '$need: leaders mention it, but the team doesn\'t feel it yet.';
+  }
+
+  @override
+  String cultureReportTalexValue(String value) {
+    return 'We relate it to $value.';
+  }
+
+  @override
+  String cultureReportPointLived(String values) {
+    return 'What\'s lived the most: $values.';
+  }
+
+  @override
+  String cultureReportPointAlignment(int value) {
+    return 'Leaders and team agree $value% of the time.';
+  }
+
+  @override
+  String cultureReportPointSample(int count, int needed) {
+    return 'More answers are needed for the seal: $count of $needed from the team so far.';
+  }
+
+  @override
+  String cultureReportGapLeadersMore(String value) {
+    return 'On $value there\'s a gap: leaders feel it\'s lived more than the team does. Worth talking about before using it to attract talent.';
+  }
+
+  @override
+  String cultureReportGapTeamMore(String value) {
+    return 'On $value there\'s a gap: the team lives it more than leaders think. It\'s a strength worth recognizing.';
+  }
+
+  @override
+  String cultureReportAnswersOf(int count, int needed) {
+    return '$count of $needed team answers so far.';
+  }
 }

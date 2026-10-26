@@ -6,6 +6,7 @@ import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/admin/data/datasources/culture_report_data_source.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_organization_report.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_survey_responses.dart';
+import 'package:talex_platform/features/admin/presentation/pages/admin_culture_report_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/l10n/l10n.dart';
 
@@ -35,6 +36,7 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
   var _byPerson = false;
   // null = todos; si no, CultureSurveyResponses.leaders o .employees.
   String? _group;
+  var _showReport = false;
 
   Future<CultureSurveyResponses>? _load() {
     final id = widget.group.id;
@@ -45,6 +47,15 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
 
   @override
   Widget build(BuildContext context) {
+    final id = widget.group.id;
+    if (_showReport && id != null) {
+      return AdminCultureReportView(
+        organizationId: id,
+        organizationName: widget.group.name ?? '',
+        source: widget.source,
+        onBack: () => setState(() => _showReport = false),
+      );
+    }
     final l10n = context.l10n;
     final labels = AdminLabels(context);
     final group = widget.group;
@@ -203,6 +214,11 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
                       onSelected: (_) => setState(() => _group = value),
                     ),
                 ],
+              ),
+              FilledButton.icon(
+                onPressed: () => setState(() => _showReport = true),
+                icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+                label: Text(l10n.cultureReportGenerate),
               ),
             ],
           ),

@@ -122,7 +122,10 @@ class TalexThemeSwitcherState extends State<TalexThemeSwitcher>
     // 2. Imagen del tema actual y tema nuevo debajo.
     final image = await (_precapture ?? _capture());
     _precapture = null;
-    if (!mounted) return;
+    if (!mounted) {
+      image?.dispose();
+      return;
+    }
     if (image == null) {
       await apply();
       _finish();
@@ -134,7 +137,10 @@ class TalexThemeSwitcherState extends State<TalexThemeSwitcher>
     // El tema nuevo reconstruye toda la app en un cuadro pesado; el revelado
     // arranca después para no perder cuadros.
     await WidgetsBinding.instance.endOfFrame;
-    if (!mounted) return;
+    if (!mounted) {
+      image.dispose();
+      return;
+    }
 
     // 3. Revelado real desde donde iba el círculo.
     setState(() {
@@ -142,7 +148,10 @@ class TalexThemeSwitcherState extends State<TalexThemeSwitcher>
       _seedVisible = false;
     });
     await _reveal.forward(from: 0);
-    if (!mounted) return;
+    if (!mounted) {
+      image.dispose();
+      return;
+    }
     _finish();
     image.dispose();
   }
@@ -181,7 +190,7 @@ class TalexThemeSwitcherState extends State<TalexThemeSwitcher>
   void dispose() {
     _seed.dispose();
     _reveal.dispose();
-    _snapshot?.dispose();
+    // La imagen en pantalla la libera _transition al terminar o salir.
     cancelPrepare();
     super.dispose();
   }

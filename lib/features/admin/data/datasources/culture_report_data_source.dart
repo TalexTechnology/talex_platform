@@ -3,6 +3,7 @@ import 'package:talex_platform/core/data/http_remote_database.dart';
 import 'package:talex_platform/core/data/remote_database.dart';
 import 'package:talex_platform/core/supabase/supabase_gateway.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_organization_report.dart';
+import 'package:talex_platform/features/admin/domain/entities/culture_report.dart';
 import 'package:talex_platform/features/admin/domain/entities/culture_survey_responses.dart';
 
 final class CultureReportDataSource {
@@ -29,6 +30,18 @@ final class CultureReportDataSource {
     );
     final payload = rows.firstOrNull;
     return CultureSurveyResponses.fromApi(
+      payload is Map ? Map<String, dynamic>.from(payload) : const {},
+    );
+  }
+
+  /// Informe de cultura ya analizado por el backend para [organizationId].
+  Future<CultureReport> report(String organizationId) async {
+    final rows = await _api.send(
+      'GET',
+      '/api/cultura/${Uri.encodeComponent(organizationId)}/informe',
+    );
+    final payload = rows.firstOrNull;
+    return CultureReport.fromMap(
       payload is Map ? Map<String, dynamic>.from(payload) : const {},
     );
   }
