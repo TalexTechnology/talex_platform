@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
+import 'package:talex_platform/core/theme/talex_theme.dart';
 import 'package:talex_platform/features/admin/domain/entities/assessment_question.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_question_dialogs.dart';
 import 'package:talex_platform/l10n/l10n.dart';
@@ -84,8 +85,11 @@ class _SurveyPreviewDialogState extends State<_SurveyPreviewDialog> {
     final questions = widget.questions;
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
-      shape: AppRadii.shape,
-      backgroundColor: const Color(0xFFEDEEF1),
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadii.card,
+        side: BorderSide(color: AppColors.borderStrong),
+      ),
+      backgroundColor: AppColors.bgRaised,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 920, maxHeight: size.height),
         child: Column(
@@ -100,16 +104,16 @@ class _SurveyPreviewDialogState extends State<_SurveyPreviewDialog> {
                       children: [
                         Text(
                           l10n.adminQuestionsPreviewTitle,
-                          style: const TextStyle(
-                            color: AppColors.ink,
+                          style: TextStyle(
+                            color: AppColors.text,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
                           l10n.adminQuestionsPreviewNote,
-                          style: const TextStyle(
-                            color: AppColors.muted,
+                          style: TextStyle(
+                            color: AppColors.textDimmer,
                             fontSize: 13,
                           ),
                         ),
@@ -150,8 +154,8 @@ class _SurveyPreviewDialogState extends State<_SurveyPreviewDialog> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     _adminCaption(context, questions[_index]),
-                    style: const TextStyle(
-                      color: AppColors.subtitle,
+                    style: TextStyle(
+                      color: AppColors.textMuted,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -162,47 +166,51 @@ class _SurveyPreviewDialogState extends State<_SurveyPreviewDialog> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                 child: Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOut,
-                    width: _mobile ? _mobileWidth : _desktopWidth,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      color: AppColors.dashboardBackground,
-                      borderRadius: AppRadii.border,
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: questions.isEmpty
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32),
-                              child: Text(
-                                l10n.adminQuestionsPreviewEmpty,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: AppColors.subtitle,
+                  child: Theme(
+                    // La pantalla simula la encuesta real, que conserva su diseño claro.
+                    data: talexLegacyTheme(),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOut,
+                      width: _mobile ? _mobileWidth : _desktopWidth,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        color: LegacyColors.background,
+                        borderRadius: AppRadii.border,
+                        border: Border.all(color: LegacyColors.border),
+                      ),
+                      child: questions.isEmpty
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32),
+                                child: Text(
+                                  l10n.adminQuestionsPreviewEmpty,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: LegacyColors.subtitle,
+                                  ),
                                 ),
                               ),
+                            )
+                          : _QuestionScreen(
+                              question: questions[_index],
+                              index: _index,
+                              total: questions.length,
+                              compact: _mobile || size.width < 560,
+                              remaining: _remaining,
+                              selected: _picks[questions[_index].code],
+                              onPick: (value) => setState(
+                                () => _picks[questions[_index].code] = value,
+                              ),
+                              onBack: _index == 0
+                                  ? null
+                                  : () => _goTo(_index - 1),
+                              onNext: _index == questions.length - 1
+                                  ? null
+                                  : () => _goTo(_index + 1),
+                              onRestart: _restart,
                             ),
-                          )
-                        : _QuestionScreen(
-                            question: questions[_index],
-                            index: _index,
-                            total: questions.length,
-                            compact: _mobile || size.width < 560,
-                            remaining: _remaining,
-                            selected: _picks[questions[_index].code],
-                            onPick: (value) => setState(
-                              () => _picks[questions[_index].code] = value,
-                            ),
-                            onBack: _index == 0
-                                ? null
-                                : () => _goTo(_index - 1),
-                            onNext: _index == questions.length - 1
-                                ? null
-                                : () => _goTo(_index + 1),
-                            onRestart: _restart,
-                          ),
+                    ),
                   ),
                 ),
               ),
@@ -260,7 +268,7 @@ class _QuestionScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l10n.questionProgress(index + 1, total),
-                      style: const TextStyle(color: AppColors.subtitle),
+                      style: const TextStyle(color: LegacyColors.subtitle),
                     ),
                   ),
                   if (remaining != null) _TimerChip(seconds: remaining!),
@@ -293,7 +301,7 @@ class _QuestionScreen extends StatelessWidget {
                             fontSize: 13,
                             height: 1.4,
                             letterSpacing: 0.1,
-                            color: AppColors.muted,
+                            color: LegacyColors.muted,
                           ),
                         ),
                         const SizedBox(height: 28),
@@ -311,7 +319,7 @@ class _QuestionScreen extends StatelessWidget {
                               fontSize: 17,
                               height: 1.4,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.ink,
+                              color: LegacyColors.ink,
                             ),
                           ),
                           const SizedBox(height: 22),
@@ -383,7 +391,7 @@ class _PairScale extends StatelessWidget {
           fontSize: 14.5,
           height: 1.45,
           fontWeight: FontWeight.w500,
-          color: leaning ? AppColors.primaryButton : AppColors.ink,
+          color: leaning ? LegacyColors.brandBlue : LegacyColors.ink,
         ),
         child: Text(text),
       ),
@@ -433,7 +441,7 @@ class _SegmentBar extends StatelessWidget {
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: AppColors.softBorder),
+      border: Border.all(color: LegacyColors.softBorder),
       boxShadow: const [
         BoxShadow(
           color: Color(0x0F071326),
@@ -447,7 +455,7 @@ class _SegmentBar extends StatelessWidget {
       children: [
         for (var index = 0; index < count; index++) ...[
           if (index > 0)
-            const VerticalDivider(width: 1, color: AppColors.softBorder),
+            const VerticalDivider(width: 1, color: LegacyColors.softBorder),
           Expanded(
             child: Semantics(
               button: true,
@@ -455,7 +463,7 @@ class _SegmentBar extends StatelessWidget {
               label: labels?[index] ?? '${index + 1} / $count',
               child: Material(
                 color: selected == index + 1
-                    ? AppColors.primaryButton
+                    ? LegacyColors.brandBlue
                     : Colors.white,
                 child: InkWell(
                   key: ValueKey('scale-${index + 1}'),
@@ -476,7 +484,7 @@ class _SegmentBar extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                                 color: selected == index + 1
                                     ? Colors.white
-                                    : AppColors.subtitle,
+                                    : LegacyColors.subtitle,
                               ),
                             ),
                           ),
@@ -499,8 +507,8 @@ class _TimerChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final expired = seconds <= 0;
     final color = expired || seconds <= 5
-        ? const Color(0xFFB42318)
-        : AppColors.subtitle;
+        ? LegacyColors.danger
+        : LegacyColors.subtitle;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

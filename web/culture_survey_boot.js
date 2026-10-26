@@ -11,6 +11,7 @@
   // ?demo=1: vista previa para el equipo TaleX. Se ve y se comporta igual que
   // la encuesta real; la única diferencia es que al final no envía nada.
   var isDemo = !isReport && /(?:^|[?&])demo=(?:1|true)(?:&|$)/.test(String(location.search || ''));
+  var isPreview = isDemo && orgId === 'preview';
   var API = 'https://api.talex.com.co';
   var LOGO = '/talex_logo_horizontal_fondo_oscuro.png';
 
@@ -172,6 +173,62 @@
     };
   }
 
+  // /cultura/preview?demo=1: el admin deja el banco activo en localStorage
+  // (CultureSurveyLink.previewStorageKey) y aquí se arma la encuesta como lo
+  // hace el backend, pero sin empresa: las listas dinámicas usan sus opciones
+  // por defecto (fallback_options).
+  function previewSurvey() {
+    var raw = null;
+    try {
+      raw = JSON.parse(localStorage.getItem('talex.cultureSurveyPreview') || 'null');
+    } catch (_) {}
+    if (!raw) throw new Error('Abre la vista previa desde el panel de administración.');
+    var copy = raw.survey || {};
+    var rows = (raw.questions || [])
+      .filter(function (row) { return row && row.kind !== 'survey' && row.is_active !== false; })
+      .sort(function (a, b) { return (a.sort_order || 0) - (b.sort_order || 0); });
+    return {
+      title: copy.title || 'Encuesta de cultura para empleados',
+      intro: copy.intro || 'Responda con calma. No hay respuestas correctas: nos interesa cómo se vive el trabajo en su organización.',
+      questions: rows.map(function (row) {
+        var source = row.options_source || 'static';
+        var fallback = row.fallback_options || [];
+        return {
+          id: row.code,
+          code: row.code,
+          section: row.section,
+          sectionTitle: row.section_title,
+          name: row.name,
+          technique: row.technique,
+          statement: row.statement,
+          instruction: row.instruction,
+          format: row.format,
+          options: previewItems(source === 'organization_areas' ? fallback : row.options),
+          required: row.required !== false,
+          askForecast: Boolean(row.ask_forecast),
+          forecastPrompt: row.forecast_prompt || '',
+          items: previewItems(source === 'declared_values' ? fallback : row.items),
+          scale: row.scale || [],
+          yesCount: row.yes_count == null ? null : row.yes_count,
+          noCount: row.no_count == null ? null : row.no_count,
+          maxLength: row.max_length == null ? null : row.max_length,
+        };
+      }),
+    };
+  }
+
+  function previewItems(values) {
+    var seen = {};
+    var next = [];
+    (values || []).forEach(function (raw) {
+      var label = String((raw && (raw.label || raw.name)) || raw || '').trim();
+      if (!label || seen[label.toLowerCase()]) return;
+      seen[label.toLowerCase()] = true;
+      next.push({id: String((raw && raw.id) || 'v' + (next.length + 1)), label: label, dimension: (raw && raw.dimension) || null});
+    });
+    return next;
+  }
+
   async function load() {
     try {
       if (isReport) {
@@ -184,6 +241,11 @@
             ? 'Cuando el equipo alcance el mínimo de participación, aquí estará la lectura cultural.'
             : 'Ya hay suficientes respuestas para armar el informe.',
         );
+        return;
+      }
+      if (isPreview) {
+        survey = previewSurvey();
+        startScreen();
         return;
       }
       var response = await fetch(API + '/api/cultura/' + encodeURIComponent(orgId));

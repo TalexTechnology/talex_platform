@@ -78,7 +78,8 @@ Future<bool> confirmCultureQuestionDelete(
         FilledButton(
           onPressed: () => Navigator.of(dialogContext).pop(true),
           style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFFB42318),
+            backgroundColor: AppColors.danger,
+            foregroundColor: AppColors.bg,
           ),
           child: Text(l10n.adminQuestionsDelete),
         ),
@@ -100,7 +101,6 @@ Future<(String, String)?> showCultureSurveyEditor(
 
 InputDecoration _decoration(String label) => InputDecoration(
   labelText: label,
-  border: const OutlineInputBorder(),
   alignLabelWithHint: true,
 );
 
@@ -121,8 +121,8 @@ Widget _dialogFrame({
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: AppColors.ink,
+            style: TextStyle(
+              color: AppColors.text,
               fontSize: 24,
               fontWeight: FontWeight.w700,
             ),
@@ -195,9 +195,6 @@ class _SurveyEditorState extends State<_SurveyEditor> {
             if (!(_formKey.currentState?.validate() ?? false)) return;
             Navigator.of(context).pop((_title.text.trim(), _intro.text.trim()));
           },
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
-          ),
           child: Text(l10n.saveChanges),
         ),
       ],
@@ -411,7 +408,7 @@ class _CultureQuestionEditorState extends State<_CultureQuestionEditor> {
             children: [
               Text(
                 context.l10n.cultureQuestionsUsed,
-                style: const TextStyle(color: AppColors.muted, fontSize: 12),
+                style: TextStyle(color: AppColors.textDimmer, fontSize: 12),
               ),
               for (final value in suggestions)
                 ActionChip(
@@ -578,8 +575,8 @@ class _CultureQuestionEditorState extends State<_CultureQuestionEditor> {
             const SizedBox(height: 6),
             Text(
               l10n.cultureQuestionsOptions,
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.text,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -618,9 +615,6 @@ class _CultureQuestionEditorState extends State<_CultureQuestionEditor> {
         const SizedBox(width: 12),
         FilledButton(
           onPressed: _submit,
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primaryButton,
-          ),
           child: Text(l10n.saveChanges),
         ),
       ],

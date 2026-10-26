@@ -52,13 +52,13 @@ class SkeletonBox extends StatelessWidget {
     width: width ?? double.infinity,
     height: height,
     decoration: BoxDecoration(
-      color: const Color(0xFFE9EAEE),
+      color: AppColors.surface2,
       borderRadius: BorderRadius.circular(radius),
     ),
   );
 }
 
-// Mismo marco que los paneles blancos del dashboard.
+// Mismo marco que los paneles (TalexPanel).
 class SkeletonCard extends StatelessWidget {
   const SkeletonCard({super.key, required this.child});
 
@@ -67,9 +67,9 @@ class SkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: const Color(0xFFC9CBD1)),
-      borderRadius: AppRadii.border,
+      color: AppColors.bgRaised,
+      border: Border.all(color: AppColors.border),
+      borderRadius: AppRadii.card,
     ),
     child: child,
   );
@@ -192,7 +192,7 @@ class SkeletonList extends StatelessWidget {
       child: Column(
         children: [
           for (var index = 0; index < count; index++) ...[
-            if (index > 0) const Divider(height: 1, color: AppColors.divider),
+            if (index > 0) Divider(height: 1, color: AppColors.border),
             const SkeletonListTile(),
           ],
         ],

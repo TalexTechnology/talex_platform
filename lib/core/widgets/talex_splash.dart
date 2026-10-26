@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/widgets/talex_logo.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 
 // Pantalla de carga de marca: el logo respira, una barra con el degradado de
 // TaleX recorre la pista y los [messages] avanzan uno a uno (se queda en el
@@ -89,15 +90,7 @@ class _TalexSplashState extends State<TalexSplash>
         : widget.messages[_index.clamp(0, widget.messages.length - 1)];
     final breath = CurvedAnimation(parent: _breath, curve: Curves.easeInOut);
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment(0, -0.15),
-            radius: 0.9,
-            colors: [Color(0x161D7BD6), Color(0x00FBF9FA)],
-          ),
-        ),
+      body: TalexGlow(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -139,8 +132,8 @@ class _TalexSplashState extends State<TalexSplash>
                       child: Text(
                         message,
                         key: ValueKey(message),
-                        style: const TextStyle(
-                          color: AppColors.subtitle,
+                        style: TextStyle(
+                          color: AppColors.textMuted,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.2,
@@ -168,7 +161,7 @@ class _SweepBar extends StatelessWidget {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: BorderRadius.circular(3),
     child: ColoredBox(
-      color: const Color(0xFFE4E9F0),
+      color: AppColors.surface2,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
@@ -189,7 +182,7 @@ class _SweepBar extends StatelessWidget {
                 ],
               );
             },
-            child: const DecoratedBox(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(3)),
                 gradient: LinearGradient(

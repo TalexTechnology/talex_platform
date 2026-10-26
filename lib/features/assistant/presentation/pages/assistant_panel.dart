@@ -155,7 +155,7 @@ class _AssistantPanelState extends State<AssistantPanel>
         child: Material(
           color: AssistantStyle.canvas,
           child: DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(left: BorderSide(color: AssistantStyle.line)),
             ),
             child: BlocConsumer<AssistantBloc, AssistantState>(
@@ -269,7 +269,7 @@ class _Header extends StatelessWidget {
     };
     final live = phase != AssistantPhase.idle;
     return DecoratedBox(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AssistantStyle.line)),
       ),
       child: Padding(
@@ -394,14 +394,14 @@ class _Suggestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AssistantStyle.wash,
       shape: const StadiumBorder(),
       child: InkWell(
         customBorder: const StadiumBorder(),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-          decoration: const ShapeDecoration(
+          decoration: ShapeDecoration(
             shape: StadiumBorder(side: BorderSide(color: AssistantStyle.line)),
           ),
           child: Text(

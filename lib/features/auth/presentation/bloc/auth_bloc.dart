@@ -101,7 +101,12 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
         displayName: event.displayName,
       ),
     );
-    await _emitAuthenticated(emit, result, pin: event.pin, createdAccount: true);
+    await _emitAuthenticated(
+      emit,
+      result,
+      pin: event.pin,
+      createdAccount: true,
+    );
   }
 
   Future<void> _onGoogleSignInRequested(
@@ -161,20 +166,15 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await activated.fold(
       (failure) async {
         emit(
-          state.copyWith(
-            status: AuthStatus.needsInvitePin,
-            failure: failure,
-          ),
+          state.copyWith(status: AuthStatus.needsInvitePin, failure: failure),
         );
       },
       (_) async {
         final refreshed = await _getCurrentUser();
         emit(
           refreshed.fold(
-            (failure) => state.copyWith(
-              status: AuthStatus.failure,
-              failure: failure,
-            ),
+            (failure) =>
+                state.copyWith(status: AuthStatus.failure, failure: failure),
             (user) => state.copyWith(
               status: user == null
                   ? AuthStatus.unauthenticated
@@ -192,13 +192,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRespondentInviteRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        status: AuthStatus.loading,
-        failure: null,
-        user: null,
-      ),
-    );
+    emit(state.copyWith(status: AuthStatus.loading, failure: null, user: null));
 
     final talent = _talentRepository;
     final auth = _authRepository;
@@ -214,9 +208,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    final redeemed = await talent.redeemRespondentInvite(
-      token: event.token,
-    );
+    final redeemed = await talent.redeemRespondentInvite(token: event.token);
 
     await redeemed.fold(
       (failure) async {
@@ -229,9 +221,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
       (customToken) async {
-        final signedIn = await auth.signInWithCustomToken(
-          token: customToken,
-        );
+        final signedIn = await auth.signInWithCustomToken(token: customToken);
 
         await signedIn.fold(
           (failure) async {
@@ -303,47 +293,50 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     String? pin,
     bool createdAccount = false,
   }) async {
-    await result.fold((failure) async {
-      emit(
-        state.copyWith(
-          status: AuthStatus.failure,
-          failure: failure,
-          user: null,
-        ),
-      );
-    }, (user) async {
-      var next = user;
-      final talent = _talentRepository;
-      if (talent != null && pin != null && pin.trim().isNotEmpty) {
-        final activated = await talent.activateWithPin(pin: pin.trim());
-        final failed = activated.fold((failure) => failure, (_) => null);
-        if (failed != null) {
-          if (createdAccount) {
-            await _authRepository?.discardCurrentUser();
-          } else {
-            await _signOut();
+    await result.fold(
+      (failure) async {
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            failure: failure,
+            user: null,
+          ),
+        );
+      },
+      (user) async {
+        var next = user;
+        final talent = _talentRepository;
+        if (talent != null && pin != null && pin.trim().isNotEmpty) {
+          final activated = await talent.activateWithPin(pin: pin.trim());
+          final failed = activated.fold((failure) => failure, (_) => null);
+          if (failed != null) {
+            if (createdAccount) {
+              await _authRepository?.discardCurrentUser();
+            } else {
+              await _signOut();
+            }
+            emit(
+              state.copyWith(
+                status: AuthStatus.failure,
+                failure: failed,
+                user: null,
+              ),
+            );
+            return;
           }
-          emit(
-            state.copyWith(
-              status: AuthStatus.failure,
-              failure: failed,
-              user: null,
-            ),
-          );
-          return;
+          final refreshed = await _getCurrentUser();
+          refreshed.fold((_) {}, (current) {
+            if (current != null) next = current;
+          });
         }
-        final refreshed = await _getCurrentUser();
-        refreshed.fold((_) {}, (current) {
-          if (current != null) next = current;
-        });
-      }
-      emit(
-        state.copyWith(
-          status: AuthStatus.authenticated,
-          user: next,
-          failure: null,
-        ),
-      );
-    });
+        emit(
+          state.copyWith(
+            status: AuthStatus.authenticated,
+            user: next,
+            failure: null,
+          ),
+        );
+      },
+    );
   }
 }

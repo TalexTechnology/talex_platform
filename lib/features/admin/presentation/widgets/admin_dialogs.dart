@@ -36,7 +36,6 @@ Future<void> showAdminCreateCompany(BuildContext context) {
           controller: name,
           decoration: InputDecoration(
             labelText: context.l10n.companyName,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -44,7 +43,6 @@ Future<void> showAdminCreateCompany(BuildContext context) {
           initialValue: status,
           decoration: InputDecoration(
             labelText: context.l10n.statusLabel,
-            border: const OutlineInputBorder(),
           ),
           items: CompanyStatus.values
               .map(
@@ -61,7 +59,6 @@ Future<void> showAdminCreateCompany(BuildContext context) {
           controller: plan,
           decoration: InputDecoration(
             labelText: context.l10n.plan,
-            border: const OutlineInputBorder(),
           ),
         ),
       ],
@@ -89,7 +86,6 @@ Future<void> showAdminCreateProcess(BuildContext context, List<Company> companie
           initialValue: companyId,
           decoration: InputDecoration(
             labelText: context.l10n.adminCompanies,
-            border: const OutlineInputBorder(),
           ),
           items: companies
               .map(
@@ -103,7 +99,6 @@ Future<void> showAdminCreateProcess(BuildContext context, List<Company> companie
           controller: name,
           decoration: InputDecoration(
             labelText: context.l10n.adminProcesses,
-            border: const OutlineInputBorder(),
           ),
         ),
       ],
@@ -145,7 +140,6 @@ Future<void> showAdminCreatePerson(
           initialValue: companyId,
           decoration: InputDecoration(
             labelText: context.l10n.adminCompanies,
-            border: const OutlineInputBorder(),
           ),
           items: companies
               .map(
@@ -159,7 +153,6 @@ Future<void> showAdminCreatePerson(
           initialValue: processId,
           decoration: InputDecoration(
             labelText: context.l10n.adminProcesses,
-            border: const OutlineInputBorder(),
           ),
           items: processes
               .map(
@@ -173,7 +166,6 @@ Future<void> showAdminCreatePerson(
           controller: name,
           decoration: InputDecoration(
             labelText: context.l10n.personName,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -181,7 +173,6 @@ Future<void> showAdminCreatePerson(
           initialValue: status,
           decoration: InputDecoration(
             labelText: context.l10n.statusLabel,
-            border: const OutlineInputBorder(),
           ),
           items: EvaluationStatus.values
               .map(
@@ -197,7 +188,6 @@ Future<void> showAdminCreatePerson(
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: context.l10n.affinityScore,
-            border: const OutlineInputBorder(),
           ),
         ),
       ],
@@ -234,7 +224,6 @@ Future<void> showAdminCreateDeal(BuildContext context, List<Company> companies) 
           initialValue: companyId,
           decoration: InputDecoration(
             labelText: context.l10n.adminCompanies,
-            border: const OutlineInputBorder(),
           ),
           items: companies
               .map(
@@ -248,7 +237,6 @@ Future<void> showAdminCreateDeal(BuildContext context, List<Company> companies) 
           initialValue: stage,
           decoration: InputDecoration(
             labelText: context.l10n.statusLabel,
-            border: const OutlineInputBorder(),
           ),
           items: DealStage.values
               .map((item) => DropdownMenuItem(value: item, child: Text(labels.deal(item))))
@@ -261,7 +249,6 @@ Future<void> showAdminCreateDeal(BuildContext context, List<Company> companies) 
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: context.l10n.estimatedValue,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -269,7 +256,6 @@ Future<void> showAdminCreateDeal(BuildContext context, List<Company> companies) 
           controller: owner,
           decoration: InputDecoration(
             labelText: context.l10n.owner,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -277,7 +263,6 @@ Future<void> showAdminCreateDeal(BuildContext context, List<Company> companies) 
           controller: next,
           decoration: InputDecoration(
             labelText: context.l10n.nextAction,
-            border: const OutlineInputBorder(),
           ),
         ),
       ],
@@ -391,7 +376,6 @@ class _EditCompanyDialogState extends State<_EditCompanyDialog> {
           controller: _name,
           decoration: InputDecoration(
             labelText: l10n.companyName,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -399,7 +383,6 @@ class _EditCompanyDialogState extends State<_EditCompanyDialog> {
           controller: _nit,
           decoration: InputDecoration(
             labelText: l10n.nit,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -408,7 +391,6 @@ class _EditCompanyDialogState extends State<_EditCompanyDialog> {
           initialValue: _status,
           decoration: InputDecoration(
             labelText: l10n.statusLabel,
-            border: const OutlineInputBorder(),
           ),
           items: [
             for (final status in CompanyStatus.values)
@@ -439,7 +421,6 @@ class _EditCompanyDialogState extends State<_EditCompanyDialog> {
           controller: _website,
           decoration: InputDecoration(
             labelText: l10n.website,
-            border: const OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 14),
@@ -452,7 +433,6 @@ class _EditCompanyDialogState extends State<_EditCompanyDialog> {
           maxLines: 3,
           decoration: InputDecoration(
             labelText: l10n.description,
-            border: const OutlineInputBorder(),
           ),
         ),
       ],
@@ -489,7 +469,6 @@ Future<void> showAdminCreateSale(BuildContext context, List<Company> companies) 
             initialValue: companyId,
             decoration: InputDecoration(
               labelText: context.l10n.adminCompanies,
-              border: const OutlineInputBorder(),
             ),
             items: companies
                 .map(
@@ -504,7 +483,6 @@ Future<void> showAdminCreateSale(BuildContext context, List<Company> companies) 
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: context.l10n.amount,
-              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 14),
@@ -512,7 +490,6 @@ Future<void> showAdminCreateSale(BuildContext context, List<Company> companies) 
             controller: product,
             decoration: InputDecoration(
               labelText: context.l10n.product,
-              border: const OutlineInputBorder(),
             ),
           ),
           SwitchListTile(
@@ -557,7 +534,6 @@ Future<void> showCompanyLifecycleDialog(
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogContext, true),
-          style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
           child: Text(l10n.confirmAction),
         ),
       ],
@@ -591,8 +567,8 @@ class _AdminFormDialog extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                color: AppColors.ink,
+              style: TextStyle(
+                color: AppColors.text,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
               ),
@@ -602,7 +578,6 @@ class _AdminFormDialog extends StatelessWidget {
             const SizedBox(height: 22),
             FilledButton(
               onPressed: onSubmit,
-              style: FilledButton.styleFrom(backgroundColor: AppColors.primaryButton),
               child: Text(context.l10n.saveChanges),
             ),
           ],

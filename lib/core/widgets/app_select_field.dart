@@ -42,7 +42,6 @@ class AppSelectField extends StatelessWidget {
         alignment: Alignment.center,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
           alignLabelWithHint: true,
         ),
         items: [

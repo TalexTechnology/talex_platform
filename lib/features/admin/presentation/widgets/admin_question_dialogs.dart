@@ -91,7 +91,8 @@ Future<bool> confirmAssessmentQuestionDelete(
         FilledButton(
           onPressed: () => Navigator.of(dialogContext).pop(true),
           style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFFB42318),
+            backgroundColor: AppColors.danger,
+            foregroundColor: AppColors.bg,
           ),
           child: Text(l10n.adminQuestionsDelete),
         ),
@@ -125,9 +126,8 @@ Future<bool> _confirm(
         FilledButton(
           onPressed: () => Navigator.of(dialogContext).pop(true),
           style: FilledButton.styleFrom(
-            backgroundColor: destructive
-                ? const Color(0xFFB42318)
-                : AppColors.primaryButton,
+            backgroundColor: destructive ? AppColors.danger : AppColors.green,
+                foregroundColor: AppColors.bg,
           ),
           child: Text(action),
         ),
@@ -334,7 +334,6 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
       InputDecoration(
         labelText: label,
         helperText: helper,
-        border: const OutlineInputBorder(),
         alignLabelWithHint: true,
       );
 
@@ -386,8 +385,8 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
               children: [
                 Text(
                   _isNew ? l10n.adminQuestionsNew : l10n.adminQuestionsEdit,
-                  style: const TextStyle(
-                    color: AppColors.ink,
+                  style: TextStyle(
+                    color: AppColors.text,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                   ),
@@ -522,9 +521,6 @@ class _QuestionEditorDialogState extends State<_QuestionEditorDialog> {
                     const SizedBox(width: 12),
                     FilledButton(
                       onPressed: _submit,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primaryButton,
-                      ),
                       child: Text(l10n.saveChanges),
                     ),
                   ],

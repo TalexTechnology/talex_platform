@@ -4639,6 +4639,840 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Se eliminaron todas las preguntas.'**
   String get adminQuestionsDeletedAll;
+
+  /// No description provided for @authBrandEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Fit cultural'**
+  String get authBrandEyebrow;
+
+  /// No description provided for @authBrandTitleLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Contrata personas que'**
+  String get authBrandTitleLead;
+
+  /// No description provided for @authBrandTitleAccent.
+  ///
+  /// In es, this message translates to:
+  /// **'encajan.'**
+  String get authBrandTitleAccent;
+
+  /// No description provided for @authBrandBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Medimos el fit cultural entre cada candidato y tu empresa, antes de contratar. El fit informa; la persona decide.'**
+  String get authBrandBody;
+
+  /// No description provided for @authBrandExample.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejemplo'**
+  String get authBrandExample;
+
+  /// No description provided for @authBrandCompany.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresa'**
+  String get authBrandCompany;
+
+  /// No description provided for @authBrandCandidate.
+  ///
+  /// In es, this message translates to:
+  /// **'Candidato'**
+  String get authBrandCandidate;
+
+  /// No description provided for @authBrandDimCollaboration.
+  ///
+  /// In es, this message translates to:
+  /// **'Colaboración'**
+  String get authBrandDimCollaboration;
+
+  /// No description provided for @authBrandDimAutonomy.
+  ///
+  /// In es, this message translates to:
+  /// **'Autonomía'**
+  String get authBrandDimAutonomy;
+
+  /// No description provided for @authBrandDimStructure.
+  ///
+  /// In es, this message translates to:
+  /// **'Estructura'**
+  String get authBrandDimStructure;
+
+  /// No description provided for @authBrandDimInnovation.
+  ///
+  /// In es, this message translates to:
+  /// **'Innovación'**
+  String get authBrandDimInnovation;
+
+  /// No description provided for @authBrandAligned.
+  ///
+  /// In es, this message translates to:
+  /// **'Alineado'**
+  String get authBrandAligned;
+
+  /// No description provided for @authBrandFriction.
+  ///
+  /// In es, this message translates to:
+  /// **'Fricción'**
+  String get authBrandFriction;
+
+  /// No description provided for @authSignInEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Plataforma TaleX'**
+  String get authSignInEyebrow;
+
+  /// No description provided for @adminEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Administración TaleX'**
+  String get adminEyebrow;
+
+  /// No description provided for @companyEyebrow.
+  ///
+  /// In es, this message translates to:
+  /// **'Espacio de empresa'**
+  String get companyEyebrow;
+
+  /// No description provided for @themeSwitchToLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar a tema claro'**
+  String get themeSwitchToLight;
+
+  /// No description provided for @themeSwitchToDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar a tema oscuro'**
+  String get themeSwitchToDark;
+
+  /// No description provided for @appearance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get appearance;
+
+  /// No description provided for @appearanceDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo se ve TaleX en este dispositivo.'**
+  String get appearanceDescription;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get themeDark;
+
+  /// No description provided for @cultureResponsesBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Mi cultura'**
+  String get cultureResponsesBack;
+
+  /// No description provided for @cultureResponsesAnonymous.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuestas anónimas: no se guarda quién respondió y el orden es aleatorio.'**
+  String get cultureResponsesAnonymous;
+
+  /// No description provided for @cultureResponsesSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen'**
+  String get cultureResponsesSummary;
+
+  /// No description provided for @cultureResponsesIndividual.
+  ///
+  /// In es, this message translates to:
+  /// **'Por persona'**
+  String get cultureResponsesIndividual;
+
+  /// No description provided for @cultureResponsesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún nadie del equipo ha respondido la encuesta de esta empresa.'**
+  String get cultureResponsesEmpty;
+
+  /// No description provided for @cultureResponsesError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las respuestas.'**
+  String get cultureResponsesError;
+
+  /// No description provided for @cultureResponsesMost.
+  ///
+  /// In es, this message translates to:
+  /// **'Más probable'**
+  String get cultureResponsesMost;
+
+  /// No description provided for @cultureResponsesLeast.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos probable'**
+  String get cultureResponsesLeast;
+
+  /// No description provided for @cultureResponsesYes.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí'**
+  String get cultureResponsesYes;
+
+  /// No description provided for @cultureResponsesNo.
+  ///
+  /// In es, this message translates to:
+  /// **'No'**
+  String get cultureResponsesNo;
+
+  /// No description provided for @cultureResponsesNoAnswers.
+  ///
+  /// In es, this message translates to:
+  /// **'Nadie respondió esta pregunta.'**
+  String get cultureResponsesNoAnswers;
+
+  /// No description provided for @cultureResponsesLead.
+  ///
+  /// In es, this message translates to:
+  /// **'Lead de la landing'**
+  String get cultureResponsesLead;
+
+  /// No description provided for @cultureResponsesRespondents.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuestas'**
+  String get cultureResponsesRespondents;
+
+  /// No description provided for @cultureResponsesQuestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas'**
+  String get cultureResponsesQuestions;
+
+  /// No description provided for @cultureResponsesSurveyLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir encuesta de la empresa'**
+  String get cultureResponsesSurveyLink;
+
+  /// No description provided for @cultureResponsesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 respuesta anónima} other{{count} respuestas anónimas}}'**
+  String cultureResponsesCount(int count);
+
+  /// No description provided for @cultureResponsesPerson.
+  ///
+  /// In es, this message translates to:
+  /// **'Respuesta {index}'**
+  String cultureResponsesPerson(int index);
+
+  /// No description provided for @cultureResponsesAnswered.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} de {total} respondieron'**
+  String cultureResponsesAnswered(int count, int total);
+
+  /// No description provided for @cultureResponsesForecast.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronóstico promedio: {value}%'**
+  String cultureResponsesForecast(String value);
+
+  /// No description provided for @cultureResponsesAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get cultureResponsesAll;
+
+  /// No description provided for @cultureResponsesLeaders.
+  ///
+  /// In es, this message translates to:
+  /// **'Líderes'**
+  String get cultureResponsesLeaders;
+
+  /// No description provided for @cultureResponsesEmployees.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleados'**
+  String get cultureResponsesEmployees;
+
+  /// No description provided for @cultureResponsesLeader.
+  ///
+  /// In es, this message translates to:
+  /// **'Líder'**
+  String get cultureResponsesLeader;
+
+  /// No description provided for @cultureResponsesEmployee.
+  ///
+  /// In es, this message translates to:
+  /// **'Empleado'**
+  String get cultureResponsesEmployee;
+
+  /// No description provided for @cultureReportGenerate.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar reporte'**
+  String get cultureReportGenerate;
+
+  /// No description provided for @cultureReportBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a las respuestas'**
+  String get cultureReportBack;
+
+  /// No description provided for @cultureReportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Informe de cultura'**
+  String get cultureReportTitle;
+
+  /// No description provided for @cultureReportError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos generar el informe.'**
+  String get cultureReportError;
+
+  /// No description provided for @cultureReportPending.
+  ///
+  /// In es, this message translates to:
+  /// **'El informe aún no está listo: faltan respuestas del equipo para analizar la cultura.'**
+  String get cultureReportPending;
+
+  /// No description provided for @cultureReportCoverage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobertura'**
+  String get cultureReportCoverage;
+
+  /// No description provided for @cultureReportKeyPoints.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo más importante'**
+  String get cultureReportKeyPoints;
+
+  /// No description provided for @cultureReportTruth.
+  ///
+  /// In es, this message translates to:
+  /// **'Un punto para conversar'**
+  String get cultureReportTruth;
+
+  /// No description provided for @cultureReportSummary.
+  ///
+  /// In es, this message translates to:
+  /// **'En pocas palabras'**
+  String get cultureReportSummary;
+
+  /// No description provided for @cultureReportDna.
+  ///
+  /// In es, this message translates to:
+  /// **'Así es la cultura hoy'**
+  String get cultureReportDna;
+
+  /// No description provided for @cultureReportDominant.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que más se vive'**
+  String get cultureReportDominant;
+
+  /// No description provided for @cultureReportWeak.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que menos se vive'**
+  String get cultureReportWeak;
+
+  /// No description provided for @cultureReportStrength.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué tan compartida es'**
+  String get cultureReportStrength;
+
+  /// No description provided for @cultureReportMirror.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Líderes y equipo ven lo mismo?'**
+  String get cultureReportMirror;
+
+  /// No description provided for @cultureReportAlignment.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué tanto coinciden'**
+  String get cultureReportAlignment;
+
+  /// No description provided for @cultureReportBlindSpots.
+  ///
+  /// In es, this message translates to:
+  /// **'Donde el liderazgo lo ve distinto'**
+  String get cultureReportBlindSpots;
+
+  /// No description provided for @cultureReportSaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que se dice y lo que se vive'**
+  String get cultureReportSaid;
+
+  /// No description provided for @cultureReportCoherence.
+  ///
+  /// In es, this message translates to:
+  /// **'Coincidencia'**
+  String get cultureReportCoherence;
+
+  /// No description provided for @cultureReportOffer.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que de verdad ofrece trabajar aquí'**
+  String get cultureReportOffer;
+
+  /// No description provided for @cultureReportOffered.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que sí encuentras'**
+  String get cultureReportOffered;
+
+  /// No description provided for @cultureReportNotOffered.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que aún no está'**
+  String get cultureReportNotOffered;
+
+  /// No description provided for @cultureReportPromises.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuidado al prometer'**
+  String get cultureReportPromises;
+
+  /// No description provided for @cultureReportVoice.
+  ///
+  /// In es, this message translates to:
+  /// **'En palabras del equipo'**
+  String get cultureReportVoice;
+
+  /// No description provided for @cultureReportDoingWell.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí le va bien a quien…'**
+  String get cultureReportDoingWell;
+
+  /// No description provided for @cultureReportDoingBadly.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí le cuesta más a quien…'**
+  String get cultureReportDoingBadly;
+
+  /// No description provided for @cultureReportHiring.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué significa para contratar'**
+  String get cultureReportHiring;
+
+  /// No description provided for @cultureReportThrives.
+  ///
+  /// In es, this message translates to:
+  /// **'Quién encaja bien aquí'**
+  String get cultureReportThrives;
+
+  /// No description provided for @cultureReportAtRisk.
+  ///
+  /// In es, this message translates to:
+  /// **'A quién le podría costar más'**
+  String get cultureReportAtRisk;
+
+  /// No description provided for @cultureReportRisks.
+  ///
+  /// In es, this message translates to:
+  /// **'Para tener en cuenta'**
+  String get cultureReportRisks;
+
+  /// No description provided for @cultureReportMitigation.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué hacer'**
+  String get cultureReportMitigation;
+
+  /// No description provided for @cultureReportQuestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Preguntas para la entrevista'**
+  String get cultureReportQuestions;
+
+  /// No description provided for @cultureReportHonest.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo contárselo a los candidatos'**
+  String get cultureReportHonest;
+
+  /// No description provided for @cultureReportRecommendations.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos pasos'**
+  String get cultureReportRecommendations;
+
+  /// No description provided for @cultureReportOwner.
+  ///
+  /// In es, this message translates to:
+  /// **'Quién lo lidera'**
+  String get cultureReportOwner;
+
+  /// No description provided for @cultureReportDeadline.
+  ///
+  /// In es, this message translates to:
+  /// **'En'**
+  String get cultureReportDeadline;
+
+  /// No description provided for @cultureReportSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Sabrás que funcionó cuando'**
+  String get cultureReportSuccess;
+
+  /// No description provided for @cultureReportSeal.
+  ///
+  /// In es, this message translates to:
+  /// **'Sello TaleX'**
+  String get cultureReportSeal;
+
+  /// No description provided for @cultureReportSealMet.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya cumple'**
+  String get cultureReportSealMet;
+
+  /// No description provided for @cultureReportSealPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Le falta'**
+  String get cultureReportSealPending;
+
+  /// No description provided for @cultureReportQuality.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobre estas respuestas'**
+  String get cultureReportQuality;
+
+  /// No description provided for @cultureReportAlerts.
+  ///
+  /// In es, this message translates to:
+  /// **'Ten en cuenta'**
+  String get cultureReportAlerts;
+
+  /// No description provided for @cultureReportSincerity.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobre la sinceridad de las respuestas'**
+  String get cultureReportSincerity;
+
+  /// No description provided for @cultureReportLimitations.
+  ///
+  /// In es, this message translates to:
+  /// **'Límites de este informe'**
+  String get cultureReportLimitations;
+
+  /// No description provided for @cultureReportRespondentsOf.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} de {needed} respuestas'**
+  String cultureReportRespondentsOf(int count, int needed);
+
+  /// No description provided for @cultureReportCutoff.
+  ///
+  /// In es, this message translates to:
+  /// **'Corte: {date}'**
+  String cultureReportCutoff(String date);
+
+  /// No description provided for @cultureReportPriority.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {value}'**
+  String cultureReportPriority(int value);
+
+  /// No description provided for @cultureReportAreaShare.
+  ///
+  /// In es, this message translates to:
+  /// **'{area}: {staff}% de la plantilla · {answers}% de las respuestas'**
+  String cultureReportAreaShare(String area, String staff, String answers);
+
+  /// No description provided for @cultureReportSealValidity.
+  ///
+  /// In es, this message translates to:
+  /// **'Vigencia: {months} meses'**
+  String cultureReportSealValidity(int months);
+
+  /// No description provided for @cultureReportIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Así describe tu equipo la cultura que vive hoy. Úsalo para conversar y decidir mejor: el fit informa, la persona decide.'**
+  String get cultureReportIntro;
+
+  /// No description provided for @cultureReportDnaHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'El estilo que más se repite en las respuestas del equipo.'**
+  String get cultureReportDnaHelp;
+
+  /// No description provided for @cultureReportStrengthStrong.
+  ///
+  /// In es, this message translates to:
+  /// **'La mayoría la vive de la misma forma.'**
+  String get cultureReportStrengthStrong;
+
+  /// No description provided for @cultureReportStrengthMedium.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay matices: no todos la viven igual.'**
+  String get cultureReportStrengthMedium;
+
+  /// No description provided for @cultureReportStrengthWeak.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada persona o equipo la vive distinto.'**
+  String get cultureReportStrengthWeak;
+
+  /// No description provided for @cultureReportMirrorHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparamos cómo describen la cultura los líderes y el resto del equipo.'**
+  String get cultureReportMirrorHelp;
+
+  /// No description provided for @cultureReportAgree.
+  ///
+  /// In es, this message translates to:
+  /// **'Coinciden'**
+  String get cultureReportAgree;
+
+  /// No description provided for @cultureReportDiffer.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo ven distinto'**
+  String get cultureReportDiffer;
+
+  /// No description provided for @cultureReportDifferMuch.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo ven muy distinto'**
+  String get cultureReportDifferMuch;
+
+  /// No description provided for @cultureReportLevelHigh.
+  ///
+  /// In es, this message translates to:
+  /// **'Se vive mucho'**
+  String get cultureReportLevelHigh;
+
+  /// No description provided for @cultureReportLevelMid.
+  ///
+  /// In es, this message translates to:
+  /// **'Se vive'**
+  String get cultureReportLevelMid;
+
+  /// No description provided for @cultureReportLevelNeutral.
+  ///
+  /// In es, this message translates to:
+  /// **'Ni mucho ni poco'**
+  String get cultureReportLevelNeutral;
+
+  /// No description provided for @cultureReportLevelLow.
+  ///
+  /// In es, this message translates to:
+  /// **'Se vive poco'**
+  String get cultureReportLevelLow;
+
+  /// No description provided for @cultureReportLevelVeryLow.
+  ///
+  /// In es, this message translates to:
+  /// **'Casi no se vive'**
+  String get cultureReportLevelVeryLow;
+
+  /// No description provided for @cultureReportSaidHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisamos si los valores que declara la empresa se sienten en el día a día.'**
+  String get cultureReportSaidHelp;
+
+  /// No description provided for @cultureReportVerdictLived.
+  ///
+  /// In es, this message translates to:
+  /// **'Se vive'**
+  String get cultureReportVerdictLived;
+
+  /// No description provided for @cultureReportVerdictPartial.
+  ///
+  /// In es, this message translates to:
+  /// **'A medias'**
+  String get cultureReportVerdictPartial;
+
+  /// No description provided for @cultureReportVerdictWall.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo en el papel'**
+  String get cultureReportVerdictWall;
+
+  /// No description provided for @cultureReportOfferHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Según el equipo, más allá del sueldo.'**
+  String get cultureReportOfferHelp;
+
+  /// No description provided for @cultureReportVoiceHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Frases reales y anónimas de quienes respondieron.'**
+  String get cultureReportVoiceHelp;
+
+  /// No description provided for @cultureReportHiringHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Úsalo como guía para la entrevista, no como filtro automático.'**
+  String get cultureReportHiringHelp;
+
+  /// No description provided for @cultureReportImportant.
+  ///
+  /// In es, this message translates to:
+  /// **'Importante'**
+  String get cultureReportImportant;
+
+  /// No description provided for @cultureReportToReview.
+  ///
+  /// In es, this message translates to:
+  /// **'A revisar'**
+  String get cultureReportToReview;
+
+  /// No description provided for @cultureReportMinor.
+  ///
+  /// In es, this message translates to:
+  /// **'Menor'**
+  String get cultureReportMinor;
+
+  /// No description provided for @cultureReportSealHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'El sello confirma que la cultura está bien medida y es compartida. Sirve como referencia para contratar.'**
+  String get cultureReportSealHelp;
+
+  /// No description provided for @cultureReportSealValidated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultura validada'**
+  String get cultureReportSealValidated;
+
+  /// No description provided for @cultureReportSealInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Sello en camino'**
+  String get cultureReportSealInProgress;
+
+  /// No description provided for @cultureReportConditionAlignment.
+  ///
+  /// In es, this message translates to:
+  /// **'Líderes y equipo coinciden'**
+  String get cultureReportConditionAlignment;
+
+  /// No description provided for @cultureReportConfidenceHigh.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura sólida'**
+  String get cultureReportConfidenceHigh;
+
+  /// No description provided for @cultureReportConfidenceMedium.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura parcial'**
+  String get cultureReportConfidenceMedium;
+
+  /// No description provided for @cultureReportConfidenceLow.
+  ///
+  /// In es, this message translates to:
+  /// **'Lectura preliminar'**
+  String get cultureReportConfidenceLow;
+
+  /// No description provided for @cultureReportVoiceShare.
+  ///
+  /// In es, this message translates to:
+  /// **'{pct}% del equipo lo mencionó'**
+  String cultureReportVoiceShare(String pct);
+
+  /// No description provided for @cultureReportPromiseLine.
+  ///
+  /// In es, this message translates to:
+  /// **'{need}: los líderes lo mencionan, pero el equipo todavía no lo siente.'**
+  String cultureReportPromiseLine(String need);
+
+  /// No description provided for @cultureReportTalexValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo relacionamos con {value}.'**
+  String cultureReportTalexValue(String value);
+
+  /// No description provided for @cultureReportPointLived.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que más se vive: {values}.'**
+  String cultureReportPointLived(String values);
+
+  /// No description provided for @cultureReportPointAlignment.
+  ///
+  /// In es, this message translates to:
+  /// **'Líderes y equipo coinciden en un {value}%.'**
+  String cultureReportPointAlignment(int value);
+
+  /// No description provided for @cultureReportPointSample.
+  ///
+  /// In es, this message translates to:
+  /// **'Para el sello faltan respuestas: van {count} de {needed} del equipo.'**
+  String cultureReportPointSample(int count, int needed);
+
+  /// No description provided for @cultureReportGapLeadersMore.
+  ///
+  /// In es, this message translates to:
+  /// **'En {value} hay una diferencia: los líderes sienten que se vive más de lo que el equipo percibe. Vale la pena hablarlo antes de usarlo para atraer talento.'**
+  String cultureReportGapLeadersMore(String value);
+
+  /// No description provided for @cultureReportGapTeamMore.
+  ///
+  /// In es, this message translates to:
+  /// **'En {value} hay una diferencia: el equipo lo vive más de lo que los líderes creen. Es una fortaleza que vale la pena reconocer.'**
+  String cultureReportGapTeamMore(String value);
+
+  /// No description provided for @cultureReportAnswersOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Van {count} de {needed} respuestas del equipo.'**
+  String cultureReportAnswersOf(int count, int needed);
+
+  /// No description provided for @cultureReportDownloadPdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar PDF'**
+  String get cultureReportDownloadPdf;
+
+  /// No description provided for @cultureReportDownloading.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparando PDF…'**
+  String get cultureReportDownloading;
+
+  /// No description provided for @cultureReportDownloadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos descargar el PDF. Intenta de nuevo en un momento.'**
+  String get cultureReportDownloadError;
+
+  /// No description provided for @cultureReportDownloaded.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo: tu PDF se está descargando.'**
+  String get cultureReportDownloaded;
 }
 
 class _AppLocalizationsDelegate

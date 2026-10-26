@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talex_platform/core/theme/theme_cubit.dart';
 import 'package:talex_platform/features/talent/domain/services/affinity_demo_link.dart';
 import 'package:talex_platform/features/talent/domain/services/assessment_catalog.dart';
 import 'package:talex_platform/features/talent/presentation/pages/affinity_demo_page.dart';
@@ -40,12 +43,19 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     final l10n = AppLocalizationsEs();
+    SharedPreferences.setMockInitialValues({});
+    final themeCubit = ThemeCubit(await SharedPreferences.getInstance())
+      ..load();
+    addTearDown(themeCubit.close);
     await tester.pumpWidget(
-      const MaterialApp(
-        locale: Locale('es'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: AffinityDemoPage(),
+      BlocProvider.value(
+        value: themeCubit,
+        child: const MaterialApp(
+          locale: Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: AffinityDemoPage(),
+        ),
       ),
     );
     await tester.pumpAndSettle();

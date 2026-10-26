@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web/web.dart' as web;
 
 import 'package:talex_platform/core/theme/talex_theme.dart';
+import 'package:talex_platform/core/theme/talex_theme_switcher.dart';
+import 'package:talex_platform/core/theme/theme_cubit.dart';
 import 'package:talex_platform/core/widgets/talex_splash.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/locale/locale_cubit.dart';
@@ -108,6 +110,7 @@ class _TalexAppState extends State<TalexApp> {
 
   @override
   Widget build(BuildContext context) {
+    context.select<ThemeCubit, Brightness>((cubit) => cubit.state.brightness);
     return BlocBuilder<LocaleCubit, Locale>(
       builder: (context, locale) => MaterialApp(
         navigatorKey: getIt<NotificationService>().navigatorKey,
@@ -116,7 +119,13 @@ class _TalexAppState extends State<TalexApp> {
         locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
+        // talexTheme() lee la paleta activa; el select de ThemeCubit de arriba
+        // reconstruye la app cuando cambia el brillo.
         theme: talexTheme(),
+        // El cambio lo anima TalexThemeSwitcher, no la interpolación de Material.
+        themeAnimationDuration: Duration.zero,
+        builder: (context, child) =>
+            TalexThemeSwitcher(child: child ?? const SizedBox.shrink()),
         routes: {
           AuthPage.routeName: (_) => const AuthPage(),
           RegisterPage.routeName: (_) => const RegisterPage(),

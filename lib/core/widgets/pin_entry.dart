@@ -71,13 +71,13 @@ class _PinEntryState extends State<PinEntry> {
                           height: side,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: AppColors.fieldFill,
+                            color: AppColors.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color:
                                   widget.focusNode.hasFocus && value.length == i
-                                  ? AppColors.brandBlue
-                                  : AppColors.fieldBorder,
+                                  ? AppColors.green
+                                  : AppColors.border,
                               width:
                                   widget.focusNode.hasFocus && value.length == i
                                   ? 1.5
@@ -86,10 +86,10 @@ class _PinEntryState extends State<PinEntry> {
                           ),
                           child: Text(
                             i < value.length ? value[i] : '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.ink,
+                              color: AppColors.text,
                             ),
                           ),
                         ),

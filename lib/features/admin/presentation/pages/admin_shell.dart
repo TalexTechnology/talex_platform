@@ -119,7 +119,7 @@ class _AdminShellState extends State<AdminShell> {
           ),
           builder: (context, openAssistant, assistantOpen) => Scaffold(
             key: _scaffoldKey,
-            backgroundColor: AppColors.dashboardBackground,
+            backgroundColor: AppColors.bg,
             drawer: desktop ? null : Drawer(width: 270, child: sidebar),
             body: Row(
               children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/theme/talex_theme.dart';
 import 'package:talex_platform/features/culture/data/culture_survey_api.dart';
 
 class CompanyCultureSurveyPage extends StatefulWidget {
@@ -94,7 +95,11 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  // La encuesta conserva su diseño propio, fuera del tema oscuro.
+  Widget build(BuildContext context) =>
+      Theme(data: talexLegacyTheme(), child: Builder(builder: _page));
+
+  Widget _page(BuildContext context) {
     const ink = Color(0xFF17202A);
     const cream = Color(0xFFF3EFE6);
     const gold = Color(0xFF8A6A32);

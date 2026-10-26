@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_icons.dart';
+import 'package:talex_platform/core/constants/app_radii.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/auth/presentation/widgets/auth_field.dart';
 import 'package:talex_platform/features/auth/presentation/widgets/auth_social_button.dart';
 
@@ -25,10 +27,11 @@ class AuthLoginCard extends StatelessWidget {
     this.dividerText = 'Or continue with',
     this.socialText = 'Sign in with Google',
     this.width = 448,
-    this.padding = const EdgeInsets.fromLTRB(32, 34, 32, 32),
-    this.backgroundColor = AppColors.white,
-    this.borderColor = AppColors.softBorder,
-    this.submitColor = AppColors.primaryButton,
+    this.padding = const EdgeInsets.fromLTRB(32, 36, 32, 32),
+    this.backgroundColor,
+    this.borderColor,
+    this.submitColor,
+    this.eyebrow,
     this.emailValidator,
     this.passwordValidator,
     this.socialIcon = const GoogleMark(),
@@ -52,24 +55,25 @@ class AuthLoginCard extends StatelessWidget {
       socialText;
   final double width;
   final EdgeInsetsGeometry padding;
-  final Color backgroundColor, borderColor, submitColor;
+  final Color? backgroundColor, borderColor, submitColor;
   final FormFieldValidator<String>? emailValidator;
   final FormFieldValidator<String>? passwordValidator;
   final Widget socialIcon;
+  final String? eyebrow;
 
   @override
   Widget build(BuildContext context) => Container(
     width: width,
     padding: padding,
     decoration: BoxDecoration(
-      color: backgroundColor,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: borderColor),
-      boxShadow: const [
+      color: (backgroundColor ?? AppColors.bgRaised),
+      borderRadius: AppRadii.card,
+      border: Border.all(color: (borderColor ?? AppColors.border)),
+      boxShadow: [
         BoxShadow(
-          color: Color(0x0A071326),
-          blurRadius: 16,
-          offset: Offset(0, 7),
+          color: AppColors.shadow,
+          blurRadius: 48,
+          offset: Offset(0, 24),
         ),
       ],
     ),
@@ -78,17 +82,20 @@ class AuthLoginCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (eyebrow != null) ...[
+            TalexEyebrow(eyebrow!),
+            const SizedBox(height: 12),
+          ],
           Text(
             title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.ink,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -.5,
+            style: TextStyle(
+              color: AppColors.text,
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -.9,
             ),
           ),
-          const SizedBox(height: 27),
+          const SizedBox(height: 28),
           AuthFieldLabel(emailLabel),
           const SizedBox(height: 8),
           AuthField(
@@ -106,7 +113,7 @@ class AuthLoginCard extends StatelessWidget {
               TextButton(
                 onPressed: onForgot,
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.accent,
+                  foregroundColor: AppColors.blue,
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -130,42 +137,47 @@ class AuthLoginCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           SizedBox(
-            height: 36,
+            height: 48,
             child: FilledButton(
               onPressed: isLoading ? null : onSubmit,
               style: FilledButton.styleFrom(
-                backgroundColor: submitColor,
-                disabledBackgroundColor: submitColor,
-                shape: const RoundedRectangleBorder(),
-                textStyle: const TextStyle(fontSize: 15),
+                backgroundColor: (submitColor ?? AppColors.green),
+                disabledBackgroundColor: (submitColor ?? AppColors.green),
               ),
               child: isLoading
-                  ? const SizedBox.square(
-                      dimension: 17,
+                  ? SizedBox.square(
+                      dimension: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: AppColors.textOnGreen,
                       ),
                     )
-                  : Text(submitText),
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(submitText),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.arrow_forward, size: 18),
+                      ],
+                    ),
             ),
           ),
           const SizedBox(height: 25),
           Row(
             children: [
-              Expanded(child: Divider(color: AppColors.divider)),
+              Expanded(child: Divider(color: AppColors.border)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9),
                 child: Text(
                   dividerText,
-                  style: const TextStyle(
-                    color: AppColors.subtitle,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                  style: TextStyle(
+                    color: AppColors.textDimmer,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              Expanded(child: Divider(color: AppColors.divider)),
+              Expanded(child: Divider(color: AppColors.border)),
             ],
           ),
           const SizedBox(height: 24),

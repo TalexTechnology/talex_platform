@@ -265,12 +265,12 @@ class _LocationPickerState extends State<LocationPicker> {
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
+                Icon(Icons.info_outline, size: 18, color: AppColors.textDimmer),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     l10n.locationLoadError,
-                    style: const TextStyle(color: AppColors.subtitle, fontSize: 13),
+                    style: TextStyle(color: AppColors.textMuted, fontSize: 13),
                   ),
                 ),
                 TextButton(

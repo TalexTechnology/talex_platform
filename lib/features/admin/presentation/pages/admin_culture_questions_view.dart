@@ -181,8 +181,6 @@ class _AdminCultureQuestionsViewState extends State<AdminCultureQuestionsView> {
               hintText: l10n.cultureQuestionsSearch,
               prefixIcon: const Icon(Icons.search),
               filled: true,
-              fillColor: Colors.white,
-              border: const OutlineInputBorder(),
               isDense: true,
             ),
           ),
@@ -206,7 +204,7 @@ class _AdminCultureQuestionsViewState extends State<AdminCultureQuestionsView> {
                   _all.where((item) => item.active).length,
                   _all.length,
                 ),
-                style: const TextStyle(color: AppColors.muted, fontSize: 13),
+                style: TextStyle(color: AppColors.textDimmer, fontSize: 13),
               ),
             ],
           ),
@@ -227,7 +225,7 @@ class _AdminCultureQuestionsViewState extends State<AdminCultureQuestionsView> {
                 children: [
                   for (final (index, question) in visible.indexed) ...[
                     if (index > 0)
-                      const Divider(height: 1, color: AppColors.divider),
+                      Divider(height: 1, color: AppColors.border),
                     _QuestionTile(
                       question: question,
                       compact: compact,
@@ -269,6 +267,7 @@ class _AdminCultureQuestionsViewState extends State<AdminCultureQuestionsView> {
           ),
           const SizedBox(height: 8),
           AdminPageHeader(
+            eyebrow: context.l10n.adminEyebrow,
             title: l10n.cultureQuestionsTitle,
             subtitle: l10n.cultureQuestionsSubtitle,
             actions: [
@@ -279,9 +278,6 @@ class _AdminCultureQuestionsViewState extends State<AdminCultureQuestionsView> {
               ),
               FilledButton.icon(
                 onPressed: _bank == null || _busy ? null : () => _edit(),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primaryButton,
-                ),
                 icon: const Icon(Icons.add),
                 label: Text(l10n.cultureQuestionsNew),
               ),
@@ -323,8 +319,8 @@ class _SurveyCard extends StatelessWidget {
                 children: [
                   Text(
                     l10n.cultureQuestionsSurveyTitle,
-                    style: const TextStyle(
-                      color: AppColors.muted,
+                    style: TextStyle(
+                      color: AppColors.textDimmer,
                       fontSize: 12.5,
                       fontWeight: FontWeight.w600,
                     ),
@@ -333,7 +329,7 @@ class _SurveyCard extends StatelessWidget {
                   Text(
                     title.isEmpty ? l10n.cultureQuestionsSurveyNoTitle : title,
                     style: TextStyle(
-                      color: title.isEmpty ? AppColors.muted : AppColors.ink,
+                      color: title.isEmpty ? AppColors.textDimmer : AppColors.text,
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
                     ),
@@ -342,8 +338,8 @@ class _SurveyCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       intro,
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
+                      style: TextStyle(
+                        color: AppColors.textMuted,
                         fontSize: 14.5,
                         height: 1.4,
                       ),
@@ -386,7 +382,7 @@ class _QuestionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const meta = TextStyle(color: AppColors.muted, fontSize: 13);
+    final meta = TextStyle(color: AppColors.textDimmer, fontSize: 13);
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -404,8 +400,8 @@ class _QuestionTile extends StatelessWidget {
             if (question.required)
               Text(
                 l10n.cultureQuestionsRequiredBadge,
-                style: const TextStyle(
-                  color: AppColors.ink,
+                style: TextStyle(
+                  color: AppColors.text,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -413,8 +409,8 @@ class _QuestionTile extends StatelessWidget {
             if (!question.active)
               Text(
                 l10n.cultureQuestionsInactive,
-                style: const TextStyle(
-                  color: Color(0xFFB42318),
+                style: TextStyle(
+                  color: AppColors.danger,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -425,8 +421,8 @@ class _QuestionTile extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             question.name,
-            style: const TextStyle(
-              color: AppColors.ink,
+            style: TextStyle(
+              color: AppColors.text,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -435,8 +431,8 @@ class _QuestionTile extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           question.statement,
-          style: const TextStyle(
-            color: AppColors.ink,
+          style: TextStyle(
+            color: AppColors.text,
             fontSize: 15,
             height: 1.4,
           ),
@@ -445,8 +441,8 @@ class _QuestionTile extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             question.instruction,
-            style: const TextStyle(
-              color: AppColors.subtitle,
+            style: TextStyle(
+              color: AppColors.textMuted,
               fontSize: 13.5,
               fontStyle: FontStyle.italic,
             ),
@@ -492,7 +488,7 @@ class _QuestionTile extends StatelessWidget {
           tooltip: l10n.adminQuestionsDelete,
           onPressed: busy ? null : onDelete,
           icon: const Icon(Icons.delete_outline),
-          color: const Color(0xFFB42318),
+          color: AppColors.danger,
         ),
       ],
     );

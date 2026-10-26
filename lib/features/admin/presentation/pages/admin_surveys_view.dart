@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_my_culture_view.dart';
 import 'package:talex_platform/features/admin/presentation/pages/admin_questions_view.dart';
 import 'package:talex_platform/l10n/l10n.dart';
@@ -28,9 +27,6 @@ class AdminSurveysView extends StatelessWidget {
             child: TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
-              labelColor: AppColors.primaryButton,
-              indicatorColor: AppColors.primaryButton,
-              dividerColor: AppColors.divider,
               tabs: [
                 Tab(text: l10n.adminSurveysCultureVs),
                 Tab(text: l10n.adminSurveysMyCulture),

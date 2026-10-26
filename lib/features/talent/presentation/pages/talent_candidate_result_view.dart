@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
@@ -60,6 +61,7 @@ class TalentCandidateResultView extends StatelessWidget {
               ),
             ),
             AdminPageHeader(
+              eyebrow: context.l10n.companyEyebrow,
               title: candidate.displayName?.trim().isNotEmpty == true
                   ? candidate.displayName!
                   : candidate.email,
@@ -73,7 +75,7 @@ class TalentCandidateResultView extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: () => showDeleteCandidateDialog(context, candidate),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red.shade700,
+                    foregroundColor: AppColors.danger,
                   ),
                   icon: const Icon(Icons.delete_outline),
                   label: Text(l10n.deleteCandidate),
@@ -88,9 +90,6 @@ class TalentCandidateResultView extends StatelessWidget {
                       }
                     }
                   },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primaryButton,
-                  ),
                   icon: const Icon(Icons.picture_as_pdf_outlined),
                   label: Text(l10n.downloadPdf),
                 ),
@@ -99,28 +98,22 @@ class TalentCandidateResultView extends StatelessWidget {
             const SizedBox(height: 20),
             AdminPanel(
               child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                children: [
-                  Text('${l10n.emailAddress}: ${candidate.email}'),
-                  const SizedBox(height: 8),
-                  Text('${l10n.documentNumber}: $masked'),
-                  const SizedBox(height: 8),
-                  Text('${l10n.vacancy}: ${candidate.vacancyName}'),
-                  if (report.company != null) ...[
-                    const SizedBox(height: 8),
-                    Text('${l10n.companyName}: ${report.company!.name}'),
+                padding: const EdgeInsets.all(24),
+                child: Wrap(
+                  spacing: 40,
+                  runSpacing: 18,
+                  children: [
+                    _Fact(l10n.emailAddress, candidate.email),
+                    _Fact(l10n.documentNumber, masked),
+                    _Fact(l10n.vacancy, candidate.vacancyName),
+                    if (report.company != null)
+                      _Fact(l10n.companyName, report.company!.name),
+                    _Fact(l10n.lastActivity, labels.date(candidate.updatedAt)),
+                    _Fact(
+                      l10n.candidateProcessStatus,
+                      processStatusLabel(context, candidate.processStatus),
+                    ),
                   ],
-                  const SizedBox(height: 8),
-                  Text(
-                    '${l10n.lastActivity}: ${labels.date(candidate.updatedAt)}',
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${l10n.candidateProcessStatus}: ${processStatusLabel(context, candidate.processStatus)}',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
                 ),
               ),
             ),
@@ -130,21 +123,15 @@ class TalentCandidateResultView extends StatelessWidget {
             Text(
               l10n.affinityMockNote,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.muted,
+              style: TextStyle(
+                color: AppColors.textDimmer,
                 fontSize: 13,
                 height: 1.4,
               ),
             ),
             if (report.answers.isNotEmpty) ...[
               const SizedBox(height: 24),
-              Text(
-                l10n.fullSummaryTitle,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              TalexSectionTitle(l10n.fullSummaryTitle),
               const SizedBox(height: 12),
               for (final id in AssessmentCatalog.allIds)
                 Padding(
@@ -157,13 +144,21 @@ class TalentCandidateResultView extends StatelessWidget {
                       children: [
                         Text(
                           assessmentQuestionLabel(l10n, id),
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 13.5,
+                            height: 1.5,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           report.answers[id] == null
                               ? l10n.noData
                               : assessmentAnswerLabel(l10n, id, report.answers[id]!),
+                          style: TextStyle(
+                            color: AppColors.text,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -197,20 +192,21 @@ class _AffinityCard extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Text(
-              l10n.affinityWithCompany,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
+            TalexEyebrow(l10n.affinityWithCompany),
+            const SizedBox(height: 14),
             AffinityBadge(level),
             if (analysis.hasResult && analysis.score != null) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 10),
               Text(
                 l10n.affinityScoreValue(analysis.score!),
-                style: const TextStyle(color: AppColors.muted, fontSize: 12),
+                style: TextStyle(
+                  color: AppColors.text,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
-            const SizedBox(height: 10),
+            const SizedBox(height: 14),
             if (pending) ...[
               const SizedBox(
                 width: 20,
@@ -228,19 +224,19 @@ class _AffinityCard extends StatelessWidget {
                       evaluationCompleted: candidate.evaluationCompleted,
                     ),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.subtitle, height: 1.4),
+              style: TextStyle(color: AppColors.textMuted, height: 1.4),
             ),
             if (analysis.hasResult && !pending) ...[
               _InsightSection(
                 title: l10n.affinityAlignmentsTitle,
-                icon: Icons.check_circle_outline,
-                color: AppColors.positive,
+                icon: Icons.check,
+                color: AppColors.good,
                 insights: analysis.alignments,
               ),
               _InsightSection(
                 title: l10n.affinityDifferencesTitle,
-                icon: Icons.compare_arrows,
-                color: AppColors.primaryButton,
+                icon: Icons.change_history,
+                color: AppColors.warning,
                 insights: analysis.differences,
               ),
               _TextSection(
@@ -281,7 +277,13 @@ class _InsightSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(
+            title,
+            style: TextStyle(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 8),
           for (final item in insights)
             Padding(
@@ -302,8 +304,8 @@ class _InsightSection extends StatelessWidget {
                           TextSpan(text: item.evidence),
                         ],
                       ),
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
+                      style: TextStyle(
+                        color: AppColors.textMuted,
                         height: 1.4,
                       ),
                     ),
@@ -331,18 +333,53 @@ class _TextSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(
+            title,
+            style: TextStyle(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 8),
           for (final item in items)
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
               child: Text(
                 '• $item',
-                style: const TextStyle(color: AppColors.subtitle, height: 1.4),
+                style: TextStyle(color: AppColors.textMuted, height: 1.4),
               ),
             ),
         ],
       ),
     );
   }
+}
+
+class _Fact extends StatelessWidget {
+  const _Fact(this.label, this.value);
+  final String label, value;
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: const BoxConstraints(minWidth: 160, maxWidth: 280),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: TextStyle(color: AppColors.textDimmer, fontSize: 12.5),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            color: AppColors.text,
+            fontSize: 14.5,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
 }

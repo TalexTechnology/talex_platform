@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/theme_toggle_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/di/injection.dart';
 import 'package:talex_platform/core/services/notification_service.dart';
+import 'package:talex_platform/core/widgets/language_selector.dart';
 import 'package:talex_platform/core/widgets/pin_entry.dart';
+import 'package:talex_platform/core/widgets/talex_logo.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:talex_platform/features/auth/presentation/widgets/auth_widgets.dart';
 import 'package:talex_platform/features/talent/domain/services/pin_hasher.dart';
@@ -61,7 +65,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.white,
     body: BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.needsInvitePin) {
@@ -82,95 +85,140 @@ class _RegisterPageState extends State<RegisterPage> {
       builder: (context, state) {
         final waitingPin =
             _googlePinStep || state.status == AuthStatus.needsInvitePin;
-        return SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final desktop = constraints.maxWidth >= 900;
-              final form = waitingPin
-                  ? _GooglePinStep(
-                      controller: _googlePin,
-                      focusNode: _googlePinFocus,
-                      loading: state.status == AuthStatus.loading,
-                      onSubmit: _submitGooglePin,
-                      onBack: () => context.read<AuthBloc>().add(
-                        const AuthSignOutRequested(),
-                      ),
-                    )
-                  : AuthRegisterForm(
-                      formKey: _formKey,
-                      nameController: _name,
-                      emailController: _email,
-                      pinController: _pin,
-                      passwordController: _password,
-                      confirmPasswordController: _confirmPassword,
-                      onSubmit: _submit,
-                      onLogin: () => Navigator.of(context).pop(),
-                      onGoogleSignUp: () {
-                        _googlePin.text = _pin.text.trim();
-                        context.read<AuthBloc>().add(
-                          const AuthGoogleSignInRequested(awaitInvitePin: true),
-                        );
-                      },
-                      isLoading: state.status == AuthStatus.loading,
-                      isGoogleLoading: state.status == AuthStatus.googleLoading,
-                      title: context.l10n.createAccount,
-                      subtitle: context.l10n.registerSubtitle,
-                      nameLabel: context.l10n.fullName,
-                      nameHint: context.l10n.fullNameHint,
-                      emailLabel: context.l10n.workEmail,
-                      emailHint: context.l10n.emailHint,
-                      pinLabel: context.l10n.activationPin,
-                      pinHint: context.l10n.registerPinHint,
-                      passwordLabel: context.l10n.password,
-                      confirmPasswordLabel: context.l10n.confirmPassword,
-                      submitText: context.l10n.signUp,
-                      dividerText: context.l10n.continueWith,
-                      googleSignUpText: context.l10n.signUpGoogle,
-                      accountPrompt: context.l10n.alreadyHaveAccount,
-                      loginText: context.l10n.logIn,
-                      requiredError: context.l10n.requiredField,
-                      emailError: context.l10n.validEmailError,
-                      passwordError: context.l10n.passwordLengthError,
-                      passwordMismatchError: context.l10n.passwordsDoNotMatch,
-                    );
-              if (!desktop) {
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 32,
-                  ),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 520),
-                      child: form,
-                    ),
-                  ),
+        return TalexGlow(
+          child: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final desktop = constraints.maxWidth >= 900;
+                final form = waitingPin
+                    ? _GooglePinStep(
+                        controller: _googlePin,
+                        focusNode: _googlePinFocus,
+                        loading: state.status == AuthStatus.loading,
+                        onSubmit: _submitGooglePin,
+                        onBack: () => context.read<AuthBloc>().add(
+                          const AuthSignOutRequested(),
+                        ),
+                      )
+                    : AuthRegisterForm(
+                        formKey: _formKey,
+                        nameController: _name,
+                        emailController: _email,
+                        pinController: _pin,
+                        passwordController: _password,
+                        confirmPasswordController: _confirmPassword,
+                        onSubmit: _submit,
+                        onLogin: () => Navigator.of(context).pop(),
+                        onGoogleSignUp: () {
+                          _googlePin.text = _pin.text.trim();
+                          context.read<AuthBloc>().add(
+                            const AuthGoogleSignInRequested(
+                              awaitInvitePin: true,
+                            ),
+                          );
+                        },
+                        isLoading: state.status == AuthStatus.loading,
+                        isGoogleLoading:
+                            state.status == AuthStatus.googleLoading,
+                        title: context.l10n.createAccount,
+                        subtitle: context.l10n.registerSubtitle,
+                        nameLabel: context.l10n.fullName,
+                        nameHint: context.l10n.fullNameHint,
+                        emailLabel: context.l10n.workEmail,
+                        emailHint: context.l10n.emailHint,
+                        pinLabel: context.l10n.activationPin,
+                        pinHint: context.l10n.registerPinHint,
+                        passwordLabel: context.l10n.password,
+                        confirmPasswordLabel: context.l10n.confirmPassword,
+                        submitText: context.l10n.signUp,
+                        dividerText: context.l10n.continueWith,
+                        googleSignUpText: context.l10n.signUpGoogle,
+                        accountPrompt: context.l10n.alreadyHaveAccount,
+                        loginText: context.l10n.logIn,
+                        requiredError: context.l10n.requiredField,
+                        emailError: context.l10n.validEmailError,
+                        passwordError: context.l10n.passwordLengthError,
+                        passwordMismatchError: context.l10n.passwordsDoNotMatch,
+                      );
+                final card = TalexPanel(
+                  padding: EdgeInsets.all(desktop ? 36 : 24),
+                  child: form,
                 );
-              }
-              return Row(
-                children: [
-                  Expanded(
-                    child: AuthTestimonialPanel(
-                      quote: context.l10n.testimonial,
+                if (!desktop) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 24,
                     ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 64,
-                        vertical: 48,
-                      ),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 520),
-                          child: form,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 520),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Row(
+                              children: [
+                                TalexLogo(width: 120, height: 36),
+                                Spacer(),
+                                LanguageSelector(compact: true),
+                                SizedBox(width: 12),
+                                ThemeToggleButton(size: 36),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            card,
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(64, 48, 48, 48),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight - 96,
+                          ),
+                          child: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: AuthBrandPanel(),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(32, 32, 64, 48),
+                        child: Column(
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                LanguageSelector(compact: true),
+                                SizedBox(width: 12),
+                                ThemeToggleButton(size: 36),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 520,
+                                ),
+                                child: card,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         );
       },
@@ -200,43 +248,51 @@ class _GooglePinStep extends StatelessWidget {
       children: [
         Text(
           l10n.googlePinTitle,
-          style: const TextStyle(
-            color: AppColors.ink,
-            fontSize: 34,
+          style: TextStyle(
+            color: AppColors.text,
+            fontSize: 30,
             fontWeight: FontWeight.w700,
             letterSpacing: -1,
+            height: 1.1,
           ),
         ),
         const SizedBox(height: 10),
         Text(
           l10n.googlePinSubtitle,
-          style: const TextStyle(color: AppColors.subtitle, fontSize: 16),
+          style: TextStyle(color: AppColors.textMuted, fontSize: 16),
         ),
         const SizedBox(height: 28),
-        PinEntry(controller: controller, focusNode: focusNode, onComplete: onSubmit),
+        PinEntry(
+          controller: controller,
+          focusNode: focusNode,
+          onComplete: onSubmit,
+        ),
         const SizedBox(height: 8),
         Text(
           l10n.activatePinHint,
-          style: const TextStyle(color: AppColors.muted, fontSize: 13),
+          style: TextStyle(color: AppColors.textDimmer, fontSize: 13),
         ),
         const SizedBox(height: 32),
         SizedBox(
-          height: 44,
+          height: 48,
           child: FilledButton(
             onPressed: loading ? null : onSubmit,
             child: loading
-                ? const SizedBox.square(
+                ? SizedBox.square(
                     dimension: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.textOnGreen,
                     ),
                   )
                 : Text(l10n.activateAccount),
           ),
         ),
         const SizedBox(height: 12),
-        TextButton(onPressed: loading ? null : onBack, child: Text(l10n.goBack)),
+        TextButton(
+          onPressed: loading ? null : onBack,
+          child: Text(l10n.goBack),
+        ),
       ],
     );
   }

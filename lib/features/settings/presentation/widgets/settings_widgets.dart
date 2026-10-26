@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
-import 'package:talex_platform/core/constants/app_radii.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
@@ -14,12 +14,7 @@ class SettingsSection extends StatelessWidget {
   final Widget child;
   final IconData? icon;
   @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: const Color(0xFFD1D1D6)),
-      borderRadius: AppRadii.border,
-    ),
+  Widget build(BuildContext context) => TalexPanel(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -29,35 +24,21 @@ class SettingsSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (icon != null) ...[
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF0EFFF),
-                    borderRadius: AppRadii.border,
-                  ),
-                  child: Icon(icon, color: AppColors.dashboardAccent, size: 20),
-                ),
-                const SizedBox(width: 14),
+                TalexIconBadge(icon!),
+                const SizedBox(width: 16),
               ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    TalexSectionTitle(title),
                     const SizedBox(height: 5),
                     Text(
                       description,
-                      style: const TextStyle(
-                        color: AppColors.subtitle,
+                      style: TextStyle(
+                        color: AppColors.textMuted,
                         fontSize: 14,
+                        height: 1.5,
                       ),
                     ),
                   ],
@@ -66,7 +47,7 @@ class SettingsSection extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(height: 1),
+        const TalexDivider(),
         Padding(padding: const EdgeInsets.all(24), child: child),
       ],
     ),
@@ -89,8 +70,8 @@ class SettingsTextField extends StatelessWidget {
     children: [
       Text(
         label,
-        style: const TextStyle(
-          color: AppColors.ink,
+        style: TextStyle(
+          color: AppColors.text,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
@@ -105,11 +86,11 @@ class SettingsTextField extends StatelessWidget {
             horizontal: 14,
             vertical: 14,
           ),
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.border),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.borderStrong),
           ),
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.border),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.borderStrong),
           ),
         ),
       ),
@@ -134,8 +115,8 @@ class SettingsDropdown extends StatelessWidget {
     children: [
       Text(
         label,
-        style: const TextStyle(
-          color: AppColors.ink,
+        style: TextStyle(
+          color: AppColors.text,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
@@ -148,11 +129,11 @@ class SettingsDropdown extends StatelessWidget {
             .map((item) => DropdownMenuItem(value: item, child: Text(item)))
             .toList(),
         onChanged: onChanged,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.border),
+            borderSide: BorderSide(color: AppColors.borderStrong),
           ),
         ),
       ),
@@ -182,8 +163,8 @@ class SettingsToggle extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: AppColors.ink,
+                style: TextStyle(
+                  color: AppColors.text,
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
@@ -191,8 +172,8 @@ class SettingsToggle extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: const TextStyle(
-                  color: AppColors.subtitle,
+                style: TextStyle(
+                  color: AppColors.textMuted,
                   fontSize: 13,
                   height: 1.3,
                 ),
@@ -204,7 +185,6 @@ class SettingsToggle extends StatelessWidget {
         Switch(
           value: value,
           onChanged: onChanged,
-          activeTrackColor: AppColors.dashboardAccent,
         ),
       ],
     ),

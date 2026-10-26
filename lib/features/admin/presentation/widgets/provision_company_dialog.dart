@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart' show Left;
 import 'package:flutter/material.dart';
+import 'package:talex_platform/core/widgets/talex_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:talex_platform/core/constants/app_assets.dart';
 import 'package:talex_platform/core/constants/app_colors.dart';
 import 'package:talex_platform/core/constants/app_radii.dart';
 import 'package:talex_platform/core/di/injection.dart';
@@ -153,59 +153,59 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 760, maxHeight: 760),
             child: Material(
-              color: Colors.white,
-              elevation: 18,
-              shadowColor: AppColors.ink.withValues(alpha: 0.18),
-              borderRadius: AppRadii.border,
+              color: AppColors.bgRaised,
+              elevation: 24,
+              shadowColor: AppColors.shadow,
+              shape: RoundedRectangleBorder(
+                borderRadius: AppRadii.card,
+                side: BorderSide(color: AppColors.borderStrong),
+              ),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(8, 8, 20, 16),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.ink, Color(0xFF0A1F40)],
+                    padding: const EdgeInsets.fromLTRB(28, 24, 16, 20),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: AppColors.border),
                       ),
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IconButton(
-                              tooltip: l10n.close,
-                              onPressed: _close,
-                              icon: const Icon(Icons.close, color: Colors.white),
-                            ),
                             Expanded(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Image.asset(
-                                    AppAssets.talexBadgeDark,
-                                    height: 36,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(height: 6),
+                                  TalexEyebrow(l10n.adminEyebrow),
+                                  const SizedBox(height: 10),
                                   Text(
                                     l10n.newCompany,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                    style: TextStyle(
+                                      color: AppColors.text,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: -0.7,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 48),
+                            IconButton(
+                              tooltip: l10n.close,
+                              onPressed: _close,
+                              icon: const Icon(Icons.close),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 18),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          alignment: WrapAlignment.center,
                           children: [
                             for (var i = 0; i < steps.length; i++)
                               _StepChip(
@@ -220,9 +220,9 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                   ),
                   Expanded(
                     child: ColoredBox(
-                      color: AppColors.fieldFill,
+                      color: Colors.transparent,
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                        padding: const EdgeInsets.fromLTRB(28, 24, 28, 8),
                         child: switch (_step) {
                           0 => Column(
                             children: [
@@ -261,10 +261,9 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      border: Border(top: BorderSide(color: AppColors.fieldBorder)),
+                    padding: const EdgeInsets.fromLTRB(28, 16, 28, 20),
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: AppColors.border)),
                     ),
                     child: Row(
                       children: [
@@ -283,12 +282,12 @@ class _ProvisionCompanyDialogState extends State<_ProvisionCompanyDialog> {
                               ? () => setState(() => _step += 1)
                               : _finish,
                           child: _submitting
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 18,
                                   height: 18,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: Colors.white,
+                                    color: AppColors.textOnGreen,
                                   ),
                                 )
                               : Text(_step < 1 ? l10n.next : l10n.sendInvitation),
@@ -327,24 +326,14 @@ class _StepChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active || done
-        ? AppColors.dashboardAccent
-        : Colors.white.withValues(alpha: 0.28);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: active ? Colors.white : Colors.white.withValues(alpha: 0.08),
-        borderRadius: AppRadii.border,
-        border: Border.all(color: color),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: active ? AppColors.ink : Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+    return TalexPill(
+      label,
+      tone: active
+          ? TalexTone.green
+          : done
+          ? TalexTone.blue
+          : TalexTone.neutral,
+      icon: done ? Icons.check : null,
     );
   }
 }

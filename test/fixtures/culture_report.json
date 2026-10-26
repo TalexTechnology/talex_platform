@@ -1,0 +1,81 @@
+{
+  "organizationId": "c97a7c98-5e2e-4b6b-a368-40d09ce68560",
+  "organizationName": "EMpresa de Prueba",
+  "format": "json",
+  "status": "generated",
+  "coverage": {"employeeRange": "1 – 50", "estimatedHeadcount": 20, "respondents": 20, "percent": 100, "thresholdPercent": 100, "needed": 20, "reached": true},
+  "sections": [
+    {"code": "cultura", "title": "Cultura vivida", "summary": "Los empleados describen un lugar donde prima respeto por las personas y innovación y riesgo."},
+    {"code": "liderazgo", "title": "Espejo de liderazgo", "summary": "Líderes y empleados describen la misma cultura en lo esencial."}
+  ],
+  "informe": {
+    "version_informe": "TaleX-Cultura-1.0",
+    "empresa": {"nombre": "EMpresa de Prueba", "fecha_corte": "2026-10-26", "total_empleados": 20},
+    "resumen_ejecutivo": {
+      "titular": "Aquí se vive respeto por las personas, no tanto orientación a resultados",
+      "veredicto_validacion": "no_validada",
+      "lo_que_debe_saber": ["Cultura real (empleados n=15): Respeto por las personas y Innovación y riesgo como valores dominantes.", "Alineación líderes–empleados: 88. Fuerza cultural: 56 (fragmentada)."],
+      "verdad_incomoda": "En Competitividad la brecha líderes–empleados es 0.23 (moderada)."
+    },
+    "calidad_de_datos": {
+      "respuestas_lideres": 5, "respuestas_empleados": 15, "muestra_requerida": 20, "cobertura_muestra_pct": 75,
+      "representatividad_por_area": [{"area": "Tecnología", "pct_plantilla": 100, "pct_respuestas": 100, "estado": "adecuada"}],
+      "alertas": ["Empleados 15 de 20 requeridos."],
+      "nivel_confianza": "bajo"
+    },
+    "adn_cultural": {
+      "arquetipo": "Cultura cercana y innovadora",
+      "descripcion": "Los empleados describen un lugar donde prima respeto por las personas.",
+      "valores_dominantes": ["Respeto por las personas", "Innovación y riesgo"],
+      "valores_debiles": ["Orientación a resultados", "Estabilidad"],
+      "fuerza_cultural": {"indice": 56, "nivel": "fragmentada", "lectura": "La cultura está fragmentada."}
+    },
+    "espejo_liderazgo": {
+      "indice_alineacion": 88,
+      "lectura": "Líderes y empleados describen la misma cultura en lo esencial.",
+      "por_valor": [
+        {"valor": "Innovación y riesgo", "lideres": 0.48, "empleados": 0.28, "brecha": 0.2, "estado": "moderada", "evidencia": "C01–C08."},
+        {"valor": "Orientación a resultados", "lideres": -0.47, "empleados": -0.35, "brecha": -0.12, "estado": "alineado", "evidencia": "C01–C08."}
+      ],
+      "puntos_ciegos": [{"descripcion": "Los líderes sobrestiman Competitividad frente a los empleados.", "evidencia": "Competitividad: líderes 0.03, empleados -0.2.", "impacto_en_contratacion": "Si se vende ese valor al candidato, el choque aparece en el día a día."}]
+    },
+    "dicho_vs_hecho": {
+      "coherencia_lideres": 60, "coherencia_empleados": 62,
+      "por_valor_declarado": [
+        {"valor_declarado": "Colaborativa", "valor_taleX": "Trabajo en equipo", "lideres": 0.7, "empleados": 0.9, "veredicto": "se_vive"},
+        {"valor_declarado": "Exigente", "valor_taleX": "Competitividad", "lideres": 0.1, "empleados": 0.07, "veredicto": "solo_en_la_pared"}
+      ],
+      "lectura": "Los empleados sitúan los rasgos declarados en 2 como “se vive” y 1 como “solo en la pared”."
+    },
+    "propuesta_de_valor_real": {
+      "lo_que_si_se_ofrece": ["Autonomía", "Claridad del rol"],
+      "lo_que_no_se_ofrece": ["Estabilidad del empleo", "Formación"],
+      "promesas_no_confirmadas": [{"necesidad": "Reconocimiento", "lideres": 0.8, "empleados": 0.07, "brecha": 0.73, "riesgo": "Los líderes describen una oferta que los empleados no confirman."}]
+    },
+    "lectura_de_sinceridad": {"sobreestimacion_de_consenso": false, "normas_silenciosas": [], "lectura": "Los pronósticos no muestran una sobreestimación clara de consenso."},
+    "subculturas": [],
+    "voz_de_los_empleados": {
+      "le_va_bien_al_que": [{"tema": "trata bien a todos", "valor": "Innovación y riesgo", "frecuencia_pct": 7, "cita_anonima": "trata bien a todos"}],
+      "le_va_mal_al_que": [{"tema": "se aferra al proceso", "valor": "Estabilidad", "frecuencia_pct": 13, "cita_anonima": "se aferra al proceso"}]
+    },
+    "implicaciones_para_contratar": {
+      "candidato_que_prospera": "Quien se mueve bien con respeto por las personas y innovación y riesgo.",
+      "candidato_en_riesgo": "Quien necesita orientación a resultados como condición para rendir.",
+      "riesgos_de_contratacion": [{"riesgo": "Prometer Reconocimiento en el proceso", "probabilidad": "alta", "evidencia": "Brecha de promesa 0.73 en Reconocimiento.", "mitigacion": "Describa la oferta real de los empleados."}],
+      "preguntas_de_entrevista": [{"pregunta": "Cuénteme de una vez en la que respeto por las personas chocó con otra prioridad.", "que_revela": "Si la persona se siente cómoda operando donde Respeto por las personas es central.", "valor": "Respeto por las personas"}],
+      "mensaje_honesto_para_candidatos": "Aquí se vive respeto por las personas y innovación y riesgo."
+    },
+    "recomendaciones": [
+      {"prioridad": 2, "accion": "Trabaje el punto ciego.", "responsable_sugerido": "Comité de liderazgo", "plazo": "90_dias", "indicador_de_exito": "Brechas por debajo de 0,30."},
+      {"prioridad": 1, "accion": "Falta alcanzar la muestra de empleados.", "responsable_sugerido": "Dirección de talento", "plazo": "30_dias", "indicador_de_exito": "Empleados ≥ 20."}
+    ],
+    "sello_taleX": {
+      "estado": "no_validada",
+      "condiciones_cumplidas": ["alineacion_lideres_empleados"],
+      "condiciones_pendientes": ["Falta consenso entre empleados (fuerza cultural < 60)."],
+      "vigencia_meses": 12,
+      "texto_del_sello": "TaleX no valida aún la cultura de EMpresa de Prueba como sello de referencia para contratar."
+    },
+    "limitaciones": []
+  }
+}
