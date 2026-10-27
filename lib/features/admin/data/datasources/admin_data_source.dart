@@ -1417,8 +1417,9 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     if (companyId != null) {
       items = items.where((item) => item.companyId == companyId).toList();
     }
-    if (status != null)
+    if (status != null) {
       items = items.where((item) => item.status == status).toList();
+    }
     return items;
   }
 
@@ -1432,8 +1433,9 @@ final class InMemoryAdminDataSource implements AdminDataSource {
     if (companyId != null) {
       items = items.where((item) => item.companyId == companyId).toList();
     }
-    if (status != null)
+    if (status != null) {
       items = items.where((item) => item.status == status).toList();
+    }
     if (query.trim().isNotEmpty) {
       items = items
           .where(
@@ -1459,8 +1461,9 @@ final class InMemoryAdminDataSource implements AdminDataSource {
   @override
   Future<List<Deal>> getDeals({String query = '', DealStage? stage}) async {
     var items = [...deals];
-    if (stage != null)
+    if (stage != null) {
       items = items.where((item) => item.stage == stage).toList();
+    }
     return items;
   }
 
