@@ -99,9 +99,6 @@ class _AssistantMessageTileState extends State<AssistantMessageTile>
     final waiting =
         message.status == AssistantMessageStatus.streaming &&
         message.text.isEmpty;
-    final revealing =
-        message.status == AssistantMessageStatus.streaming &&
-        message.text.isNotEmpty;
     return Semantics(
       liveRegion: message.status == AssistantMessageStatus.complete,
       child: Column(
@@ -117,8 +114,10 @@ class _AssistantMessageTileState extends State<AssistantMessageTile>
           const SizedBox(height: 6),
           if (waiting)
             const AssistantTypingIndicator()
-          else if (revealing)
+          else if (message.status == AssistantMessageStatus.streaming &&
+              message.text.isNotEmpty)
             AssistantReveal(
+              key: ValueKey('assistant-reveal-${message.id}'),
               text: message.text,
               onFrame: widget.onRevealFrame,
               onFinished: () => widget.onRevealFinished(message.id),
