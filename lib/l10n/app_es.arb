@@ -957,5 +957,13 @@
   "cultureReportDownloadPdf": "Descargar PDF",
   "cultureReportDownloading": "Preparando PDF…",
   "cultureReportDownloadError": "No pudimos descargar el PDF. Intenta de nuevo en un momento.",
-  "cultureReportDownloaded": "Listo: tu PDF se está descargando."
+  "cultureReportDownloaded": "Listo: tu PDF se está descargando.",
+  "cultureTrackingVisits": "Visitas",
+  "cultureTrackingVisitors": "Navegadores únicos",
+  "cultureTrackingStarted": "Visitas con respuestas iniciadas",
+  "cultureTrackingCompleted": "Encuestas terminadas",
+  "cultureTrackingUnconfirmed": "Envío al equipo sin confirmar",
+  "cultureTrackingConfirmed": "La empresa confirmó que compartió el enlace",
+  "cultureTrackingLastVisit": "Última visita",
+  "cultureTrackingHelp": "Las visitas se registran desde esta actualización. Un navegador único no equivale necesariamente a una persona. La confirmación de envío la declara la empresa."
 }

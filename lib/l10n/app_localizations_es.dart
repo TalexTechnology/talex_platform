@@ -2940,4 +2940,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cultureReportDownloaded => 'Listo: tu PDF se está descargando.';
+
+  @override
+  String get cultureTrackingVisits => 'Visitas';
+
+  @override
+  String get cultureTrackingVisitors => 'Navegadores únicos';
+
+  @override
+  String get cultureTrackingStarted => 'Visitas con respuestas iniciadas';
+
+  @override
+  String get cultureTrackingCompleted => 'Encuestas terminadas';
+
+  @override
+  String get cultureTrackingUnconfirmed => 'Envío al equipo sin confirmar';
+
+  @override
+  String get cultureTrackingConfirmed =>
+      'La empresa confirmó que compartió el enlace';
+
+  @override
+  String get cultureTrackingLastVisit => 'Última visita';
+
+  @override
+  String get cultureTrackingHelp =>
+      'Las visitas se registran desde esta actualización. Un navegador único no equivale necesariamente a una persona. La confirmación de envío la declara la empresa.';
 }

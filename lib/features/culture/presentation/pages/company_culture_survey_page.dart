@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:talex_platform/core/theme/talex_theme.dart';
 import 'package:talex_platform/features/culture/data/culture_survey_api.dart';
@@ -21,6 +23,7 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
   var _index = 0;
   var _submitting = false;
   var _done = false;
+  var _started = false;
   final _answers = <String, Map<String, dynamic>>{};
   final _text = TextEditingController();
 
@@ -72,6 +75,10 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
     } else if (required && _answers[id] == null) {
       return;
     }
+    if (!_started) {
+      _started = true;
+      unawaited(_api.track(widget.organizationId, 'started'));
+    }
     if (_index < _questions.length - 1) {
       setState(() {
         _index += 1;
@@ -96,8 +103,10 @@ class _CompanyCultureSurveyPageState extends State<CompanyCultureSurveyPage> {
 
   @override
   // La encuesta conserva su diseño propio, fuera del tema oscuro.
-  Widget build(BuildContext context) =>
-      Theme(data: talexLegacyTheme(), child: Builder(builder: _page));
+  Widget build(BuildContext context) => Theme(
+    data: talexLegacyTheme(),
+    child: Builder(builder: _page),
+  );
 
   Widget _page(BuildContext context) {
     const ink = Color(0xFF17202A);

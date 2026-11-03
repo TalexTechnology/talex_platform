@@ -130,6 +130,8 @@ class CultureOrganizationGroup extends Equatable {
     this.sizeLabel,
     this.createdAt,
     this.surveyRespondents = 0,
+    this.employeeCount,
+    this.tracking = const CultureTracking(),
   });
 
   // Null en el grupo de leads sin empresa asignada.
@@ -137,6 +139,10 @@ class CultureOrganizationGroup extends Equatable {
   final String? name;
   final String? sizeLabel;
   final DateTime? createdAt;
+  final int? employeeCount;
+  final CultureTracking tracking;
+
+  String? get employeeLabel => employeeCount?.toString() ?? sizeLabel;
 
   /// Personas del equipo que respondieron la encuesta de cultura (anónima).
   final int surveyRespondents;
@@ -168,6 +174,14 @@ class CultureOrganizationGroup extends Equatable {
       sizeLabel: size.isEmpty ? null : size,
       createdAt: _date(organization?['created_at']),
       surveyRespondents: _int(map['surveyRespondents']),
+      employeeCount: organization?['employee_count'] is num
+          ? (organization!['employee_count'] as num).toInt()
+          : null,
+      tracking: CultureTracking.fromMap(
+        map['tracking'] is Map
+            ? Map<String, dynamic>.from(map['tracking'] as Map)
+            : const {},
+      ),
       summary: CultureSummary.fromMap(
         map['summary'] is Map
             ? Map<String, dynamic>.from(map['summary'] as Map)
@@ -184,8 +198,47 @@ class CultureOrganizationGroup extends Equatable {
     sizeLabel,
     createdAt,
     surveyRespondents,
+    employeeCount,
+    tracking,
     summary,
     leads,
+  ];
+}
+
+class CultureTracking extends Equatable {
+  const CultureTracking({
+    this.visits = 0,
+    this.uniqueVisitors = 0,
+    this.startedVisits = 0,
+    this.firstVisitAt,
+    this.lastVisitAt,
+    this.sharedConfirmedAt,
+  });
+
+  final int visits;
+  final int uniqueVisitors;
+  final int startedVisits;
+  final DateTime? firstVisitAt;
+  final DateTime? lastVisitAt;
+  final DateTime? sharedConfirmedAt;
+
+  factory CultureTracking.fromMap(Map<String, dynamic> map) => CultureTracking(
+    visits: _int(map['visits']),
+    uniqueVisitors: _int(map['uniqueVisitors']),
+    startedVisits: _int(map['startedVisits']),
+    firstVisitAt: _date(map['firstVisitAt']),
+    lastVisitAt: _date(map['lastVisitAt']),
+    sharedConfirmedAt: _date(map['sharedConfirmedAt']),
+  );
+
+  @override
+  List<Object?> get props => [
+    visits,
+    uniqueVisitors,
+    startedVisits,
+    firstVisitAt,
+    lastVisitAt,
+    sharedConfirmedAt,
   ];
 }
 

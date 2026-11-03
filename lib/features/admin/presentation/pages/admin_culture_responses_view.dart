@@ -9,6 +9,7 @@ import 'package:talex_platform/features/admin/domain/entities/culture_survey_res
 import 'package:talex_platform/features/admin/presentation/pages/admin_culture_report_view.dart';
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/l10n/l10n.dart';
+import 'package:talex_platform/features/admin/presentation/widgets/culture_tracking_summary.dart';
 
 // Detalle de "Mi cultura" para una empresa: lo que respondió su equipo en la
 // encuesta de cultura. Las respuestas son anónimas: se muestran agregadas por
@@ -61,8 +62,8 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
     final group = widget.group;
     final compact = MediaQuery.sizeOf(context).width < 720;
     final details = [
-      if (group.sizeLabel != null)
-        '${l10n.cultureLeadEmployees}: ${group.sizeLabel}',
+      if (group.employeeLabel != null)
+        '${l10n.cultureLeadEmployees}: ${group.employeeLabel}',
       if (group.summary.lastLeadAt != null)
         '${l10n.adminMyCultureLastLead}: ${labels.date(group.summary.lastLeadAt!.toLocal())}',
     ];
@@ -88,6 +89,10 @@ class _AdminCultureResponsesViewState extends State<AdminCultureResponsesView> {
             subtitle: details.join(' · '),
           ),
           const SizedBox(height: 24),
+          if (!group.unassigned) ...[
+            CultureTrackingSummary(group: group),
+            const SizedBox(height: 24),
+          ],
           if (_responses != null)
             FutureBuilder<CultureSurveyResponses>(
               future: _responses,

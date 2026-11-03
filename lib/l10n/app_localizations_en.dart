@@ -2932,4 +2932,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cultureReportDownloaded => 'Done: your PDF is downloading.';
+
+  @override
+  String get cultureTrackingVisits => 'Visits';
+
+  @override
+  String get cultureTrackingVisitors => 'Unique browsers';
+
+  @override
+  String get cultureTrackingStarted => 'Visits with answers started';
+
+  @override
+  String get cultureTrackingCompleted => 'Completed surveys';
+
+  @override
+  String get cultureTrackingUnconfirmed =>
+      'Sharing with the team has not been confirmed';
+
+  @override
+  String get cultureTrackingConfirmed =>
+      'The company confirmed sharing the link';
+
+  @override
+  String get cultureTrackingLastVisit => 'Last visit';
+
+  @override
+  String get cultureTrackingHelp =>
+      'Visits are tracked from this update onwards. A unique browser does not necessarily represent one person. Sharing is confirmed by the company.';
 }

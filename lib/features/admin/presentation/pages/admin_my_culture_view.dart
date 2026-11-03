@@ -14,6 +14,7 @@ import 'package:talex_platform/features/admin/presentation/pages/admin_culture_r
 import 'package:talex_platform/features/admin/presentation/widgets/admin_widgets.dart';
 import 'package:talex_platform/features/culture/domain/culture_survey_link.dart';
 import 'package:talex_platform/l10n/l10n.dart';
+import 'package:talex_platform/features/admin/presentation/widgets/culture_tracking_summary.dart';
 
 // Abre en otra pestaña el banco activo como si fuera la encuesta, sin empresa.
 // window.open va sin awaits de por medio para que el navegador no lo bloquee.
@@ -258,8 +259,8 @@ class _OrganizationCard extends StatelessWidget {
     final labels = AdminLabels(context);
     final summary = group.summary;
     final details = [
-      if (group.sizeLabel != null)
-        '${l10n.cultureLeadEmployees}: ${group.sizeLabel}',
+      if (group.employeeLabel != null)
+        '${l10n.cultureLeadEmployees}: ${group.employeeLabel}',
       l10n.adminMyCultureLeadCount(summary.leadCount),
       if (summary.lastLeadAt != null)
         '${l10n.adminMyCultureLastLead}: ${labels.date(summary.lastLeadAt!.toLocal())}',
@@ -290,6 +291,10 @@ class _OrganizationCard extends StatelessWidget {
                     details.join(' · '),
                     style: TextStyle(color: AppColors.textMuted, fontSize: 14),
                   ),
+                  if (!group.unassigned) ...[
+                    const SizedBox(height: 12),
+                    CultureTrackingSummary(group: group),
+                  ],
                 ],
               ),
             ),

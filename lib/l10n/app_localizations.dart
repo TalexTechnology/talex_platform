@@ -5473,6 +5473,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Listo: tu PDF se está descargando.'**
   String get cultureReportDownloaded;
+
+  /// No description provided for @cultureTrackingVisits.
+  ///
+  /// In es, this message translates to:
+  /// **'Visitas'**
+  String get cultureTrackingVisits;
+
+  /// No description provided for @cultureTrackingVisitors.
+  ///
+  /// In es, this message translates to:
+  /// **'Navegadores únicos'**
+  String get cultureTrackingVisitors;
+
+  /// No description provided for @cultureTrackingStarted.
+  ///
+  /// In es, this message translates to:
+  /// **'Visitas con respuestas iniciadas'**
+  String get cultureTrackingStarted;
+
+  /// No description provided for @cultureTrackingCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Encuestas terminadas'**
+  String get cultureTrackingCompleted;
+
+  /// No description provided for @cultureTrackingUnconfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Envío al equipo sin confirmar'**
+  String get cultureTrackingUnconfirmed;
+
+  /// No description provided for @cultureTrackingConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'La empresa confirmó que compartió el enlace'**
+  String get cultureTrackingConfirmed;
+
+  /// No description provided for @cultureTrackingLastVisit.
+  ///
+  /// In es, this message translates to:
+  /// **'Última visita'**
+  String get cultureTrackingLastVisit;
+
+  /// No description provided for @cultureTrackingHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Las visitas se registran desde esta actualización. Un navegador único no equivale necesariamente a una persona. La confirmación de envío la declara la empresa.'**
+  String get cultureTrackingHelp;
 }
 
 class _AppLocalizationsDelegate

@@ -924,5 +924,13 @@
   "cultureReportDownloadPdf": "Download PDF",
   "cultureReportDownloading": "Preparing PDF…",
   "cultureReportDownloadError": "We couldn't download the PDF. Please try again in a moment.",
-  "cultureReportDownloaded": "Done: your PDF is downloading."
+  "cultureReportDownloaded": "Done: your PDF is downloading.",
+  "cultureTrackingVisits": "Visits",
+  "cultureTrackingVisitors": "Unique browsers",
+  "cultureTrackingStarted": "Visits with answers started",
+  "cultureTrackingCompleted": "Completed surveys",
+  "cultureTrackingUnconfirmed": "Sharing with the team has not been confirmed",
+  "cultureTrackingConfirmed": "The company confirmed sharing the link",
+  "cultureTrackingLastVisit": "Last visit",
+  "cultureTrackingHelp": "Visits are tracked from this update onwards. A unique browser does not necessarily represent one person. Sharing is confirmed by the company."
 }
